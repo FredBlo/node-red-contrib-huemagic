@@ -163,7 +163,8 @@ module.exports = function(RED)
 				async.retry({
 					times: 3,
 					errorFilter: function(err) {
-						return (err.status == 503);
+						scope.error ('err.status:' + err.status + ' [RetryCount:' + retryCount + ']'); //DEBUG MSG
+						return (err.status == 503 || err.status == 429);
 					},
 					interval: function(retryCount) { return retryCount*2000; }
 				},
@@ -268,7 +269,8 @@ module.exports = function(RED)
 				async.retry({
 					times: 3,
 					errorFilter: function(err) {
-						return (err.status == 503);
+						scope.error ('err.status:' + err.status + ' [RetryCount:' + retryCount + ']'); //DEBUG MSG
+						return (err.status == 503 || err.status == 429);
 					},
 					interval: function(retryCount) { return retryCount*2000; }
 				},
@@ -351,7 +353,8 @@ module.exports = function(RED)
 				async.retry({
 					times: 3,
 					errorFilter: function(err) {
-						return (err.status == 503);
+						scope.error ('err.status:' + err.status + ' [RetryCount:' + retryCount + ']'); //DEBUG MSG
+						return (err.status == 503 || err.status == 429);
 					},
 					interval: function(retryCount) { return retryCount*2000; }
 				},
@@ -591,7 +594,8 @@ module.exports = function(RED)
 					async.retry({
 						times: 3,
 						errorFilter: function(err) {
-							return (err.status == 503);
+							scope.error ('err.status:' + err.status + ' [RetryCount:' + retryCount + ']'); //DEBUG MSG
+							return (err.status == 503 || err.status == 429);
 						},
 						interval: function(retryCount) { return retryCount*2000; }
 					},
