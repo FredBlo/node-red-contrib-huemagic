@@ -60,7 +60,6 @@ module.exports = function(RED)
 					})
 					.catch(function(error)
 					{
-						if error.message
 						// scope.log("Error requesting info from the bridge. Reconnect in some secs. " + error.message);
 						// debug
 						scope.log("Error requesting info from the bridge. Reconnect in some secs. " + ((typeof(error.message) == 'undefined') ? JSON.stringify(error) : error.message));
