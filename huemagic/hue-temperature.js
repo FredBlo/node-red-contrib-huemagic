@@ -161,12 +161,12 @@ module.exports = function(RED)
 
 				// PATCH!
 				async.retry({
-					times: 3,
+					times: 5,
 					errorFilter: function(err) {
 						scope.error ('err.status:' + err.status); //DEBUG MSG
 						return (err.status == 503 || err.status == 429);
 					},
-					interval: function(retryCount) { return retryCount*2000; }
+					interval: function(retryCount) { return 750*(retryCount+1); }
 				},
 				function(callback, results)
 				{
