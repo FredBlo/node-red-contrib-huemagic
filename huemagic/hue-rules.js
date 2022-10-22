@@ -115,7 +115,6 @@ module.exports = function(RED)
 				async.retry({
 					times: 5,
 					errorFilter: function(err) {
-						scope.error ('err.status:' + err.status); //DEBUG MSG
 						return (err.status == 503 || err.status == 429);
 					},
 					interval: function(retryCount) { return 750*(retryCount+1); }

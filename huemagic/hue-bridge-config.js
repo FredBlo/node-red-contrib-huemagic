@@ -68,7 +68,7 @@ module.exports = function(RED)
 							scope.start();
 						} else {
 							// Bridge did not respond because it is currently overloaded (=error 429), but it is still alive, so nothing to do / restart, just keep monitoring as normal
-							scope.log("Bridge responded but was overloaded for now (429), no reconnection required for now.");
+							// scope.log("Bridge responded but was overloaded for now (ERR:429), no reconnection required for now.");
 							scope.startWatchdog();
 						}
 					});
