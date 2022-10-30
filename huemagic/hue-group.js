@@ -165,7 +165,7 @@ module.exports = function(RED)
 					errorFilter: function(err) {
 						return (err.status == 503 || err.status == 429);
 					},
-					interval: function(retryCount) { return 750*(retryCount+1); }
+					interval: function(retryCount) { return 750*retryCount; }
 				},
 				function(callback, results)
 				{
@@ -270,7 +270,7 @@ module.exports = function(RED)
 					errorFilter: function(err) {
 						return (err.status == 503 || err.status == 429);
 					},
-					interval: function(retryCount) { return 750*(retryCount+1); }
+					interval: function(retryCount) { return 750*retryCount; }
 				},
 				function(callback, results)
 				{
@@ -353,7 +353,7 @@ module.exports = function(RED)
 					errorFilter: function(err) {
 						return (err.status == 503 || err.status == 429);
 					},
-					interval: function(retryCount) { return 750*(retryCount+1); }
+					interval: function(retryCount) { return 750*retryCount; }
 				},
 				function(callback, results)
 				{
@@ -593,7 +593,7 @@ module.exports = function(RED)
 						errorFilter: function(err) {
 							return (err.status == 503 || err.status == 429);
 						},
-						interval: function(retryCount) { return 750*(retryCount+1); }
+						interval: function(retryCount) { return 750*retryCount; }
 					},
 					function(callback, results)
 					{
