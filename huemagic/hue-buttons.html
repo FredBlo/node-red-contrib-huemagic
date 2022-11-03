@@ -30,6 +30,13 @@
             <span data-i18n="hue-buttons.config.sendinitevents-node" style="width: 100%; margin-left: 10px;"></span>
         </div>
     </div>
+    <div class="form-row">
+      <i class="fa fa-sign-out"></i> <b>Additional outputs...</b>
+    </div>
+    <div class="form-row node-input-rule-container-row" style="width:100%">
+      <input type="hidden" id="node-input-outputs"/>
+      <ol id="node-input-rule-container"></ol>
+    </div>
 </script>
 
 <script type="text/javascript">
@@ -42,15 +49,17 @@
             sensorid: { value:"", required: false },
             skipevents: { value: false },
             initevents: { value: false },
-            rules: {value:[{
-              buttonFrom: 0,
+            rules: { value:[{
+              buttonFrom: 1,
               buttonTo: 4,
               onStartPress:false,
               onEndShortPress:true,
               onEndLongPress:true,
               onDuringLongPress:false,
               minLongPressDuration:1000
-            }]
+            }],
+          },
+          outputs: {value:1}
         },
         align: 'left',
         icon: "hue-buttons.png",
@@ -220,10 +229,10 @@
             });
 
             // Styles used in button range container
-            $("style").append("#node-input-rule-container .mhrule-fromtolabel {display:inline-block; width:100px; margin-left: 20px;}");
-            $("style").append("#node-input-rule-container .mhrule-checkbox {display:inline-block; width:22px; margin-left:0px; vertical-align:baseline;}");
-            $("style").append("#node-input-rule-container .mhrule-select {width:60px; height: 23px; padding: 2px 2px; margin-left: 25px; margin-right: 35px; text-align: center;}");
-            $("style").append("#node-input-rule-container .mhrule-checkbox-label {width: auto; margin-bottom: 2px;}");
+            $("style").append("#node-input-rule-container .buttonrule-fromtolabel {display:inline-block; width:100px; margin-left: 20px;}");
+            $("style").append("#node-input-rule-container .buttonrule-checkbox {display:inline-block; width:22px; margin-left:0px; vertical-align:baseline;}");
+            $("style").append("#node-input-rule-container .buttonrule-select {width:60px; height: 23px; padding: 2px 2px; margin-left: 25px; margin-right: 35px; text-align: center;}");
+            $("style").append("#node-input-rule-container .buttonrule-checkbox-label {width: auto; margin-bottom: 2px;}");
 
             // Output order can be updated to keep linked junctions correctly connected. To do so, a reserved item must contains
             //    outputs re-directions (if outputs are a,b,c,d, after configuring, new outputs are z,a,c, then 'node-input-outputs'
@@ -244,9 +253,12 @@
                   // This is a new rule : just add its final index using its rowID
                   orderedRulesIndex[curRowID] = i+1;
                 }
+                // Re-number them in UI (output number)
+                ruleUI.find(".node-input-rule-index").html(i+2);
               });
               $("#node-input-outputs").val(JSON.stringify(orderedRulesIndex));
             }
+
             $("#node-input-rule-container").css('min-height','300px').css('min-width','450px').editableList({
               addButton: 'add new buttons range',
               header: $("<div style='background:#EFEFEF; display:grid; grid-template-columns:135px 1fr 90px 30px'>"
@@ -267,10 +279,10 @@
 
                 // When object is new, apply default values
                 if (!rule.hasOwnProperty('buttonFrom')) {
-                  rule.buttonFrom = '0';
+                  rule.buttonFrom = '1';
                 }
                 if (!rule.hasOwnProperty('buttonTo')) {
-                  rule.buttonTo = '31';
+                  rule.buttonTo = '4';
                 }
                 if (!rule.hasOwnProperty('onEndShortPress')) {
                   rule.onEndShortPress = true;
@@ -283,32 +295,32 @@
                 }
                 // ROW 1
                 let row1 = $('<div/>').appendTo(container);
-                row1.append('<span class="mhrule-fromtolabel">From...</span>');
-                let field_onStartPress = $('<input/>',{id:"node-input-onStartPress_" + uniqueRowID,type:"checkbox", class:"mhrule-checkbox"}).appendTo(row1);
-                row1.append('<label class="mhrule-checkbox-label" for="node-input-onStartPress_' + uniqueRowID + '">Start press</label>');
+                row1.append('<span class="buttonrule-fromtolabel">From...</span>');
+                let field_onStartPress = $('<input/>',{id:"node-input-onStartPress_" + uniqueRowID,type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row1);
+                row1.append('<label class="buttonrule-checkbox-label" for="node-input-onStartPress_' + uniqueRowID + '">Start press</label>');
                 // ROW1 : output info (rightest part)
                 let finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row1);
                 finalspan.append('<i class="fa fa-sign-out"></i><span class="node-input-rule-index">'+(i+2)+'</span>');
                 // ROW 2
                 let row2 = $('<div/>').appendTo(container);
-                let field_buttonFrom = $('<select/>',{id:"node-input-buttonFrom_" + uniqueRowID, class:"mhrule-select"}).appendTo(row2);
-                let field_onEndShortPress = $('<input/>',{id:"node-input-onEndShortPress_" + uniqueRowID, type:"checkbox", class:"mhrule-checkbox"}).appendTo(row2);
-                row2.append('<label class="mhrule-checkbox-label" for="node-input-onEndShortPress_' + uniqueRowID + '">Short press ended (<0.5s)</label>');
+                let field_buttonFrom = $('<select/>',{id:"node-input-buttonFrom_" + uniqueRowID, class:"buttonrule-select"}).appendTo(row2);
+                let field_onEndShortPress = $('<input/>',{id:"node-input-onEndShortPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row2);
+                row2.append('<label class="buttonrule-checkbox-label" for="node-input-onEndShortPress_' + uniqueRowID + '">Short press ended (<0.5s)</label>');
                 // ROW 3
                 let row3 = $('<div/>').appendTo(container);
-                row3.append('<span class="mhrule-fromtolabel">To...</span>');
-                let field_onEndLongPress = $('<input/>',{id:"node-input-onEndLongPress_" + uniqueRowID, type:"checkbox", class:"mhrule-checkbox"}).appendTo(row3);
-                row3.append('<label class="mhrule-checkbox-label" for="node-input-onEndLongPress_' + uniqueRowID + '" style="width:unset";>Long press ended when >&nbsp</label>');
+                row3.append('<span class="buttonrule-fromtolabel">To...</span>');
+                let field_onEndLongPress = $('<input/>',{id:"node-input-onEndLongPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row3);
+                row3.append('<label class="buttonrule-checkbox-label" for="node-input-onEndLongPress_' + uniqueRowID + '" style="width:unset";>Long press ended when >&nbsp</label>');
                 let field_minLongPressDuration = $('<input/>',{id:"node-input-minLongPressDuration_" + uniqueRowID, type:"text",style:"height:23px; width:55px; padding: 2px 2px;"}).appendTo(row3);
-                row3.append('<label class="mhrule-checkbox-label" for="node-input-minLongPressDuration_' + uniqueRowID + '">&nbsp ms</label>');
+                row3.append('<label class="buttonrule-checkbox-label" for="node-input-minLongPressDuration_' + uniqueRowID + '">&nbsp ms</label>');
                 // ROW 4
                 let row4 = $('<div/>').appendTo(container);
-                let field_buttonTo = $('<select/>',{id:"node-input-buttonTo_" + uniqueRowID, class:"mhrule-select"}).appendTo(row4);
-                let field_onDuringLongPress = $('<input/>',{id:"node-input-onDuringLongPress_" + uniqueRowID, type:"checkbox", class:"mhrule-checkbox"}).appendTo(row4);
-                row4.append('<label class="mhrule-checkbox-label" for="node-input-onDuringLongPress_' + uniqueRowID + '">Long press (while pressed)</label>');
+                let field_buttonTo = $('<select/>',{id:"node-input-buttonTo_" + uniqueRowID, class:"buttonrule-select"}).appendTo(row4);
+                let field_onDuringLongPress = $('<input/>',{id:"node-input-onDuringLongPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row4);
+                row4.append('<label class="buttonrule-checkbox-label" for="node-input-onDuringLongPress_' + uniqueRowID + '">Long press (while pressed)</label>');
 
                 // Build all 0-10 choices to both fields inputs
-                for (let i = 0; i <= 10; i++) {
+                for (let i = 1; i <= 10; i++) {
                   field_buttonFrom.append($("<option></option>").val(i.toString()).text(i.toString()));
                   field_buttonTo.append($("<option></option>").val(i.toString()).text(i.toString()));
                 }
@@ -338,19 +350,10 @@
                 rebuildOutputIndexes ($("#node-input-rule-container").editableList('items'));
               },
               removeItem: function (rule) {
-                // Re-parse all remaining rules to re-number them in UI
-                let rules = $("#node-input-rule-container").editableList('items');
-                rules.each(function(i) {
-                  $(this).find(".node-input-rule-index").html(i+2);
-                });
                 // Update outputs (number of outputs and how the changed since onLoad)
-                rebuildOutputIndexes (rules);
+                rebuildOutputIndexes ($("#node-input-rule-container").editableList('items'));
               },
               sortItems: function (rules) {
-                // Re-parse all remaining rules to re-number them in UI
-                rules.each(function(i) {
-                  $(this).find(".node-input-rule-index").html(i+2);
-                });
                 // Update outputs (number of outputs and how the changed since onLoad)
                 rebuildOutputIndexes (rules);
               },
@@ -364,8 +367,36 @@
             }
           },
 
-
+        oneditresize: function(size) {
+            let rows = $("#dialog-form>div:not(.node-input-rule-container-row)");
+            let height = size.height;
+            for (let i = 0 ; i<rows.length ; i++) {
+                height -= $(rows[i]).outerHeight(true);
+            }
+            let editorRow = $("#dialog-form>div.node-input-rule-container-row");
+            height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
+            height += 16;
+            $("#node-input-rule-container").editableList('height',height);
         },
+
+        oneditsave: function() {
+          let rules = $("#node-input-rule-container").editableList('items');
+          let node = this;
+          node.rules = [];
+          rules.each (function (i) {
+            let rule = $(this);
+            let savedRule = {};
+            savedRule.buttonFrom = parseInt(rule.find("[id^=node-input-buttonFrom_]").val());
+            savedRule.buttonTo = parseInt(rule.find("[id^=node-input-buttonTo_]").val());
+            savedRule.onStartPress = rule.find("[id^=node-input-onStartPress_]").prop("checked");
+            savedRule.onEndShortPress = rule.find("[id^=node-input-onEndShortPress_]").prop("checked");
+            savedRule.onEndLongPress = rule.find("[id^=node-input-onEndLongPress_]").prop("checked");
+            savedRule.onDuringLongPress = rule.find("[id^=node-input-onDuringLongPress_]").prop("checked");
+            savedRule.minLongPressDuration = parseInt(rule.find("[id^=node-input-minLongPressDuration_]").val());
+            node.rules.push (savedRule);
+          });
+        },
+
         button: {
             enabled: function() {
                 return (this.sensorid && this.sensorid.length > 1)
