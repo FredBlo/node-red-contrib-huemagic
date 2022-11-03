@@ -12,7 +12,25 @@
 			"unknown-error": "Something went wrong. Please retry.",
 			"button": "Button",
 			"universalevents": "Universal Events",
-			"universalevents-node": "Receives all messages from other nodes of the same type (only in universal mode)"
+			"universalevents-node": "Receives all messages from other nodes of the same type (only in universal mode)",
+			"add-outputs": "Additional outputs...",
+			"add-outputs-range": "Buttons range...",
+			"add-outputs-newflow": "Trigger a new flow on...",
+			"add-outputs-nr": "Output n°",
+			"add-outputs-btn-from": "From...",
+			"add-outputs-btn-to": "To...",
+			"add-outputs-startpress": "Start press",
+			"add-outputs-shortpress": "Short press",
+			"add-outputs-longpress": "Long press ended when >",
+			"add-outputs-longpresswhile": "Long press (while pressed)",
+			"add-outputs-btn-addnew": "add new buttons range",
+			"outputlabel-btn-from": "button #__from__",
+			"outputlabel-btn-from-to": "buttons #__from__ to #__to__",
+			"outputlabel-btn-on": "on :",
+			"outputlabel-btn-startpress": "Start press",
+			"outputlabel-btn-shortpress": "Short press",
+			"outputlabel-btn-longpress": "Long press (>__duration__s)",
+			"outputlabel-btn-longpresswhile": "Long press (while pressed)"
 		},
 		"node":
 		{
