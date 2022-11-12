@@ -228,12 +228,12 @@
                 }
             });
 
+            // ADVANCED ADDITIONAL OUTPUTS
             // Styles used in button range container
             $("style").append("#node-input-rule-container .buttonrule-fromtolabel {display:inline-block; width:100px; margin-left: 20px;}");
             $("style").append("#node-input-rule-container .buttonrule-checkbox {display:inline-block; width:22px; margin-left:0px; vertical-align:baseline;}");
             $("style").append("#node-input-rule-container .buttonrule-select {width:60px; height: 23px; padding: 2px 2px; margin-left: 25px; margin-right: 35px; text-align: center;}");
             $("style").append("#node-input-rule-container .buttonrule-checkbox-label {width: auto; margin-bottom: 2px;}");
-
             // Output order can be updated to keep linked junctions correctly connected. To do so, a reserved item must contains
             //    outputs re-directions (if outputs are a,b,c,d, after configuring, new outputs are z,a,c, then 'node-input-outputs'
             //    must now be {"0":"1", "1":"-1", "2":"2", "3":"-1", "someRandomNo":"0"}.
@@ -259,7 +259,7 @@
               $("#node-input-outputs").val(JSON.stringify(orderedRulesIndex));
             }
 
-            $("#node-input-rule-container").css('min-height','300px').css('min-width','450px').editableList({
+            $("#node-input-rule-container").css('min-height','350px').css('min-width','450px').editableList({
               addButton: scope._('hue-buttons.config.add-outputs-btn-addnew'),
               header: $("<div style='background:#EFEFEF; display:grid; grid-template-columns:135px 1fr 90px 30px'>"
                   +"<div style='margin-left: 30px; display: inline-grid; margin-top: 5px; font-weight:bold'>" + scope._('hue-buttons.config.add-outputs-range') + "</div>"
@@ -293,27 +293,27 @@
                 if (!rule.hasOwnProperty('minLongPressDuration')) {
                   rule.minLongPressDuration = 1000;
                 }
-                // ROW 1
+                // ROW 1 : 'From label' & checkbox 'Start press'
                 let row1 = $('<div/>').appendTo(container);
                 row1.append('<span class="buttonrule-fromtolabel">' + scope._('hue-buttons.config.add-outputs-btn-from') + '</span>');
                 let field_onStartPress = $('<input/>',{id:"node-input-onStartPress_" + uniqueRowID,type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row1);
-                row1.append('<label class="buttonrule-checkbox-label" for="node-input-onStartPress_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-shortpress') + '</label>');
+                row1.append('<label class="buttonrule-checkbox-label" for="node-input-onStartPress_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-startpress') + '</label>');
                 // ROW1 : output info (rightest part)
                 let finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row1);
                 finalspan.append('<i class="fa fa-sign-out"></i><span class="node-input-rule-index">'+(i+2)+'</span>');
-                // ROW 2
+                // ROW 2 : 'From list' & checkbox 'End short press'
                 let row2 = $('<div/>').appendTo(container);
                 let field_buttonFrom = $('<select/>',{id:"node-input-buttonFrom_" + uniqueRowID, class:"buttonrule-select"}).appendTo(row2);
                 let field_onEndShortPress = $('<input/>',{id:"node-input-onEndShortPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row2);
-                row2.append('<label class="buttonrule-checkbox-label" for="node-input-onEndShortPress_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-startpress') + '</label>');
-                // ROW 3
+                row2.append('<label class="buttonrule-checkbox-label" for="node-input-onEndShortPress_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-shortpress') + '</label>');
+                // ROW 3 : 'To label' & checkbox 'End long press after [xx] seconds'
                 let row3 = $('<div/>').appendTo(container);
                 row3.append('<span class="buttonrule-fromtolabel">' + scope._('hue-buttons.config.add-outputs-btn-to') + '</span>');
                 let field_onEndLongPress = $('<input/>',{id:"node-input-onEndLongPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row3);
                 row3.append('<label class="buttonrule-checkbox-label" for="node-input-onEndLongPress_' + uniqueRowID + '" style="width:unset";>' + scope._('hue-buttons.config.add-outputs-longpress') + '&nbsp</label>');
                 let field_minLongPressDuration = $('<input/>',{id:"node-input-minLongPressDuration_" + uniqueRowID, type:"text",style:"height:23px; width:55px; padding: 2px 2px;"}).appendTo(row3);
                 row3.append('<label class="buttonrule-checkbox-label" for="node-input-minLongPressDuration_' + uniqueRowID + '">&nbsp ms</label>');
-                // ROW 4
+                // ROW 4 : 'To list' & checkbox 'During long press'
                 let row4 = $('<div/>').appendTo(container);
                 let field_buttonTo = $('<select/>',{id:"node-input-buttonTo_" + uniqueRowID, class:"buttonrule-select"}).appendTo(row4);
                 let field_onDuringLongPress = $('<input/>',{id:"node-input-onDuringLongPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row4);
@@ -375,7 +375,7 @@
             }
             let editorRow = $("#dialog-form>div.node-input-rule-container-row");
             height -= (parseInt(editorRow.css("marginTop"))+parseInt(editorRow.css("marginBottom")));
-            height += 16;
+            height += 40;
             $("#node-input-rule-container").editableList('height',height);
         },
 
