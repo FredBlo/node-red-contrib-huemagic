@@ -104,10 +104,11 @@ module.exports = function(RED)
 					}
 					// See if such action is monitored for a defined rule to be sent to a secondary output
 					let multiOutput = [];
+					let buttonRules = config.rules || [];
 					multiOutput[0] = currentState;
-					for (let i = 0; i < config.rules.length; i++) {
+					for (let i = 0; i < buttonRules.length; i++) {
 						multiOutput[i+1] = null;
-						let curRule = config.rules[i];
+						let curRule = buttonRules[i];
 						// Check whether pressed button is within a range this rule must monitor
 						if (curButtonLastState.buttonID < parseInt(curRule.buttonFrom) || curButtonLastState.buttonID > parseInt(curRule.buttonTo)) {
 							continue;
