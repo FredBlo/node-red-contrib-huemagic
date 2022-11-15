@@ -1,3 +1,4 @@
+/*jshint esversion: 8, strict: implied, node: true */
 module.exports = function(RED)
 {
 	"use strict";
@@ -582,7 +583,10 @@ module.exports = function(RED)
 		}
 
 		// SUBSCRIBE (FROM NODES)
-		this.subscribe = function(type, id = null, callback = null)
+		let nodeSubscriptions = {};
+		let nodeSubscriptionEventName;
+		let nodeSubscriptionFunction;
+		this.subscribe = function(node, type, id = null, callback = null)
 		{
 			// IS RULE?
 			if(type == "rule" && !!id)
@@ -604,7 +608,8 @@ module.exports = function(RED)
 			if(!id)
 			{
 				// UNIVERSAL MODE
-				this.events.on(config.id + "_" + "globalResourceUpdates", function(info)
+				nodeSubscriptionEventName = config.id + "_" + "globalResourceUpdates";
+				nodeSubscriptionFunction = function(info)
 				{
 					if(type === "bridge")
 					{
@@ -618,20 +623,34 @@ module.exports = function(RED)
 					{
 						callback(info);
 					}
-				});
+				};
 			}
 			else
 			{
 				// SPECIFIC RESOURCE MODE
-				this.events.on(config.id + "_" + id, function(info)
+				nodeSubscriptionEventName = config.id + "_" + id;
+				nodeSubscriptionFunction = function(info)
 				{
 					if(type === "bridge" || messageWhitelist[type].includes(info.updatedType))
 					{
 						callback(info);
 					}
-				});
+				};
 			}
-		}
+			// REGISTER EVENT AND KEEP LISTENER REFRENCE FOR LATER POSSIBLE REMOVAL
+			nodeSubscriptions[node.id] = {eventName: nodeSubscriptionEventName, listenerFunction: nodeSubscriptionFunction};
+			scope.events.on(nodeSubscriptionEventName, nodeSubscriptionFunction);
+		};
+
+		// UNSUBSCRIBE (On node unload)
+		this.unsubscribe = function(node)
+		{
+			let nodeSubscription = nodeSubscriptions[node.id];
+			if (nodeSubscription) {
+				scope.events.removeListener (nodeSubscription.eventName, nodeSubscription.listenerFunction);
+			}
+
+		};
 
 		// AUTO UPDATES?
 		this.autoUpdateFirmware = function()

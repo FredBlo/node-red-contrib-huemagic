@@ -41,7 +41,7 @@ module.exports = function(RED)
 
 		//
 		// SUBSCRIBE TO UPDATES FROM THE BRIDGE
-		bridge.subscribe("button", config.sensorid, function(info)
+		bridge.subscribe(scope, "button", config.sensorid, function(info)
 		{
 			let currentState = bridge.get("button", info.id);
 
@@ -211,6 +211,13 @@ module.exports = function(RED)
 				if(done) { done(); }
 				return true;
 			}
+		});
+
+		// ON NODE UNLOAD : UNSUBSCRIBE FROM BRIDGE
+		this.on ('close', function (done)
+		{
+			bridge.unsubscribe(scope);
+			done();
 		});
 	}
 
