@@ -61,11 +61,8 @@ module.exports = function(RED)
 					})
 					.catch(function(error)
 					{
-						// scope.log("Error requesting info from the bridge. Reconnect in some secs. " + error.message);
-						// debug
 						if (error.status !== 429) {
 							scope.log("Error requesting info from the bridge. Reconnect in some secs. " + ((typeof(error.message) == 'undefined') ? JSON.stringify(error) : error.message));
-							// end debug
 							scope.start();
 						} else {
 							// Bridge did not respond because it is currently overloaded (=error 429), but it is still alive, so nothing to do / restart, just keep monitoring as normal
@@ -74,10 +71,7 @@ module.exports = function(RED)
 						}
 					});
 				} catch (error) {
-					// scope.log("Lost connection with the bridge. Reconnect in some secs. " + error.message);
-					// debug
 					scope.log("Lost connection with the bridge. Reconnect in some secs. " + ((typeof(error.message) == 'undefined') ? JSON.stringify(error) : error.message));
-					// end debug
 					scope.start();
 				}
 			}, 10000);
