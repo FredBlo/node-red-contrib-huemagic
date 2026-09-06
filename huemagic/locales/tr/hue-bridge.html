@@ -19,6 +19,12 @@ Bir «TouchLink taraması» ile yeni veya eski cihazları bridge'e eşleyebilirs
 
 : touchLink (boolean): Eski veya yeni cihazları bridge ile eşler
 
+### Yeni cihaz arama
+
+Köprü, henüz eşleştirilmemiş cihazları arayabilir — Hue uygulamasının yaptığı aramanın aynısı. Bunun için `msg.payload` nesnesini şu içerikle gönderin:
+
+: searchDevices (boolean / array [string, ...] / object): Yeni cihaz aramasını başlatır. Seri numaralarından oluşan bir dizi (ya da `searchCodes` içeren bir nesne) ile tam olarak bu cihazlar aranır
+
 ### Tüm cihazları ve kaynakları sorgulama
 
 «fetch» komutuyla bridge'e o anda bağlı olan belirli cihazların listesini alabilirsiniz. Bunun için `msg.payload` nesnesini aşağıdaki içerikle gönderin:
@@ -75,10 +81,11 @@ Aşağıdaki komutla bridge üzerindeki belirli ayarları değiştirebilirsiniz.
 : users (array [object, ...]): Bridge üzerindeki tüm kullanıcıların listesi (nesne dizisi)
 : updated (string): Kaynağın HueMagic tarafından son güncellenme zamanı (ISO 8601)
 : model (object): Bridge'in model bilgilerini `id`, `manufacturer` ve `name` altında içerir
-: softwareUpdates (object)): Köprüye bağlı cihazların ürün yazılımı durumu; `pending` (güncelleme bekleyen cihaz sayısı) ve `devices` (bu cihazların listesi)
-: location (object)): Köprünün konumu; köprünün bildiği kadarıyla `configured`, `sunriseTime`, `sunsetTime` ve `dayType` alanlarında
-: presence (object)): Coğrafi çit istemcilerinin varlığı; `atHome` (evde biri var mı?) ve `clients` (istemcilerin `id`, `name` ve `atHome` ile listesi)
-: wifi (object / boolean)): Hue Bridge Pro'nun WiFi bağlantısı; `status`, `macAddress`, `signalStrength` ve `signalValue` alanlarında, WiFi'si olmayan köprüde `false`
+: softwareUpdates (object): Köprüye bağlı cihazların ürün yazılımı durumu; `pending` (güncelleme bekleyen cihaz sayısı) ve `devices` (bu cihazların listesi)
+: location (object): Köprünün konumu; köprünün bildiği kadarıyla `configured`, `sunriseTime`, `sunsetTime` ve `dayType` alanlarında
+: presence (object): Coğrafi çit istemcilerinin varlığı; `atHome` (evde biri var mı?) ve `clients` (istemcilerin `id`, `name` ve `atHome` ile listesi)
+: wifi (object / boolean): Hue Bridge Pro'nun WiFi bağlantısı; `status`, `macAddress`, `signalStrength` ve `signalValue` alanlarında, WiFi'si olmayan köprüde `false`
+: deviceSearch (object / boolean): Cihaz aramasının durumu; `status` ve `searching` alanlarında, köprü bunu sunmuyorsa `false`
 
 #### `msg.results` altındaki «fetch» sonuçları (isteğe bağlı)
 

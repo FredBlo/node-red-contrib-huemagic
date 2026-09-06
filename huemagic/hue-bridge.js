@@ -191,6 +191,46 @@ module.exports = function(RED)
 						if(done) { done(error); }
 					});
 				}
+				// SEARCH FOR NEW DEVICES
+				else if(typeof msg.payload != 'undefined' && typeof msg.payload.searchDevices != 'undefined')
+				{
+					const searchDevice = bridge.deviceWithService("zigbee_device_discovery");
+
+					if(searchDevice === false)
+					{
+						scope.error(RED._("hue-bridge.node.error-no-device-search"), msg);
+						if(done) { done(); }
+						return false;
+					}
+
+					// SERIAL NUMBERS OF THE DEVICES TO LOOK FOR (OPTIONAL)
+					let action = { action_type: "search" };
+					const searchCodes = Array.isArray(msg.payload.searchDevices) ? msg.payload.searchDevices : (msg.payload.searchDevices && msg.payload.searchDevices.searchCodes);
+
+					if(Array.isArray(searchCodes) && searchCodes.length > 0) { action.search_codes = searchCodes; }
+
+					// SET STATUS
+					scope.status({fill: "yellow", shape: "dot", text: "hue-bridge.node.searching-devices" });
+
+					// START THE SEARCH
+					bridge.patch("zigbee_device_discovery", searchDevice, { action: action })
+					.then(function(status)
+					{
+						scope.status({fill: "blue", shape: "ring", text: "hue-bridge.node.started-search" });
+						if(done) { done(); }
+
+						// RESET STATUS AFTER 30 SECONDS
+						setTimeout(function()
+						{
+							scope.setInitialState();
+						}, 30000);
+					})
+					.catch(function(error)
+					{
+						scope.error(error);
+						if(done) { done(error); }
+					});
+				}
 				// FETCH RESOURCES
 				else if(typeof msg.payload != 'undefined' && typeof msg.payload.fetch != 'undefined')
 				{

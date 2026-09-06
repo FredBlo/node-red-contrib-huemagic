@@ -14,13 +14,16 @@
 			"connected": "verbonden",
 			"starting-tl": "TouchLink starten…",
 			"started-tl": "TouchLink gestart…",
+			"searching-devices": "apparaten zoeken…",
+			"started-search": "apparaten zoeken gestart",
 			"f-resources": "bronnen ophalen…",
 			"updating-settings": "instellingen bijwerken…",
 			"settings-updated": "instellingen bijgewerkt",
 			"input": "instellingen / ophalen",
 			"output": "bridge-informatie",
 			"statusmsg": "Status succesvol opgevraagd…",
-			"error-not-available": "De bridge is nog niet beschikbaar. Wacht tot HueMagic verbinding met de bridge heeft gemaakt."
+			"error-not-available": "De bridge is nog niet beschikbaar. Wacht tot HueMagic verbinding met de bridge heeft gemaakt.",
+			"error-no-device-search": "Deze bridge kan niet naar nieuwe apparaten zoeken. Wacht tot HueMagic verbinding met de bridge heeft gemaakt."
 		}
 	}
 }

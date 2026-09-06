@@ -19,6 +19,12 @@ Za pomocą „skanowania TouchLink” możesz sparować z bridge nowe lub stare 
 
 : touchLink (boolean): Paruje stare lub nowe urządzenia z bridge
 
+### Wyszukiwanie nowych urządzeń
+
+Mostek może wyszukiwać urządzenia, które nie zostały jeszcze sparowane — to samo wyszukiwanie, które wykonuje aplikacja Hue. W tym celu przekaż obiekt `msg.payload` o następującej treści:
+
+: searchDevices (boolean / array [string, ...] / object): Uruchamia wyszukiwanie nowych urządzeń. Tablica numerów seryjnych (albo obiekt z `searchCodes`) ogranicza wyszukiwanie do tych urządzeń
+
 ### Odczyt wszystkich urządzeń i zasobów
 
 Poleceniem „fetch” możesz uzyskać listę wybranych urządzeń aktualnie połączonych z bridge. Przekaż w tym celu obiekt `msg.payload` o następującej zawartości:
@@ -75,10 +81,11 @@ Komunikaty stanu węzła „Hue Bridge” są dynamiczne. Choć mają określony
 : users (array [object, ...]): Lista wszystkich użytkowników bridge (tablica obiektów)
 : updated (string): Czas ostatniej aktualizacji zasobu przez HueMagic (ISO 8601)
 : model (object): Zawiera informacje o modelu bridge w polach `id`, `manufacturer` i `name`
-: softwareUpdates (object)): Stan oprogramowania urządzeń podłączonych do mostka w `pending` (liczba urządzeń oczekujących na aktualizację) i `devices` (lista tych urządzeń)
-: location (object)): Lokalizacja mostka w `configured`, `sunriseTime`, `sunsetTime` i `dayType`, o ile mostek ją zna
-: presence (object)): Obecność klientów geofence w `atHome` (czy ktoś jest w domu?) i `clients` (lista klientów z `id`, `name` i `atHome`)
-: wifi (object / boolean)): Połączenie WiFi mostka Hue Bridge Pro w `status`, `macAddress`, `signalStrength` i `signalValue` albo `false` w mostku bez WiFi
+: softwareUpdates (object): Stan oprogramowania urządzeń podłączonych do mostka w `pending` (liczba urządzeń oczekujących na aktualizację) i `devices` (lista tych urządzeń)
+: location (object): Lokalizacja mostka w `configured`, `sunriseTime`, `sunsetTime` i `dayType`, o ile mostek ją zna
+: presence (object): Obecność klientów geofence w `atHome` (czy ktoś jest w domu?) i `clients` (lista klientów z `id`, `name` i `atHome`)
+: wifi (object / boolean): Połączenie WiFi mostka Hue Bridge Pro w `status`, `macAddress`, `signalStrength` i `signalValue` albo `false` w mostku bez WiFi
+: deviceSearch (object / boolean): Stan wyszukiwania urządzeń w `status` i `searching` albo `false`, jeśli mostek go nie oferuje
 
 #### Wyniki „fetch” w `msg.results` (opcjonalnie)
 

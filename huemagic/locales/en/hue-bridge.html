@@ -19,6 +19,12 @@ You can couple new or old devices to the bridge using a "TouchLink scan" (e.g. a
 
 : touchLink (boolean): Couples old or new devices with the bridge
 
+### Search for new devices
+
+The bridge can look for devices that have not been paired yet — the same search the Hue app performs. To do this, transfer the object `msg.payload` with the following content:
+
+: searchDevices (boolean / array [string, ...] / object): Starts the search for new devices. Pass an array of serial numbers (or an object with `searchCodes`) to look for exactly these devices
+
 ### Get all devices and resources
 
 With the "fetch" command you can output a list of specific devices that are currently connected to the bridge. To do this, transfer the object `msg.payload` with the following content:
@@ -75,10 +81,11 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 : users (array [object, ...]): List of all users on the bridge (array with objects)
 : updated (string): Time of the last update of the resource by HueMagic (ISO 8601)
 : model (object): Contains the model information of the bridge under `id`, `manufacturer` and `name`
-: softwareUpdates (object)): Firmware state of the devices behind the bridge under `pending` (number of devices waiting for an update) and `devices` (list of these devices)
-: location (object)): Location of the bridge under `configured`, `sunriseTime`, `sunsetTime` and `dayType`, as far as the bridge knows it
-: presence (object)): Presence of the geofence clients under `atHome` (is anybody at home?) and `clients` (list of the clients with `id`, `name` and `atHome`)
-: wifi (object / boolean)): WiFi connection of the Hue Bridge Pro under `status`, `macAddress`, `signalStrength` and `signalValue`, or `false` on a bridge without WiFi
+: softwareUpdates (object): Firmware state of the devices behind the bridge under `pending` (number of devices waiting for an update) and `devices` (list of these devices)
+: location (object): Location of the bridge under `configured`, `sunriseTime`, `sunsetTime` and `dayType`, as far as the bridge knows it
+: presence (object): Presence of the geofence clients under `atHome` (is anybody at home?) and `clients` (list of the clients with `id`, `name` and `atHome`)
+: wifi (object / boolean): WiFi connection of the Hue Bridge Pro under `status`, `macAddress`, `signalStrength` and `signalValue`, or `false` on a bridge without WiFi
+: deviceSearch (object / boolean): State of the device search under `status` and `searching`, or `false` if the bridge does not offer it
 
 #### Fetch results under `msg.results` (optional)
 

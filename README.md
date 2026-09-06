@@ -90,6 +90,14 @@ You can couple new or old devices to the bridge using a "TouchLink scan" (e.g. a
 |--|--|
 | touchLink (boolean) | Couples old or new devices with the bridge |
 
+### Search for new devices
+
+The bridge can look for devices that have not been paired yet — the same search the Hue app performs. To do this, transfer the object `msg.payload` with the following content:
+
+|Property|Description|
+|--|--|
+| searchDevices (boolean / array [string, ...] / object) | Starts the search for new devices. Pass an array of serial numbers (or an object with `searchCodes`) to look for exactly these devices |
+
 ### Get all devices and resources
 
 With the "fetch" command you can output a list of specific devices that are currently connected to the bridge. To do this, transfer the object `msg.payload` with the following content:
@@ -153,6 +161,7 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 | location (object) | Location of the bridge under `configured`, `sunriseTime`, `sunsetTime` and `dayType`, as far as the bridge knows it |
 | presence (object) | Presence of the geofence clients under `atHome` (is anybody at home?) and `clients` (list of the clients with `id`, `name` and `atHome`) |
 | wifi (object / boolean) | WiFi connection of the Hue Bridge Pro under `status`, `macAddress`, `signalStrength` and `signalValue`, or `false` on a bridge without WiFi |
+| deviceSearch (object / boolean) | State of the device search under `status` and `searching`, or `false` if the bridge does not offer it |
 
 #### Fetch results under `msg.results` (optional)
 
@@ -1202,6 +1211,7 @@ If the status of the node has changed via a certain command, the entire command 
 * The "Hue Bridge" node now reports the firmware state of every device behind the bridge under `msg.payload.softwareUpdates`, so a flow can react as soon as an update is waiting somewhere
 * The "Hue Bridge" node now reports the location of the bridge under `msg.payload.location` — including the sunrise and sunset it calculates — and who is at home under `msg.payload.presence`
 * The "Hue Bridge" node now reports the WiFi connection of a Hue Bridge Pro under `msg.payload.wifi`, including the signal strength
+* The "Hue Bridge" node can start the device search of the bridge with `msg.payload.searchDevices` — optionally for certain serial numbers — and reports its state under `msg.payload.deviceSearch`
 
 ### v5.0.1
 

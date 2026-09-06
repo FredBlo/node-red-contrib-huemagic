@@ -14,13 +14,16 @@
 			"connected": "ligado",
 			"starting-tl": "a iniciar o TouchLink…",
 			"started-tl": "TouchLink iniciado…",
+			"searching-devices": "a procurar dispositivos…",
+			"started-search": "procura de dispositivos iniciada",
 			"f-resources": "a obter recursos…",
 			"updating-settings": "a atualizar as definições…",
 			"settings-updated": "definições atualizadas",
 			"input": "definições / consulta",
 			"output": "informações do bridge",
 			"statusmsg": "Estado consultado com sucesso…",
-			"error-not-available": "O bridge ainda não está disponível. Aguarde até que o HueMagic tenha estabelecido a ligação com o bridge."
+			"error-not-available": "O bridge ainda não está disponível. Aguarde até que o HueMagic tenha estabelecido a ligação com o bridge.",
+			"error-no-device-search": "Este bridge não consegue procurar novos dispositivos. Aguarde até o HueMagic estabelecer uma ligação com o bridge."
 		}
 	}
 }

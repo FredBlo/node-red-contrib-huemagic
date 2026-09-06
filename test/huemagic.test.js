@@ -504,3 +504,20 @@ test('messages: a bridge without wifi reports false instead of an empty object',
 	const msg = new HueBridgeMessage({ bridgeid: "b1" }, { resources: { _groupsOf: {} } }).msg;
 	assert.strictEqual(msg.payload.wifi, false);
 });
+
+test('messages: the bridge reports whether it is searching for devices', function()
+{
+	const resources = {
+		_groupsOf: {},
+		"bri": {
+			id: "bri", type: "device",
+			services: { zigbee_device_discovery: { "z1": { id: "z1", type: "zigbee_device_discovery", status: "active" } } }
+		}
+	};
+
+	const searching = new HueBridgeMessage({ bridgeid: "b1" }, { resources: resources }).msg;
+	assert.deepStrictEqual(searching.payload.deviceSearch, { status: "active", searching: true });
+
+	const idle = new HueBridgeMessage({ bridgeid: "b1" }, { resources: { _groupsOf: {} } }).msg;
+	assert.strictEqual(idle.payload.deviceSearch, false, "a bridge that does not offer the search says so");
+});

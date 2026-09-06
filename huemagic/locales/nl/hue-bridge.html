@@ -19,6 +19,12 @@ Met een "TouchLink-scan" kunt u nieuwe of oude apparaten aan de bridge koppelen 
 
 : touchLink (boolean): Koppelt oude of nieuwe apparaten aan de bridge
 
+### Naar nieuwe apparaten zoeken
+
+De bridge kan zoeken naar apparaten die nog niet gekoppeld zijn — dezelfde zoekactie die de Hue-app uitvoert. Geef daarvoor het object `msg.payload` met de volgende inhoud door:
+
+: searchDevices (boolean / array [string, ...] / object): Start het zoeken naar nieuwe apparaten. Met een array van serienummers (of een object met `searchCodes`) wordt gericht naar die apparaten gezocht
+
 ### Alle apparaten en bronnen opvragen
 
 Met het commando "fetch" kunt u een lijst van bepaalde apparaten opvragen die momenteel met de bridge verbonden zijn. Geef hiervoor het object `msg.payload` met de volgende inhoud mee:
@@ -75,10 +81,11 @@ De statusberichten van de node "Hue Bridge" zijn dynamisch. Ze volgen weliswaar 
 : users (array [object, ...]): Lijst van alle gebruikers op de bridge (array met objecten)
 : updated (string): Tijdstip van de laatste update van de bron door HueMagic (ISO 8601)
 : model (object): Bevat de modelinformatie van de bridge onder `id`, `manufacturer` en `name`
-: softwareUpdates (object)): Firmwarestatus van de apparaten achter de bridge onder `pending` (aantal apparaten dat op een update wacht) en `devices` (lijst met deze apparaten)
-: location (object)): Locatie van de bridge onder `configured`, `sunriseTime`, `sunsetTime` en `dayType`, voor zover de bridge die kent
-: presence (object)): Aanwezigheid van de geofence-clients onder `atHome` (is er iemand thuis?) en `clients` (lijst met clients met `id`, `name` en `atHome`)
-: wifi (object / boolean)): WiFi-verbinding van de Hue Bridge Pro onder `status`, `macAddress`, `signalStrength` en `signalValue`, of `false` bij een bridge zonder WiFi
+: softwareUpdates (object): Firmwarestatus van de apparaten achter de bridge onder `pending` (aantal apparaten dat op een update wacht) en `devices` (lijst met deze apparaten)
+: location (object): Locatie van de bridge onder `configured`, `sunriseTime`, `sunsetTime` en `dayType`, voor zover de bridge die kent
+: presence (object): Aanwezigheid van de geofence-clients onder `atHome` (is er iemand thuis?) en `clients` (lijst met clients met `id`, `name` en `atHome`)
+: wifi (object / boolean): WiFi-verbinding van de Hue Bridge Pro onder `status`, `macAddress`, `signalStrength` en `signalValue`, of `false` bij een bridge zonder WiFi
+: deviceSearch (object / boolean): Status van het zoeken naar apparaten onder `status` en `searching`, of `false` als de bridge dit niet aanbiedt
 
 #### Fetch-resultaten onder `msg.results` (optioneel)
 

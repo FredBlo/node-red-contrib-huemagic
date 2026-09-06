@@ -620,6 +620,18 @@ module.exports = function(RED)
 			}
 		}
 
+		// FIND THE DEVICE THAT OFFERS A CERTAIN SERVICE (FROM NODES)
+		this.deviceWithService = function(type)
+		{
+			for (const [id, resource] of Object.entries(scope.resources))
+			{
+				if(id === "_groupsOf") { continue; }
+				if(resource["services"] && resource["services"][type]) { return id; }
+			}
+
+			return false;
+		}
+
 		// PATCH RESOURCE (FROM NODES)
 		this.patch = function(type, id, patch, version = 2)
 		{

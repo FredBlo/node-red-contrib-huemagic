@@ -19,6 +19,12 @@ Con un «escaneo TouchLink» puede vincular al bridge dispositivos nuevos o anti
 
 : touchLink (boolean): Vincula dispositivos antiguos o nuevos con el bridge
 
+### Buscar dispositivos nuevos
+
+El bridge puede buscar dispositivos que aún no están emparejados, la misma búsqueda que realiza la app de Hue. Para ello, transfiera el objeto `msg.payload` con el siguiente contenido:
+
+: searchDevices (boolean / array [string, ...] / object): Inicia la búsqueda de dispositivos nuevos. Con un array de números de serie (o un objeto con `searchCodes`) se buscan exactamente esos dispositivos
+
 ### Consultar todos los dispositivos y recursos
 
 Con el comando «fetch» puede obtener una lista de determinados dispositivos conectados actualmente al bridge. Para ello, transfiera el objeto `msg.payload` con el siguiente contenido:
@@ -75,10 +81,11 @@ Los mensajes de estado del nodo «Hue Bridge» son dinámicos. Aunque siguen un 
 : users (array [object, ...]): Lista de todos los usuarios del bridge (array de objetos)
 : updated (string): Momento de la última actualización del recurso por parte de HueMagic (ISO 8601)
 : model (object): Contiene la información de modelo del bridge en `id`, `manufacturer` y `name`
-: softwareUpdates (object)): Estado del firmware de los dispositivos conectados al bridge en `pending` (número de dispositivos que esperan una actualización) y `devices` (lista de esos dispositivos)
-: location (object)): Ubicación del bridge en `configured`, `sunriseTime`, `sunsetTime` y `dayType`, en la medida en que el bridge la conoce
-: presence (object)): Presencia de los clientes de geolocalización en `atHome` (¿hay alguien en casa?) y `clients` (lista de clientes con `id`, `name` y `atHome`)
-: wifi (object / boolean)): Conexión WiFi del Hue Bridge Pro en `status`, `macAddress`, `signalStrength` y `signalValue`, o `false` en un bridge sin WiFi
+: softwareUpdates (object): Estado del firmware de los dispositivos conectados al bridge en `pending` (número de dispositivos que esperan una actualización) y `devices` (lista de esos dispositivos)
+: location (object): Ubicación del bridge en `configured`, `sunriseTime`, `sunsetTime` y `dayType`, en la medida en que el bridge la conoce
+: presence (object): Presencia de los clientes de geolocalización en `atHome` (¿hay alguien en casa?) y `clients` (lista de clientes con `id`, `name` y `atHome`)
+: wifi (object / boolean): Conexión WiFi del Hue Bridge Pro en `status`, `macAddress`, `signalStrength` y `signalValue`, o `false` en un bridge sin WiFi
+: deviceSearch (object / boolean): Estado de la búsqueda de dispositivos en `status` y `searching`, o `false` si el bridge no la ofrece
 
 #### Resultados de «fetch» en `msg.results` (opcional)
 

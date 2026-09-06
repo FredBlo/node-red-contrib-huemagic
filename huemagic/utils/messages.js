@@ -16,7 +16,7 @@ const serviceTypes = {
 
 //
 // THESE RESOURCES HAVE NO NODE OF THEIR OWN, THEY ARE REPORTED BY THE "HUE BRIDGE" NODE
-const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity"];
+const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity", "zigbee_device_discovery"];
 
 //
 // GET THE FIRST SERVICE OF A TYPE BEHIND A RESOURCE
@@ -161,6 +161,19 @@ class HueBridgeMessage
 				state: one.resource["state"],
 				problems: one.resource["problems"] ? one.resource["problems"] : []
 			});
+		}
+
+		// IS THE BRIDGE CURRENTLY LOOKING FOR NEW DEVICES?
+		this.message.payload.deviceSearch = false;
+
+		for (const one of resourcesOfType(options["resources"], "zigbee_device_discovery"))
+		{
+			this.message.payload.deviceSearch = {
+				status: one.resource["status"] ? one.resource["status"] : false,
+				searching: one.resource["status"] === "active"
+			};
+
+			break;
 		}
 
 		// THE HUE BRIDGE PRO IS ALSO REACHABLE OVER WIFI, THE SQUARE ONE IS NOT

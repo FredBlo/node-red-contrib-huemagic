@@ -19,6 +19,12 @@ Sie können mittels eines „TouchLink-Scans“ neue oder alte Geräte mit der B
 
 : touchLink (boolean) : Koppelt alte oder neue Geräte mit der Bridge
 
+### Nach neuen Geräten suchen
+
+Die Bridge kann nach Geräten suchen, die noch nicht gekoppelt sind — dieselbe Suche, die auch die Hue App durchführt. Übergeben Sie dazu das Objekt `msg.payload` mit folgendem Inhalt:
+
+: searchDevices (boolean / array [string, …] / object) : Startet die Suche nach neuen Geräten. Mit einem Array von Seriennummern (oder einem Objekt mit `searchCodes`) wird gezielt nach diesen Geräten gesucht
+
 ### Alle Geräte und Ressourcen abrufen
 
 Mit dem „fetch“-Befehl können Sie eine Liste von spezifischen Geräten ausgeben, die aktuell mit der Bridge verbunden sind. Übergeben Sie dafür das Objekt `msg.payload` mit folgendem Inhalt:
@@ -79,6 +85,7 @@ Die Statusmitteilungen des „Hue Bridge“-Nodes sind dynamisch. Sie folgen zwa
 : location (object) : Standort der Bridge unter `configured`, `sunriseTime`, `sunsetTime` und `dayType`, soweit die Bridge ihn kennt
 : presence (object) : Anwesenheit der Geofence-Clients unter `atHome` (ist jemand zu Hause?) und `clients` (Liste der Clients mit `id`, `name` und `atHome`)
 : wifi (object / boolean) : WLAN-Verbindung der Hue Bridge Pro unter `status`, `macAddress`, `signalStrength` und `signalValue`, oder `false` bei einer Bridge ohne WLAN
+: deviceSearch (object / boolean) : Status der Gerätesuche unter `status` und `searching`, oder `false`, wenn die Bridge sie nicht anbietet
 
 #### Fetch-Ergebnisse unter `msg.results` (optional)
 
