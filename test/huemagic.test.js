@@ -4,7 +4,8 @@ const assert = require('node:assert');
 const { parseEventStream } = require('../huemagic/utils/sse');
 const API = require('../huemagic/utils/api');
 const merge = require('../huemagic/utils/merge');
-const { HueGroupMessage,
+const { HueBridgeMessage,
+		HueGroupMessage,
 		HueLightMessage,
 		HueMotionMessage,
 		HueContactMessage,
@@ -406,4 +407,39 @@ test('messages: a sync box that answers with almost nothing does not throw', fun
 	assert.strictEqual(msg.payload.brightness, false);
 	assert.deepStrictEqual(msg.payload.inputs, {});
 	assert.strictEqual(msg.info.type, "syncbox");
+});
+
+test('messages: the bridge reports the devices that wait for a firmware update', function()
+{
+	const resources = {
+		_groupsOf: {},
+		"bridge": { id: "bridge", type: "bridge" },
+		"d1": {
+			id: "d1", type: "device",
+			metadata: { name: "Kitchen" },
+			product_data: { model_id: "LCT015", product_name: "Hue color lamp" },
+			services: { device_software_update: { "u1": { id: "u1", type: "device_software_update", state: "update_available", problems: [] } } }
+		},
+		"d2": {
+			id: "d2", type: "device",
+			metadata: { name: "Hallway" },
+			services: { device_software_update: { "u2": { id: "u2", type: "device_software_update", state: "no_update", problems: [] } } }
+		}
+	};
+
+	const msg = new HueBridgeMessage({ bridgeid: "b1", name: "Bridge" }, { resources: resources }).msg;
+
+	assert.strictEqual(msg.payload.softwareUpdates.pending, 1, "only the device that is not up to date counts");
+	assert.strictEqual(msg.payload.softwareUpdates.devices.length, 1);
+	assert.strictEqual(msg.payload.softwareUpdates.devices[0].name, "Kitchen");
+	assert.strictEqual(msg.payload.softwareUpdates.devices[0].state, "update_available");
+	assert.strictEqual(msg.payload.softwareUpdates.devices[0].model.name, "Hue color lamp");
+});
+
+test('messages: a bridge without any resources still answers', function()
+{
+	const msg = new HueBridgeMessage({ bridgeid: "b1", name: "Bridge" }).msg;
+
+	assert.strictEqual(msg.payload.softwareUpdates.pending, 0);
+	assert.deepStrictEqual(msg.payload.softwareUpdates.devices, []);
 });

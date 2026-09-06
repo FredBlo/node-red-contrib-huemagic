@@ -75,6 +75,7 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 : users (array [object, ...]): List of all users on the bridge (array with objects)
 : updated (string): Time of the last update of the resource by HueMagic (ISO 8601)
 : model (object): Contains the model information of the bridge under `id`, `manufacturer` and `name`
+: softwareUpdates (object)): Firmware state of the devices behind the bridge under `pending` (number of devices waiting for an update) and `devices` (list of these devices)
 
 #### Fetch results under `msg.results` (optional)
 

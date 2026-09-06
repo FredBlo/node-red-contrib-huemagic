@@ -15,6 +15,10 @@ const serviceTypes = {
 };
 
 //
+// THESE RESOURCES HAVE NO NODE OF THEIR OWN, THEY ARE REPORTED BY THE "HUE BRIDGE" NODE
+const bridgeResourceTypes = ["device_software_update"];
+
+//
 // GET THE FIRST SERVICE OF A TYPE BEHIND A RESOURCE
 function service(resource, type)
 {
@@ -50,6 +54,40 @@ function battery(resource)
 {
 	const power = service(resource, "device_power");
 	return (power && power.power_state) ? power.power_state : { battery_level: false, battery_state: false };
+}
+
+//
+// COLLECT EVERY RESOURCE OF A TYPE, NO MATTER IF IT STANDS ALONE OR SITS BEHIND A DEVICE
+function resourcesOfType(resources, type)
+{
+	let found = [];
+
+	for (const [id, resource] of Object.entries(resources ? resources : {}))
+	{
+		if(id === "_groupsOf" || !resource || typeof resource !== 'object') { continue; }
+
+		if(resource["type"] === type)
+		{
+			found.push({ owner: resource, resource: resource });
+		}
+		else if(resource["services"] && resource["services"][type])
+		{
+			for (const one of Object.values(resource["services"][type]))
+			{
+				found.push({ owner: resource, resource: one });
+			}
+		}
+	}
+
+	return found;
+}
+
+//
+// NAME A DEVICE OR A RESOURCE THE WAY THE HUE APP DOES
+function name(resource)
+{
+	if(resource["metadata"] && resource["metadata"]["name"]) { return resource["metadata"]["name"]; }
+	return resource["name"] ? resource["name"] : false;
 }
 
 //
@@ -106,6 +144,24 @@ class HueBridgeMessage
 		this.message.payload.model.id = resource.modelid;
 		this.message.payload.model.manufacturer = "Philips";
 		this.message.payload.model.name = "Hue v2";
+
+		// FIRMWARE OF THE DEVICES BEHIND THE BRIDGE
+		this.message.payload.softwareUpdates = { pending: 0, devices: [] };
+
+		for (const one of resourcesOfType(options["resources"], "device_software_update"))
+		{
+			// A DEVICE THAT IS UP TO DATE IS NOTHING TO REPORT
+			if(!one.resource["state"] || one.resource["state"] === "no_update") { continue; }
+
+			this.message.payload.softwareUpdates.pending += 1;
+			this.message.payload.softwareUpdates.devices.push({
+				id: one.owner["id"],
+				name: name(one.owner),
+				model: model(one.owner),
+				state: one.resource["state"],
+				problems: one.resource["problems"] ? one.resource["problems"] : []
+			});
+		}
 
 		// GET USERS
 		if (resource["whitelist"]) {
@@ -840,4 +896,4 @@ class HueSyncBoxMessage
 
 //
 // EXPORT
-module.exports = { HueBridgeMessage, HueBrightnessMessage, HueGroupMessage, HueLightMessage, HueMotionMessage, HueContactMessage, HueRulesMessage, HueButtonsMessage, HueTemperatureMessage, HueSpeakerMessage, HueAutomationMessage, HueSyncBoxMessage, serviceTypes, servesType }
+module.exports = { HueBridgeMessage, HueBrightnessMessage, HueGroupMessage, HueLightMessage, HueMotionMessage, HueContactMessage, HueRulesMessage, HueButtonsMessage, HueTemperatureMessage, HueSpeakerMessage, HueAutomationMessage, HueSyncBoxMessage, serviceTypes, servesType, bridgeResourceTypes }

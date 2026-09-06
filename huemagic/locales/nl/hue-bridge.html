@@ -75,6 +75,7 @@ De statusberichten van de node "Hue Bridge" zijn dynamisch. Ze volgen weliswaar 
 : users (array [object, ...]): Lijst van alle gebruikers op de bridge (array met objecten)
 : updated (string): Tijdstip van de laatste update van de bron door HueMagic (ISO 8601)
 : model (object): Bevat de modelinformatie van de bridge onder `id`, `manufacturer` en `name`
+: softwareUpdates (object)): Firmwarestatus van de apparaten achter de bridge onder `pending` (aantal apparaten dat op een update wacht) en `devices` (lijst met deze apparaten)
 
 #### Fetch-resultaten onder `msg.results` (optioneel)
 

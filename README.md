@@ -149,6 +149,7 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 | users (array [object, ...]) | List of all users on the bridge (array with objects) |
 | updated (string) | Time of the last update of the resource by HueMagic (ISO 8601) |
 | model (object) | Contains the model information of the bridge under `id`, `manufacturer` and `name` |
+| softwareUpdates (object) | Firmware state of the devices behind the bridge under `pending` (number of devices waiting for an update) and `devices` (list of these devices) |
 
 #### Fetch results under `msg.results` (optional)
 
@@ -1191,7 +1192,13 @@ If the status of the node has changed via a certain command, the entire command 
 
 # Changelog
 
-### v5.0.1 (latest)
+### v5.1.0 (latest)
+
+**New devices and features**
+
+* The "Hue Bridge" node now reports the firmware state of every device behind the bridge under `msg.payload.softwareUpdates`, so a flow can react as soon as an update is waiting somewhere
+
+### v5.0.1
 
 * The "Hue Buttons" node can now be given additional outputs, each one triggered by a range of buttons and a certain action — the start of a press, the end of a short press, the end of a long press once it lasted long enough, or repeatedly while a long press is still running. One switch can drive several flows without a Switch node behind it ([#455](https://github.com/Foddy/node-red-contrib-huemagic/pull/455)) (thx @FredBlo)
 * The status of the "Hue Buttons" node now also shows how long a button was held down

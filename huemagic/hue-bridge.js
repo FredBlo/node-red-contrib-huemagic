@@ -2,6 +2,8 @@ module.exports = function(RED)
 {
 	"use strict";
 
+	const { bridgeResourceTypes } = require('./utils/messages');
+
 	function HueBridgeNode(config)
 	{
 		RED.nodes.createNode(this, config);
@@ -92,6 +94,13 @@ module.exports = function(RED)
 		this.unsubscribe = bridge.subscribe("bridge", "globalResourceUpdates", async function(info)
 		{
 			let currentState = bridge.get(info.updatedType, info.id);
+
+			// RESOURCES WITHOUT A NODE OF THEIR OWN ARE PART OF THE BRIDGE MESSAGE, SO IT HAS TO BE REBUILT
+			if(bridgeResourceTypes.includes(info.updatedType))
+			{
+				scope.lastBridgeInformation = null;
+				currentState = { id: info.id, type: info.updatedType };
+			}
 
 			// RESOURCE FOUND?
 			if(currentState !== false)

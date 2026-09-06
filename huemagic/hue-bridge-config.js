@@ -408,7 +408,8 @@ module.exports = function(RED)
 					if(type == "bridge")
 					{
 						try {
-							const message = new HueBridgeMessage(targetResource, options);
+							// THE BRIDGE ALSO REPORTS THE RESOURCES THAT HAVE NO NODE OF THEIR OWN
+							const message = new HueBridgeMessage(targetResource, { resources: scope.resources, ...options });
 
 							// GET CURRENT STATE MESSAGE
 							let currentState = message.msg;

@@ -75,6 +75,7 @@ I messaggi di stato del nodo «Hue Bridge» sono dinamici. Pur seguendo uno sche
 : users (array [object, ...]): Elenco di tutti gli utenti sul bridge (array di oggetti)
 : updated (string): Momento dell'ultimo aggiornamento della risorsa da parte di HueMagic (ISO 8601)
 : model (object): Contiene le informazioni sul modello del bridge in `id`, `manufacturer` e `name`
+: softwareUpdates (object)): Stato del firmware dei dispositivi collegati al bridge in `pending` (numero di dispositivi in attesa di un aggiornamento) e `devices` (elenco di questi dispositivi)
 
 #### Risultati di «fetch» in `msg.results` (facoltativo)
 

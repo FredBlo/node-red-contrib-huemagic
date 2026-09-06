@@ -75,6 +75,7 @@ Komunikaty stanu węzła „Hue Bridge” są dynamiczne. Choć mają określony
 : users (array [object, ...]): Lista wszystkich użytkowników bridge (tablica obiektów)
 : updated (string): Czas ostatniej aktualizacji zasobu przez HueMagic (ISO 8601)
 : model (object): Zawiera informacje o modelu bridge w polach `id`, `manufacturer` i `name`
+: softwareUpdates (object)): Stan oprogramowania urządzeń podłączonych do mostka w `pending` (liczba urządzeń oczekujących na aktualizację) i `devices` (lista tych urządzeń)
 
 #### Wyniki „fetch” w `msg.results` (opcjonalnie)
 

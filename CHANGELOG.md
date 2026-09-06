@@ -2,7 +2,13 @@
 
 # Changelog
 
-### v5.0.1 (latest)
+### v5.1.0 (latest)
+
+**New devices and features**
+
+* The "Hue Bridge" node now reports the firmware state of every device behind the bridge under `msg.payload.softwareUpdates`, so a flow can react as soon as an update is waiting somewhere
+
+### v5.0.1
 
 * The "Hue Buttons" node can now be given additional outputs, each one triggered by a range of buttons and a certain action — the start of a press, the end of a short press, the end of a long press once it lasted long enough, or repeatedly while a long press is still running. One switch can drive several flows without a Switch node behind it ([#455](https://github.com/Foddy/node-red-contrib-huemagic/pull/455)) (thx @FredBlo)
 * The status of the "Hue Buttons" node now also shows how long a button was held down
