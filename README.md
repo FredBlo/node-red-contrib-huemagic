@@ -13,7 +13,10 @@ HueMagic provides several input and output nodes for Node-RED and is the most in
 * Automatic color temperature & brightness setting based on the current time
 * Event-based status messages for all devices connected to the Hue Bridge
 * Pairing of new devices without app enforcement (TouchLink)
+* Searches for new devices the way the Hue app does, optionally by serial number
 * Automatic firmware updates to the Hue Bridge and connected devices
+* Reports pending firmware updates, the location, who is at home and the WiFi of a Hue Bridge Pro
+* Lists and streams the entertainment areas of the bridge
 * Activating / deactivating of sensors, rules & automations on the Hue Bridge
 * Extended alarm and colorloop effects on light bulbs and whole groups
 * A large selection of animations and the option to create custom animations
