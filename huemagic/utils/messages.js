@@ -16,7 +16,7 @@ const serviceTypes = {
 
 //
 // THESE RESOURCES HAVE NO NODE OF THEIR OWN, THEY ARE REPORTED BY THE "HUE BRIDGE" NODE
-const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client"];
+const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity"];
 
 //
 // GET THE FIRST SERVICE OF A TYPE BEHIND A RESOURCE
@@ -161,6 +161,27 @@ class HueBridgeMessage
 				state: one.resource["state"],
 				problems: one.resource["problems"] ? one.resource["problems"] : []
 			});
+		}
+
+		// THE HUE BRIDGE PRO IS ALSO REACHABLE OVER WIFI, THE SQUARE ONE IS NOT
+		this.message.payload.wifi = false;
+
+		for (const one of resourcesOfType(options["resources"], "wifi_connectivity"))
+		{
+			// OTHER DEVICES (E.G. CAMERAS) SPEAK WIFI AS WELL, THE BRIDGE ITSELF WINS
+			const isBridge = !!(one.owner["services"] && one.owner["services"]["bridge"]);
+			if(this.message.payload.wifi !== false && !isBridge) { continue; }
+
+			const signal = one.resource["signal_strength"] ? one.resource["signal_strength"] : {};
+
+			this.message.payload.wifi = {
+				status: one.resource["status"] ? one.resource["status"] : false,
+				macAddress: one.resource["mac_address"] ? one.resource["mac_address"] : false,
+				signalStrength: signal["status"] ? signal["status"] : false,
+				signalValue: (typeof signal["value"] !== 'undefined') ? signal["value"] : false
+			};
+
+			if(isBridge) { break; }
 		}
 
 		// WHERE THE BRIDGE STANDS AND WHEN THE SUN SETS THERE

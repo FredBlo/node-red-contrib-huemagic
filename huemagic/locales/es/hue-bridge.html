@@ -78,6 +78,7 @@ Los mensajes de estado del nodo «Hue Bridge» son dinámicos. Aunque siguen un 
 : softwareUpdates (object)): Estado del firmware de los dispositivos conectados al bridge en `pending` (número de dispositivos que esperan una actualización) y `devices` (lista de esos dispositivos)
 : location (object)): Ubicación del bridge en `configured`, `sunriseTime`, `sunsetTime` y `dayType`, en la medida en que el bridge la conoce
 : presence (object)): Presencia de los clientes de geolocalización en `atHome` (¿hay alguien en casa?) y `clients` (lista de clientes con `id`, `name` y `atHome`)
+: wifi (object / boolean)): Conexión WiFi del Hue Bridge Pro en `status`, `macAddress`, `signalStrength` y `signalValue`, o `false` en un bridge sin WiFi
 
 #### Resultados de «fetch» en `msg.results` (opcional)
 

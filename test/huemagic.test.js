@@ -473,3 +473,34 @@ test('messages: a bridge without geofence clients reports nobody at home', funct
 	assert.deepStrictEqual(msg.payload.presence.clients, []);
 	assert.strictEqual(msg.payload.location.configured, false);
 });
+
+test('messages: the wifi state of the bridge wins over the one of another device', function()
+{
+	const resources = {
+		_groupsOf: {},
+		"cam": {
+			id: "cam", type: "device",
+			services: { wifi_connectivity: { "w1": { id: "w1", type: "wifi_connectivity", status: "connectivity_issue", signal_strength: { status: "bad", value: -80 } } } }
+		},
+		"bri": {
+			id: "bri", type: "device",
+			services: {
+				bridge: { "b1": { id: "b1", type: "bridge" } },
+				wifi_connectivity: { "w2": { id: "w2", type: "wifi_connectivity", status: "connected", mac_address: "00:11:22:33:44:55", signal_strength: { status: "good", value: -45 } } }
+			}
+		}
+	};
+
+	const msg = new HueBridgeMessage({ bridgeid: "b1" }, { resources: resources }).msg;
+
+	assert.strictEqual(msg.payload.wifi.status, "connected");
+	assert.strictEqual(msg.payload.wifi.signalStrength, "good");
+	assert.strictEqual(msg.payload.wifi.signalValue, -45);
+	assert.strictEqual(msg.payload.wifi.macAddress, "00:11:22:33:44:55");
+});
+
+test('messages: a bridge without wifi reports false instead of an empty object', function()
+{
+	const msg = new HueBridgeMessage({ bridgeid: "b1" }, { resources: { _groupsOf: {} } }).msg;
+	assert.strictEqual(msg.payload.wifi, false);
+});

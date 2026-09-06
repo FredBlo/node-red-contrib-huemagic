@@ -78,6 +78,7 @@ Komunikaty stanu węzła „Hue Bridge” są dynamiczne. Choć mają określony
 : softwareUpdates (object)): Stan oprogramowania urządzeń podłączonych do mostka w `pending` (liczba urządzeń oczekujących na aktualizację) i `devices` (lista tych urządzeń)
 : location (object)): Lokalizacja mostka w `configured`, `sunriseTime`, `sunsetTime` i `dayType`, o ile mostek ją zna
 : presence (object)): Obecność klientów geofence w `atHome` (czy ktoś jest w domu?) i `clients` (lista klientów z `id`, `name` i `atHome`)
+: wifi (object / boolean)): Połączenie WiFi mostka Hue Bridge Pro w `status`, `macAddress`, `signalStrength` i `signalValue` albo `false` w mostku bez WiFi
 
 #### Wyniki „fetch” w `msg.results` (opcjonalnie)
 

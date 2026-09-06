@@ -78,6 +78,7 @@ Les messages de statut du nœud « Hue Bridge » sont dynamiques. Bien qu'ils su
 : softwareUpdates (object)): État du firmware des appareils reliés au bridge dans `pending` (nombre d'appareils en attente d'une mise à jour) et `devices` (liste de ces appareils)
 : location (object)): Emplacement du bridge dans `configured`, `sunriseTime`, `sunsetTime` et `dayType`, dans la mesure où le bridge le connaît
 : presence (object)): Présence des clients de géorepérage dans `atHome` (y a-t-il quelqu'un à la maison ?) et `clients` (liste des clients avec `id`, `name` et `atHome`)
+: wifi (object / boolean)): Connexion WiFi du Hue Bridge Pro dans `status`, `macAddress`, `signalStrength` et `signalValue`, ou `false` sur un bridge sans WiFi
 
 #### Résultats de « fetch » dans `msg.results` (facultatif)
 

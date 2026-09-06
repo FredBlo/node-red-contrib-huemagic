@@ -78,6 +78,7 @@ Die Statusmitteilungen des „Hue Bridge“-Nodes sind dynamisch. Sie folgen zwa
 : softwareUpdates (object) : Firmware-Status der Geräte hinter der Bridge unter `pending` (Anzahl der Geräte, die auf ein Update warten) und `devices` (Liste dieser Geräte)
 : location (object) : Standort der Bridge unter `configured`, `sunriseTime`, `sunsetTime` und `dayType`, soweit die Bridge ihn kennt
 : presence (object) : Anwesenheit der Geofence-Clients unter `atHome` (ist jemand zu Hause?) und `clients` (Liste der Clients mit `id`, `name` und `atHome`)
+: wifi (object / boolean) : WLAN-Verbindung der Hue Bridge Pro unter `status`, `macAddress`, `signalStrength` und `signalValue`, oder `false` bei einer Bridge ohne WLAN
 
 #### Fetch-Ergebnisse unter `msg.results` (optional)
 

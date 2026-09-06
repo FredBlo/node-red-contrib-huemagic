@@ -78,6 +78,7 @@ De statusberichten van de node "Hue Bridge" zijn dynamisch. Ze volgen weliswaar 
 : softwareUpdates (object)): Firmwarestatus van de apparaten achter de bridge onder `pending` (aantal apparaten dat op een update wacht) en `devices` (lijst met deze apparaten)
 : location (object)): Locatie van de bridge onder `configured`, `sunriseTime`, `sunsetTime` en `dayType`, voor zover de bridge die kent
 : presence (object)): Aanwezigheid van de geofence-clients onder `atHome` (is er iemand thuis?) en `clients` (lijst met clients met `id`, `name` en `atHome`)
+: wifi (object / boolean)): WiFi-verbinding van de Hue Bridge Pro onder `status`, `macAddress`, `signalStrength` en `signalValue`, of `false` bij een bridge zonder WiFi
 
 #### Fetch-resultaten onder `msg.results` (optioneel)
 

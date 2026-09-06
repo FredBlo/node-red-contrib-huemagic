@@ -8,6 +8,7 @@
 
 * The "Hue Bridge" node now reports the firmware state of every device behind the bridge under `msg.payload.softwareUpdates`, so a flow can react as soon as an update is waiting somewhere
 * The "Hue Bridge" node now reports the location of the bridge under `msg.payload.location` — including the sunrise and sunset it calculates — and who is at home under `msg.payload.presence`
+* The "Hue Bridge" node now reports the WiFi connection of a Hue Bridge Pro under `msg.payload.wifi`, including the signal strength
 
 ### v5.0.1
 

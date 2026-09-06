@@ -78,6 +78,7 @@
 : softwareUpdates (object)): Κατάσταση υλικολογισμικού των συσκευών πίσω από το bridge στα `pending` (αριθμός συσκευών που περιμένουν ενημέρωση) και `devices` (λίστα αυτών των συσκευών)
 : location (object)): Τοποθεσία του bridge στα `configured`, `sunriseTime`, `sunsetTime` και `dayType`, όσο τη γνωρίζει το bridge
 : presence (object)): Παρουσία των geofence clients στα `atHome` (είναι κάποιος σπίτι;) και `clients` (λίστα των clients με `id`, `name` και `atHome`)
+: wifi (object / boolean)): Σύνδεση WiFi του Hue Bridge Pro στα `status`, `macAddress`, `signalStrength` και `signalValue`, ή `false` σε bridge χωρίς WiFi
 
 #### Αποτελέσματα «fetch» στο `msg.results` (προαιρετικό)
 

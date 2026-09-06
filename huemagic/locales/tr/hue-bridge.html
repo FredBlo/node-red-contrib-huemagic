@@ -78,6 +78,7 @@ Aşağıdaki komutla bridge üzerindeki belirli ayarları değiştirebilirsiniz.
 : softwareUpdates (object)): Köprüye bağlı cihazların ürün yazılımı durumu; `pending` (güncelleme bekleyen cihaz sayısı) ve `devices` (bu cihazların listesi)
 : location (object)): Köprünün konumu; köprünün bildiği kadarıyla `configured`, `sunriseTime`, `sunsetTime` ve `dayType` alanlarında
 : presence (object)): Coğrafi çit istemcilerinin varlığı; `atHome` (evde biri var mı?) ve `clients` (istemcilerin `id`, `name` ve `atHome` ile listesi)
+: wifi (object / boolean)): Hue Bridge Pro'nun WiFi bağlantısı; `status`, `macAddress`, `signalStrength` ve `signalValue` alanlarında, WiFi'si olmayan köprüde `false`
 
 #### `msg.results` altındaki «fetch» sonuçları (isteğe bağlı)
 
