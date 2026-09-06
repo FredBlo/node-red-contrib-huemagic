@@ -16,7 +16,7 @@ const serviceTypes = {
 
 //
 // THESE RESOURCES HAVE NO NODE OF THEIR OWN, THEY ARE REPORTED BY THE "HUE BRIDGE" NODE
-const bridgeResourceTypes = ["device_software_update"];
+const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client"];
 
 //
 // GET THE FIRST SERVICE OF A TYPE BEHIND A RESOURCE
@@ -161,6 +161,40 @@ class HueBridgeMessage
 				state: one.resource["state"],
 				problems: one.resource["problems"] ? one.resource["problems"] : []
 			});
+		}
+
+		// WHERE THE BRIDGE STANDS AND WHEN THE SUN SETS THERE
+		this.message.payload.location = { configured: false, sunriseTime: false, sunsetTime: false, dayType: false };
+
+		for (const one of resourcesOfType(options["resources"], "geolocation"))
+		{
+			const sun = one.resource["sun_today"] ? one.resource["sun_today"] : {};
+
+			this.message.payload.location = {
+				configured: one.resource["is_configured"] === true,
+				sunriseTime: sun["sunrise_time"] ? sun["sunrise_time"] : false,
+				sunsetTime: sun["sunset_time"] ? sun["sunset_time"] : false,
+				dayType: sun["day_type"] ? sun["day_type"] : false
+			};
+
+			// A BRIDGE ONLY KNOWS ONE LOCATION
+			break;
+		}
+
+		// WHO IS AT HOME
+		this.message.payload.presence = { atHome: false, clients: [] };
+
+		for (const one of resourcesOfType(options["resources"], "geofence_client"))
+		{
+			const atHome = one.resource["is_at_home"] === true;
+
+			this.message.payload.presence.clients.push({
+				id: one.resource["id"],
+				name: name(one.resource),
+				atHome: atHome
+			});
+
+			if(atHome) { this.message.payload.presence.atHome = true; }
 		}
 
 		// GET USERS

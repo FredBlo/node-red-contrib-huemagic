@@ -443,3 +443,33 @@ test('messages: a bridge without any resources still answers', function()
 	assert.strictEqual(msg.payload.softwareUpdates.pending, 0);
 	assert.deepStrictEqual(msg.payload.softwareUpdates.devices, []);
 });
+
+test('messages: the bridge reports its location and who is at home', function()
+{
+	const resources = {
+		_groupsOf: {},
+		"g1": { id: "g1", type: "geolocation", is_configured: true, sun_today: { sunset_time: "19:58:00", day_type: "normal_day" } },
+		"c1": { id: "c1", type: "geofence_client", name: "Phone", is_at_home: false },
+		"c2": { id: "c2", type: "geofence_client", name: "Tablet", is_at_home: true }
+	};
+
+	const msg = new HueBridgeMessage({ bridgeid: "b1", name: "Bridge" }, { resources: resources }).msg;
+
+	assert.strictEqual(msg.payload.location.configured, true);
+	assert.strictEqual(msg.payload.location.sunsetTime, "19:58:00");
+	assert.strictEqual(msg.payload.location.sunriseTime, false, "a bridge that reports no sunrise says so instead of throwing");
+	assert.strictEqual(msg.payload.location.dayType, "normal_day");
+
+	assert.strictEqual(msg.payload.presence.atHome, true, "one client at home is enough");
+	assert.strictEqual(msg.payload.presence.clients.length, 2);
+	assert.deepStrictEqual(msg.payload.presence.clients[0], { id: "c1", name: "Phone", atHome: false });
+});
+
+test('messages: a bridge without geofence clients reports nobody at home', function()
+{
+	const msg = new HueBridgeMessage({ bridgeid: "b1" }, { resources: { _groupsOf: {} } }).msg;
+
+	assert.strictEqual(msg.payload.presence.atHome, false);
+	assert.deepStrictEqual(msg.payload.presence.clients, []);
+	assert.strictEqual(msg.payload.location.configured, false);
+});

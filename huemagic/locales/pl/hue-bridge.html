@@ -76,6 +76,8 @@ Komunikaty stanu węzła „Hue Bridge” są dynamiczne. Choć mają określony
 : updated (string): Czas ostatniej aktualizacji zasobu przez HueMagic (ISO 8601)
 : model (object): Zawiera informacje o modelu bridge w polach `id`, `manufacturer` i `name`
 : softwareUpdates (object)): Stan oprogramowania urządzeń podłączonych do mostka w `pending` (liczba urządzeń oczekujących na aktualizację) i `devices` (lista tych urządzeń)
+: location (object)): Lokalizacja mostka w `configured`, `sunriseTime`, `sunsetTime` i `dayType`, o ile mostek ją zna
+: presence (object)): Obecność klientów geofence w `atHome` (czy ktoś jest w domu?) i `clients` (lista klientów z `id`, `name` i `atHome`)
 
 #### Wyniki „fetch” w `msg.results` (opcjonalnie)
 

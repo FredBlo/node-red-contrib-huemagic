@@ -76,6 +76,8 @@ Los mensajes de estado del nodo «Hue Bridge» son dinámicos. Aunque siguen un 
 : updated (string): Momento de la última actualización del recurso por parte de HueMagic (ISO 8601)
 : model (object): Contiene la información de modelo del bridge en `id`, `manufacturer` y `name`
 : softwareUpdates (object)): Estado del firmware de los dispositivos conectados al bridge en `pending` (número de dispositivos que esperan una actualización) y `devices` (lista de esos dispositivos)
+: location (object)): Ubicación del bridge en `configured`, `sunriseTime`, `sunsetTime` y `dayType`, en la medida en que el bridge la conoce
+: presence (object)): Presencia de los clientes de geolocalización en `atHome` (¿hay alguien en casa?) y `clients` (lista de clientes con `id`, `name` y `atHome`)
 
 #### Resultados de «fetch» en `msg.results` (opcional)
 

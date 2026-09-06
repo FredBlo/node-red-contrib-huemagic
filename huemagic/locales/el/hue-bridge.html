@@ -76,6 +76,8 @@
 : updated (string): Χρόνος της τελευταίας ενημέρωσης του πόρου από το HueMagic (ISO 8601)
 : model (object): Περιέχει τις πληροφορίες μοντέλου του bridge στα `id`, `manufacturer` και `name`
 : softwareUpdates (object)): Κατάσταση υλικολογισμικού των συσκευών πίσω από το bridge στα `pending` (αριθμός συσκευών που περιμένουν ενημέρωση) και `devices` (λίστα αυτών των συσκευών)
+: location (object)): Τοποθεσία του bridge στα `configured`, `sunriseTime`, `sunsetTime` και `dayType`, όσο τη γνωρίζει το bridge
+: presence (object)): Παρουσία των geofence clients στα `atHome` (είναι κάποιος σπίτι;) και `clients` (λίστα των clients με `id`, `name` και `atHome`)
 
 #### Αποτελέσματα «fetch» στο `msg.results` (προαιρετικό)
 

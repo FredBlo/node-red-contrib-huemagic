@@ -150,6 +150,8 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 | updated (string) | Time of the last update of the resource by HueMagic (ISO 8601) |
 | model (object) | Contains the model information of the bridge under `id`, `manufacturer` and `name` |
 | softwareUpdates (object) | Firmware state of the devices behind the bridge under `pending` (number of devices waiting for an update) and `devices` (list of these devices) |
+| location (object) | Location of the bridge under `configured`, `sunriseTime`, `sunsetTime` and `dayType`, as far as the bridge knows it |
+| presence (object) | Presence of the geofence clients under `atHome` (is anybody at home?) and `clients` (list of the clients with `id`, `name` and `atHome`) |
 
 #### Fetch results under `msg.results` (optional)
 
@@ -1197,6 +1199,7 @@ If the status of the node has changed via a certain command, the entire command 
 **New devices and features**
 
 * The "Hue Bridge" node now reports the firmware state of every device behind the bridge under `msg.payload.softwareUpdates`, so a flow can react as soon as an update is waiting somewhere
+* The "Hue Bridge" node now reports the location of the bridge under `msg.payload.location` — including the sunrise and sunset it calculates — and who is at home under `msg.payload.presence`
 
 ### v5.0.1
 
