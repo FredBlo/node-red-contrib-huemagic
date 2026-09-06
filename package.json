@@ -58,12 +58,17 @@
   },
   "dependencies": {
     "async": "^3.2.6",
-    "axios": "^1.19.0",
+    "axios": "^1.20.0",
     "color-namer": "^1.4.0",
     "colornames": "^1.1.1",
-    "dayjs": "^1.11.22",
+    "dayjs": "^1.11.23",
     "deep-object-diff": "^1.1.9",
-    "fastq": "^1.20.1",
+    "fastq": "^1.20.3",
     "get-image-colors": "^4.0.1"
+  },
+  "overrides": {
+    "form-data": "^4.0.4",
+    "qs": "^6.15.4",
+    "tough-cookie": "^4.1.4"
   }
 }
