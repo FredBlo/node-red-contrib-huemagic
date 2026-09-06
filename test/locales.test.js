@@ -214,3 +214,36 @@ test('docs: every image the README embeds is committed to the repository', funct
 
 	assert.deepStrictEqual(problems, [], "README images must live in this repository");
 });
+
+test('examples: every language ships the same flow with the same nodes', function()
+{
+	const examples = path.join(__dirname, '..', 'examples');
+	const folders = fs.readdirSync(examples);
+
+	let files = new Set();
+	for(const folder of folders)
+	{
+		fs.readdirSync(path.join(examples, folder)).filter(function(f) { return f.endsWith('.json'); }).forEach(function(f) { files.add(f); });
+	}
+
+	let problems = [];
+
+	for(const file of files)
+	{
+		let reference = false;
+
+		for(const folder of folders)
+		{
+			const target = path.join(examples, folder, file);
+			if(!fs.existsSync(target)) { problems.push(folder + " is missing " + file); continue; }
+
+			// THE NODES ARE THE SAME IN EVERY LANGUAGE, ONLY THEIR NAMES ARE TRANSLATED
+			const nodes = JSON.parse(fs.readFileSync(target, 'utf8')).map(function(node) { return node.id; }).sort().join(",");
+
+			if(reference === false) { reference = { folder: folder, nodes: nodes }; }
+			else if(nodes !== reference.nodes) { problems.push(file + ": " + folder + " does not have the same nodes as " + reference.folder); }
+		}
+	}
+
+	assert.deepStrictEqual(problems, [], "example flows that drifted apart between languages");
+});

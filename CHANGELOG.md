@@ -12,6 +12,7 @@
 * The "Hue Bridge" node can start the device search of the bridge with `msg.payload.searchDevices` — optionally for certain serial numbers — and reports its state under `msg.payload.deviceSearch`
 * The "Hue Bridge" node lists the entertainment areas of the bridge under `msg.payload.entertainmentAreas` and can start and stop them with `msg.payload.entertainment`
 * The "Hue Bridge" node lists the service groups of a Hue Bridge Pro under `msg.payload.serviceGroups`
+* The example flow of the "Hue Bridge" node shows the device search and the entertainment areas, in all ten languages
 
 ### v5.0.1
 

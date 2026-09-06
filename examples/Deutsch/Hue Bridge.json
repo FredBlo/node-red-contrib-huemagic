@@ -252,5 +252,103 @@
             ]
         ],
         "icon": "node-red/alert.svg"
+    },
+    {
+        "id": "c1a7f4b2d3e08a11",
+        "type": "comment",
+        "z": "bf04a073.be4428",
+        "name": "Nach neuen Geräten suchen",
+        "info": "",
+        "x": 140,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "b2c8e5a1f4d09b22",
+        "type": "inject",
+        "z": "bf04a073.be4428",
+        "name": "Gerätesuche starten",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"searchDevices\":true}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 640,
+        "wires": [
+            [
+                "ea4668e7.fac4f"
+            ]
+        ],
+        "icon": "node-red-contrib-huemagic/hue-bridge.svg"
+    },
+    {
+        "id": "d3e9f6b2a5c10c33",
+        "type": "comment",
+        "z": "bf04a073.be4428",
+        "name": "Entertainment-Bereiche",
+        "info": "",
+        "x": 130,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "e4f0a7c3b6d21d44",
+        "type": "inject",
+        "z": "bf04a073.be4428",
+        "name": "Entertainment-Bereich starten",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"entertainment\":{\"action\":\"start\"}}",
+        "payloadType": "json",
+        "x": 160,
+        "y": 740,
+        "wires": [
+            [
+                "ea4668e7.fac4f"
+            ]
+        ],
+        "icon": "node-red-contrib-huemagic/hue-group.svg"
+    },
+    {
+        "id": "f5a1b8d4c7e32e55",
+        "type": "inject",
+        "z": "bf04a073.be4428",
+        "name": "Entertainment-Bereich stoppen",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"entertainment\":{\"action\":\"stop\"}}",
+        "payloadType": "json",
+        "x": 160,
+        "y": 780,
+        "wires": [
+            [
+                "ea4668e7.fac4f"
+            ]
+        ],
+        "icon": "node-red-contrib-huemagic/hue-group.svg"
     }
 ]
