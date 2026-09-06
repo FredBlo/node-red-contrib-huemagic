@@ -171,6 +171,7 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 | wifi (object / boolean) | WiFi connection of the Hue Bridge Pro under `status`, `macAddress`, `signalStrength` and `signalValue`, or `false` on a bridge without WiFi |
 | deviceSearch (object / boolean) | State of the device search under `status` and `searching`, or `false` if the bridge does not offer it |
 | entertainmentAreas (array [object, ...]) | All entertainment areas of the bridge with `id`, `name`, `type`, `status`, `streaming` and the number of `lights` |
+| serviceGroups (array [object, ...]) | Service groups of a Hue Bridge Pro with `id`, `name`, `archetype` and the `services` they bundle |
 
 #### Fetch results under `msg.results` (optional)
 
@@ -1222,6 +1223,7 @@ If the status of the node has changed via a certain command, the entire command 
 * The "Hue Bridge" node now reports the WiFi connection of a Hue Bridge Pro under `msg.payload.wifi`, including the signal strength
 * The "Hue Bridge" node can start the device search of the bridge with `msg.payload.searchDevices` — optionally for certain serial numbers — and reports its state under `msg.payload.deviceSearch`
 * The "Hue Bridge" node lists the entertainment areas of the bridge under `msg.payload.entertainmentAreas` and can start and stop them with `msg.payload.entertainment`
+* The "Hue Bridge" node lists the service groups of a Hue Bridge Pro under `msg.payload.serviceGroups`
 
 ### v5.0.1
 

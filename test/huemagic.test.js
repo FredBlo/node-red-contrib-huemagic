@@ -538,3 +538,22 @@ test('messages: the bridge lists its entertainment areas', function()
 	assert.strictEqual(msg.payload.entertainmentAreas.length, 1);
 	assert.deepStrictEqual(msg.payload.entertainmentAreas[0], { id: "e1", name: "TV", type: "screen", status: "active", streaming: true, lights: 2 });
 });
+
+test('messages: the bridge lists the service groups with their resolved services', function()
+{
+	const resources = {
+		_groupsOf: {},
+		"s1": {
+			id: "s1", type: "service_group",
+			metadata: { name: "Desk", archetype: "computer" },
+			services: { light: { "l1": { id: "l1", type: "light" }, "l2": { id: "l2", type: "light" } } }
+		}
+	};
+
+	const msg = new HueBridgeMessage({ bridgeid: "b1" }, { resources: resources }).msg;
+
+	assert.strictEqual(msg.payload.serviceGroups.length, 1);
+	assert.strictEqual(msg.payload.serviceGroups[0].name, "Desk");
+	assert.strictEqual(msg.payload.serviceGroups[0].archetype, "computer");
+	assert.deepStrictEqual(msg.payload.serviceGroups[0].services, [ { id: "l1", type: "light" }, { id: "l2", type: "light" } ]);
+});

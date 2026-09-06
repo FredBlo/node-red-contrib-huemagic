@@ -16,7 +16,7 @@ const serviceTypes = {
 
 //
 // THESE RESOURCES HAVE NO NODE OF THEIR OWN, THEY ARE REPORTED BY THE "HUE BRIDGE" NODE
-const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity", "zigbee_device_discovery", "entertainment_configuration"];
+const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity", "zigbee_device_discovery", "entertainment_configuration", "service_group"];
 
 //
 // GET THE FIRST SERVICE OF A TYPE BEHIND A RESOURCE
@@ -160,6 +160,27 @@ class HueBridgeMessage
 				model: model(one.owner),
 				state: one.resource["state"],
 				problems: one.resource["problems"] ? one.resource["problems"] : []
+			});
+		}
+
+		// THE SERVICE GROUPS OF A HUE BRIDGE PRO
+		this.message.payload.serviceGroups = [];
+
+		for (const one of resourcesOfType(options["resources"], "service_group"))
+		{
+			// THE SERVICES OF A GROUP HAVE ALREADY BEEN RESOLVED, SO THEY SIT BEHIND THEIR TYPE
+			let services = [];
+
+			for (const [serviceType, ofType] of Object.entries(one.resource["services"] ? one.resource["services"] : {}))
+			{
+				for (const serviceID of Object.keys(ofType)) { services.push({ id: serviceID, type: serviceType }); }
+			}
+
+			this.message.payload.serviceGroups.push({
+				id: one.resource["id"],
+				name: name(one.resource),
+				archetype: (one.resource["metadata"] && one.resource["metadata"]["archetype"]) ? one.resource["metadata"]["archetype"] : false,
+				services: services
 			});
 		}
 

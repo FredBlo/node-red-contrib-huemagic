@@ -93,6 +93,7 @@ The status reports of the "Hue Bridge" node are dynamic. Although they follow a 
 : wifi (object / boolean): WiFi connection of the Hue Bridge Pro under `status`, `macAddress`, `signalStrength` and `signalValue`, or `false` on a bridge without WiFi
 : deviceSearch (object / boolean): State of the device search under `status` and `searching`, or `false` if the bridge does not offer it
 : entertainmentAreas (array [object, ...]): All entertainment areas of the bridge with `id`, `name`, `type`, `status`, `streaming` and the number of `lights`
+: serviceGroups (array [object, ...]): Service groups of a Hue Bridge Pro with `id`, `name`, `archetype` and the `services` they bundle
 
 #### Fetch results under `msg.results` (optional)
 

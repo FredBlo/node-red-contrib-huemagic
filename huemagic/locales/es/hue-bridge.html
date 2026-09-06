@@ -93,6 +93,7 @@ Los mensajes de estado del nodo «Hue Bridge» son dinámicos. Aunque siguen un 
 : wifi (object / boolean): Conexión WiFi del Hue Bridge Pro en `status`, `macAddress`, `signalStrength` y `signalValue`, o `false` en un bridge sin WiFi
 : deviceSearch (object / boolean): Estado de la búsqueda de dispositivos en `status` y `searching`, o `false` si el bridge no la ofrece
 : entertainmentAreas (array [object, ...]): Todas las zonas de entretenimiento del bridge con `id`, `name`, `type`, `status`, `streaming` y el número de `lights`
+: serviceGroups (array [object, ...]): Grupos de servicios de un Hue Bridge Pro con `id`, `name`, `archetype` y los `services` que agrupan
 
 #### Resultados de «fetch» en `msg.results` (opcional)
 
