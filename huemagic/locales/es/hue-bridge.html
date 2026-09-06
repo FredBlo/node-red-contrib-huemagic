@@ -25,6 +25,12 @@ El bridge puede buscar dispositivos que aún no están emparejados, la misma bú
 
 : searchDevices (boolean / array [string, ...] / object): Inicia la búsqueda de dispositivos nuevos. Con un array de números de serie (o un objeto con `searchCodes`) se buscan exactamente esos dispositivos
 
+### Iniciar / detener una zona de entretenimiento
+
+El bridge puede ceder una zona de entretenimiento a una aplicación de streaming (por ejemplo, la app Hue Sync) o recuperarla. Para ello, transfiera el objeto `msg.payload` con el siguiente contenido:
+
+: entertainment (object / string): Espera `action` con `start` o `stop` y, opcionalmente, `area` con el nombre o el ID de la zona de entretenimiento. Si el bridge solo tiene una zona, `area` puede omitirse
+
 ### Consultar todos los dispositivos y recursos
 
 Con el comando «fetch» puede obtener una lista de determinados dispositivos conectados actualmente al bridge. Para ello, transfiera el objeto `msg.payload` con el siguiente contenido:
@@ -86,6 +92,7 @@ Los mensajes de estado del nodo «Hue Bridge» son dinámicos. Aunque siguen un 
 : presence (object): Presencia de los clientes de geolocalización en `atHome` (¿hay alguien en casa?) y `clients` (lista de clientes con `id`, `name` y `atHome`)
 : wifi (object / boolean): Conexión WiFi del Hue Bridge Pro en `status`, `macAddress`, `signalStrength` y `signalValue`, o `false` en un bridge sin WiFi
 : deviceSearch (object / boolean): Estado de la búsqueda de dispositivos en `status` y `searching`, o `false` si el bridge no la ofrece
+: entertainmentAreas (array [object, ...]): Todas las zonas de entretenimiento del bridge con `id`, `name`, `type`, `status`, `streaming` y el número de `lights`
 
 #### Resultados de «fetch» en `msg.results` (opcional)
 

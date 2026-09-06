@@ -25,6 +25,12 @@ Die Bridge kann nach Geräten suchen, die noch nicht gekoppelt sind — dieselbe
 
 : searchDevices (boolean / array [string, …] / object) : Startet die Suche nach neuen Geräten. Mit einem Array von Seriennummern (oder einem Objekt mit `searchCodes`) wird gezielt nach diesen Geräten gesucht
 
+### Entertainment-Bereich starten / stoppen
+
+Die Bridge kann einen Entertainment-Bereich an eine Streaming-Anwendung übergeben (z. B. die Hue Sync App) oder ihn wieder zurücknehmen. Übergeben Sie dazu das Objekt `msg.payload` mit folgendem Inhalt:
+
+: entertainment (object / string) : Erwartet `action` mit `start` oder `stop` und optional `area` mit dem Namen oder der ID des Entertainment-Bereichs. Bei nur einem Bereich auf der Bridge kann `area` entfallen
+
 ### Alle Geräte und Ressourcen abrufen
 
 Mit dem „fetch“-Befehl können Sie eine Liste von spezifischen Geräten ausgeben, die aktuell mit der Bridge verbunden sind. Übergeben Sie dafür das Objekt `msg.payload` mit folgendem Inhalt:
@@ -86,6 +92,7 @@ Die Statusmitteilungen des „Hue Bridge“-Nodes sind dynamisch. Sie folgen zwa
 : presence (object) : Anwesenheit der Geofence-Clients unter `atHome` (ist jemand zu Hause?) und `clients` (Liste der Clients mit `id`, `name` und `atHome`)
 : wifi (object / boolean) : WLAN-Verbindung der Hue Bridge Pro unter `status`, `macAddress`, `signalStrength` und `signalValue`, oder `false` bei einer Bridge ohne WLAN
 : deviceSearch (object / boolean) : Status der Gerätesuche unter `status` und `searching`, oder `false`, wenn die Bridge sie nicht anbietet
+: entertainmentAreas (array [object, …]) : Alle Entertainment-Bereiche der Bridge mit `id`, `name`, `type`, `status`, `streaming` und der Anzahl der `lights`
 
 #### Fetch-Ergebnisse unter `msg.results` (optional)
 

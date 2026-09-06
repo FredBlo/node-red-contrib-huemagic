@@ -25,6 +25,12 @@
 
 : searchDevices (boolean / array [string, ...] / object): Ξεκινά την αναζήτηση νέων συσκευών. Με έναν πίνακα σειριακών αριθμών (ή ένα αντικείμενο με `searchCodes`) η αναζήτηση γίνεται ακριβώς για αυτές τις συσκευές
 
+### Έναρξη / διακοπή ζώνης entertainment
+
+Το bridge μπορεί να παραδώσει μια ζώνη entertainment σε μια εφαρμογή streaming (π.χ. στην εφαρμογή Hue Sync) ή να την πάρει πίσω. Για τον σκοπό αυτό στείλτε το αντικείμενο `msg.payload` με το εξής περιεχόμενο:
+
+: entertainment (object / string): Περιμένει `action` με `start` ή `stop` και προαιρετικά `area` με το όνομα ή το ID της ζώνης entertainment. Με μία μόνο ζώνη στο bridge, το `area` μπορεί να παραλειφθεί
+
 ### Ανάκτηση όλων των συσκευών και πόρων
 
 Με την εντολή «fetch» μπορείτε να λάβετε λίστα συγκεκριμένων συσκευών που είναι αυτή τη στιγμή συνδεδεμένες στο bridge. Στείλτε γι' αυτό το αντικείμενο `msg.payload` με το παρακάτω περιεχόμενο:
@@ -86,6 +92,7 @@
 : presence (object): Παρουσία των geofence clients στα `atHome` (είναι κάποιος σπίτι;) και `clients` (λίστα των clients με `id`, `name` και `atHome`)
 : wifi (object / boolean): Σύνδεση WiFi του Hue Bridge Pro στα `status`, `macAddress`, `signalStrength` και `signalValue`, ή `false` σε bridge χωρίς WiFi
 : deviceSearch (object / boolean): Κατάσταση της αναζήτησης συσκευών στα `status` και `searching`, ή `false` αν το bridge δεν την προσφέρει
+: entertainmentAreas (array [object, ...]): Όλες οι ζώνες entertainment του bridge με `id`, `name`, `type`, `status`, `streaming` και τον αριθμό των `lights`
 
 #### Αποτελέσματα «fetch» στο `msg.results` (προαιρετικό)
 

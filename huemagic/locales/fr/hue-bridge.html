@@ -25,6 +25,12 @@ Le bridge peut rechercher des appareils qui ne sont pas encore appairés — la 
 
 : searchDevices (boolean / array [string, ...] / object): Démarre la recherche de nouveaux appareils. Avec un tableau de numéros de série (ou un objet avec `searchCodes`), la recherche porte exactement sur ces appareils
 
+### Démarrer / arrêter une zone de divertissement
+
+Le bridge peut confier une zone de divertissement à une application de streaming (par exemple l'application Hue Sync) ou la reprendre. Pour cela, transférez l'objet `msg.payload` avec le contenu suivant :
+
+: entertainment (object / string): Attend `action` avec `start` ou `stop` et, en option, `area` avec le nom ou l'ID de la zone de divertissement. S'il n'y a qu'une seule zone sur le bridge, `area` peut être omis
+
 ### Interroger tous les appareils et ressources
 
 La commande « fetch » vous permet d'obtenir la liste de certains appareils actuellement reliés au bridge. Pour cela, transmettez l'objet `msg.payload` avec le contenu suivant :
@@ -86,6 +92,7 @@ Les messages de statut du nœud « Hue Bridge » sont dynamiques. Bien qu'ils su
 : presence (object): Présence des clients de géorepérage dans `atHome` (y a-t-il quelqu'un à la maison ?) et `clients` (liste des clients avec `id`, `name` et `atHome`)
 : wifi (object / boolean): Connexion WiFi du Hue Bridge Pro dans `status`, `macAddress`, `signalStrength` et `signalValue`, ou `false` sur un bridge sans WiFi
 : deviceSearch (object / boolean): État de la recherche d'appareils dans `status` et `searching`, ou `false` si le bridge ne la propose pas
+: entertainmentAreas (array [object, ...]): Toutes les zones de divertissement du bridge avec `id`, `name`, `type`, `status`, `streaming` et le nombre de `lights`
 
 #### Résultats de « fetch » dans `msg.results` (facultatif)
 

@@ -521,3 +521,20 @@ test('messages: the bridge reports whether it is searching for devices', functio
 	const idle = new HueBridgeMessage({ bridgeid: "b1" }, { resources: { _groupsOf: {} } }).msg;
 	assert.strictEqual(idle.payload.deviceSearch, false, "a bridge that does not offer the search says so");
 });
+
+test('messages: the bridge lists its entertainment areas', function()
+{
+	const resources = {
+		_groupsOf: {},
+		"e1": {
+			id: "e1", type: "entertainment_configuration", name: "TV",
+			metadata: { name: "TV" }, configuration_type: "screen", status: "active",
+			light_services: [ { rid: "l1", rtype: "light" }, { rid: "l2", rtype: "light" } ]
+		}
+	};
+
+	const msg = new HueBridgeMessage({ bridgeid: "b1" }, { resources: resources }).msg;
+
+	assert.strictEqual(msg.payload.entertainmentAreas.length, 1);
+	assert.deepStrictEqual(msg.payload.entertainmentAreas[0], { id: "e1", name: "TV", type: "screen", status: "active", streaming: true, lights: 2 });
+});

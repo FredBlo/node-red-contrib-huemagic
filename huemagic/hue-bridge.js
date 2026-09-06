@@ -191,6 +191,63 @@ module.exports = function(RED)
 						if(done) { done(error); }
 					});
 				}
+				// START / STOP AN ENTERTAINMENT AREA
+				else if(typeof msg.payload != 'undefined' && typeof msg.payload.entertainment != 'undefined' && msg.payload.entertainment !== null)
+				{
+					const command = (typeof msg.payload.entertainment == 'string') ? { action: msg.payload.entertainment } : msg.payload.entertainment;
+					const action = command.action;
+
+					if(action !== "start" && action !== "stop")
+					{
+						scope.error(RED._("hue-bridge.node.error-invalid-entertainment-action"), msg);
+						if(done) { done(); }
+						return false;
+					}
+
+					// FIND THE AREA / TAKE THE ONLY ONE IF NO AREA WAS NAMED
+					const areas = bridgeInformation.payload.entertainmentAreas ? bridgeInformation.payload.entertainmentAreas : [];
+					const wanted = command.area ? command.area : false;
+					const target = (wanted === false && areas.length === 1) ? areas[0] : areas.find(function(one) { return one.id === wanted || one.name === wanted; });
+
+					if(!target)
+					{
+						scope.error(RED._("hue-bridge.node.error-no-entertainment-area"), msg);
+						if(done) { done(); }
+						return false;
+					}
+
+					// SET STATUS
+					scope.status({fill: "yellow", shape: "dot", text: "hue-bridge.node.updating-entertainment" });
+
+					bridge.patch("entertainment_configuration", target.id, { action: action })
+					.then(function(status)
+					{
+						// THE AREA HAS CHANGED, SO THE BRIDGE MESSAGE HAS TO BE REBUILT
+						scope.lastBridgeInformation = null;
+						return scope.getBridgeInformation();
+					})
+					.then(function(bridgeInformation)
+					{
+						scope.setInitialState();
+
+						// SET LAST COMMAND
+						if(scope.lastCommand !== null)
+						{
+							bridgeInformation.command = scope.lastCommand;
+						}
+
+						scope.send(bridgeInformation);
+
+						// RESET LAST COMMAND
+						scope.lastCommand = null;
+						if(done) { done(); }
+					})
+					.catch(function(error)
+					{
+						scope.error(error);
+						if(done) { done(error); }
+					});
+				}
 				// SEARCH FOR NEW DEVICES
 				else if(typeof msg.payload != 'undefined' && typeof msg.payload.searchDevices != 'undefined')
 				{

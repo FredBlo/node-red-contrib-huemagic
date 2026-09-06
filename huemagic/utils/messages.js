@@ -16,7 +16,7 @@ const serviceTypes = {
 
 //
 // THESE RESOURCES HAVE NO NODE OF THEIR OWN, THEY ARE REPORTED BY THE "HUE BRIDGE" NODE
-const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity", "zigbee_device_discovery"];
+const bridgeResourceTypes = ["device_software_update", "geolocation", "geofence_client", "wifi_connectivity", "zigbee_device_discovery", "entertainment_configuration"];
 
 //
 // GET THE FIRST SERVICE OF A TYPE BEHIND A RESOURCE
@@ -160,6 +160,21 @@ class HueBridgeMessage
 				model: model(one.owner),
 				state: one.resource["state"],
 				problems: one.resource["problems"] ? one.resource["problems"] : []
+			});
+		}
+
+		// THE ENTERTAINMENT AREAS THE BRIDGE CAN STREAM TO
+		this.message.payload.entertainmentAreas = [];
+
+		for (const one of resourcesOfType(options["resources"], "entertainment_configuration"))
+		{
+			this.message.payload.entertainmentAreas.push({
+				id: one.resource["id"],
+				name: name(one.resource),
+				type: one.resource["configuration_type"] ? one.resource["configuration_type"] : false,
+				status: one.resource["status"] ? one.resource["status"] : false,
+				streaming: one.resource["status"] === "active",
+				lights: one.resource["light_services"] ? one.resource["light_services"].length : 0
 			});
 		}
 

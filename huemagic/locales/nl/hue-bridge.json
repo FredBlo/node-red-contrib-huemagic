@@ -17,13 +17,16 @@
 			"searching-devices": "apparaten zoeken…",
 			"started-search": "apparaten zoeken gestart",
 			"f-resources": "bronnen ophalen…",
+			"updating-entertainment": "entertainmentzone schakelen…",
 			"updating-settings": "instellingen bijwerken…",
 			"settings-updated": "instellingen bijgewerkt",
 			"input": "instellingen / ophalen",
 			"output": "bridge-informatie",
 			"statusmsg": "Status succesvol opgevraagd…",
 			"error-not-available": "De bridge is nog niet beschikbaar. Wacht tot HueMagic verbinding met de bridge heeft gemaakt.",
-			"error-no-device-search": "Deze bridge kan niet naar nieuwe apparaten zoeken. Wacht tot HueMagic verbinding met de bridge heeft gemaakt."
+			"error-no-device-search": "Deze bridge kan niet naar nieuwe apparaten zoeken. Wacht tot HueMagic verbinding met de bridge heeft gemaakt.",
+			"error-no-entertainment-area": "De entertainmentzone is niet gevonden. Geef de naam of het ID door onder `area`.",
+			"error-invalid-entertainment-action": "Een entertainmentzone accepteert alleen `start` of `stop` als actie."
 		}
 	}
 }

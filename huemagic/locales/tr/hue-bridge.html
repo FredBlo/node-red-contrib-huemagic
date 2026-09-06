@@ -25,6 +25,12 @@ Köprü, henüz eşleştirilmemiş cihazları arayabilir — Hue uygulamasının
 
 : searchDevices (boolean / array [string, ...] / object): Yeni cihaz aramasını başlatır. Seri numaralarından oluşan bir dizi (ya da `searchCodes` içeren bir nesne) ile tam olarak bu cihazlar aranır
 
+### Eğlence alanını başlatma / durdurma
+
+Köprü, bir eğlence alanını bir akış uygulamasına (örneğin Hue Sync uygulamasına) devredebilir veya geri alabilir. Bunun için `msg.payload` nesnesini şu içerikle gönderin:
+
+: entertainment (object / string): `action` alanında `start` veya `stop`, isteğe bağlı olarak `area` alanında eğlence alanının adı ya da kimliği beklenir. Köprüde tek bir alan varsa `area` verilmeyebilir
+
 ### Tüm cihazları ve kaynakları sorgulama
 
 «fetch» komutuyla bridge'e o anda bağlı olan belirli cihazların listesini alabilirsiniz. Bunun için `msg.payload` nesnesini aşağıdaki içerikle gönderin:
@@ -86,6 +92,7 @@ Aşağıdaki komutla bridge üzerindeki belirli ayarları değiştirebilirsiniz.
 : presence (object): Coğrafi çit istemcilerinin varlığı; `atHome` (evde biri var mı?) ve `clients` (istemcilerin `id`, `name` ve `atHome` ile listesi)
 : wifi (object / boolean): Hue Bridge Pro'nun WiFi bağlantısı; `status`, `macAddress`, `signalStrength` ve `signalValue` alanlarında, WiFi'si olmayan köprüde `false`
 : deviceSearch (object / boolean): Cihaz aramasının durumu; `status` ve `searching` alanlarında, köprü bunu sunmuyorsa `false`
+: entertainmentAreas (array [object, ...]): Köprünün tüm eğlence alanları; `id`, `name`, `type`, `status`, `streaming` ve `lights` sayısı ile
 
 #### `msg.results` altındaki «fetch» sonuçları (isteğe bağlı)
 

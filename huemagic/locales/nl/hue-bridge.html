@@ -25,6 +25,12 @@ De bridge kan zoeken naar apparaten die nog niet gekoppeld zijn — dezelfde zoe
 
 : searchDevices (boolean / array [string, ...] / object): Start het zoeken naar nieuwe apparaten. Met een array van serienummers (of een object met `searchCodes`) wordt gericht naar die apparaten gezocht
 
+### Entertainmentzone starten / stoppen
+
+De bridge kan een entertainmentzone aan een streamingtoepassing overdragen (bijvoorbeeld de Hue Sync-app) of weer terugnemen. Geef daarvoor het object `msg.payload` met de volgende inhoud door:
+
+: entertainment (object / string): Verwacht `action` met `start` of `stop` en optioneel `area` met de naam of het ID van de entertainmentzone. Bij slechts één zone op de bridge kan `area` wegblijven
+
 ### Alle apparaten en bronnen opvragen
 
 Met het commando "fetch" kunt u een lijst van bepaalde apparaten opvragen die momenteel met de bridge verbonden zijn. Geef hiervoor het object `msg.payload` met de volgende inhoud mee:
@@ -86,6 +92,7 @@ De statusberichten van de node "Hue Bridge" zijn dynamisch. Ze volgen weliswaar 
 : presence (object): Aanwezigheid van de geofence-clients onder `atHome` (is er iemand thuis?) en `clients` (lijst met clients met `id`, `name` en `atHome`)
 : wifi (object / boolean): WiFi-verbinding van de Hue Bridge Pro onder `status`, `macAddress`, `signalStrength` en `signalValue`, of `false` bij een bridge zonder WiFi
 : deviceSearch (object / boolean): Status van het zoeken naar apparaten onder `status` en `searching`, of `false` als de bridge dit niet aanbiedt
+: entertainmentAreas (array [object, ...]): Alle entertainmentzones van de bridge met `id`, `name`, `type`, `status`, `streaming` en het aantal `lights`
 
 #### Fetch-resultaten onder `msg.results` (optioneel)
 

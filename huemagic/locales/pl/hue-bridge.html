@@ -25,6 +25,12 @@ Mostek może wyszukiwać urządzenia, które nie zostały jeszcze sparowane — 
 
 : searchDevices (boolean / array [string, ...] / object): Uruchamia wyszukiwanie nowych urządzeń. Tablica numerów seryjnych (albo obiekt z `searchCodes`) ogranicza wyszukiwanie do tych urządzeń
 
+### Uruchamianie / zatrzymywanie strefy rozrywki
+
+Mostek może przekazać strefę rozrywki aplikacji strumieniującej (np. aplikacji Hue Sync) albo odebrać ją z powrotem. W tym celu przekaż obiekt `msg.payload` o następującej treści:
+
+: entertainment (object / string): Oczekuje `action` z wartością `start` albo `stop` oraz opcjonalnie `area` z nazwą lub identyfikatorem strefy rozrywki. Przy tylko jednej strefie na mostku `area` można pominąć
+
 ### Odczyt wszystkich urządzeń i zasobów
 
 Poleceniem „fetch” możesz uzyskać listę wybranych urządzeń aktualnie połączonych z bridge. Przekaż w tym celu obiekt `msg.payload` o następującej zawartości:
@@ -86,6 +92,7 @@ Komunikaty stanu węzła „Hue Bridge” są dynamiczne. Choć mają określony
 : presence (object): Obecność klientów geofence w `atHome` (czy ktoś jest w domu?) i `clients` (lista klientów z `id`, `name` i `atHome`)
 : wifi (object / boolean): Połączenie WiFi mostka Hue Bridge Pro w `status`, `macAddress`, `signalStrength` i `signalValue` albo `false` w mostku bez WiFi
 : deviceSearch (object / boolean): Stan wyszukiwania urządzeń w `status` i `searching` albo `false`, jeśli mostek go nie oferuje
+: entertainmentAreas (array [object, ...]): Wszystkie strefy rozrywki mostka z `id`, `name`, `type`, `status`, `streaming` i liczbą `lights`
 
 #### Wyniki „fetch” w `msg.results` (opcjonalnie)
 

@@ -17,13 +17,16 @@
 			"searching-devices": "cihazlar aranıyor…",
 			"started-search": "cihaz araması başladı",
 			"f-resources": "kaynaklar alınıyor…",
+			"updating-entertainment": "eğlence alanı değiştiriliyor…",
 			"updating-settings": "ayarlar güncelleniyor…",
 			"settings-updated": "ayarlar güncellendi",
 			"input": "ayarlar / sorgu",
 			"output": "bridge bilgileri",
 			"statusmsg": "Durum başarıyla sorgulandı…",
 			"error-not-available": "Bridge henüz kullanılabilir değil. HueMagic bridge ile bağlantı kurana kadar bekleyin.",
-			"error-no-device-search": "Bu köprü yeni cihaz arayamıyor. Lütfen HueMagic köprüyle bağlantı kurana kadar bekleyin."
+			"error-no-device-search": "Bu köprü yeni cihaz arayamıyor. Lütfen HueMagic köprüyle bağlantı kurana kadar bekleyin.",
+			"error-no-entertainment-area": "Eğlence alanı bulunamadı. Lütfen adını veya kimliğini `area` içinde gönderin.",
+			"error-invalid-entertainment-action": "Bir eğlence alanı yalnızca `start` veya `stop` eylemini kabul eder."
 		}
 	}
 }

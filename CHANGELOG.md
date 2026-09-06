@@ -10,6 +10,7 @@
 * The "Hue Bridge" node now reports the location of the bridge under `msg.payload.location` — including the sunrise and sunset it calculates — and who is at home under `msg.payload.presence`
 * The "Hue Bridge" node now reports the WiFi connection of a Hue Bridge Pro under `msg.payload.wifi`, including the signal strength
 * The "Hue Bridge" node can start the device search of the bridge with `msg.payload.searchDevices` — optionally for certain serial numbers — and reports its state under `msg.payload.deviceSearch`
+* The "Hue Bridge" node lists the entertainment areas of the bridge under `msg.payload.entertainmentAreas` and can start and stop them with `msg.payload.entertainment`
 
 ### v5.0.1
 

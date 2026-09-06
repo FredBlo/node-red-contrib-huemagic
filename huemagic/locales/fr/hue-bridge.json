@@ -17,13 +17,16 @@
 			"searching-devices": "recherche d'appareils…",
 			"started-search": "recherche d'appareils démarrée",
 			"f-resources": "récupération des ressources…",
+			"updating-entertainment": "changement de la zone de divertissement…",
 			"updating-settings": "mise à jour des paramètres…",
 			"settings-updated": "paramètres mis à jour",
 			"input": "paramètres / récupération",
 			"output": "informations du bridge",
 			"statusmsg": "Statut interrogé avec succès…",
 			"error-not-available": "Le bridge n'est pas encore disponible. Veuillez attendre que HueMagic ait établi la connexion avec le bridge.",
-			"error-no-device-search": "Ce bridge ne peut pas rechercher de nouveaux appareils. Veuillez patienter jusqu'à ce que HueMagic ait établi une connexion avec le bridge."
+			"error-no-device-search": "Ce bridge ne peut pas rechercher de nouveaux appareils. Veuillez patienter jusqu'à ce que HueMagic ait établi une connexion avec le bridge.",
+			"error-no-entertainment-area": "La zone de divertissement est introuvable. Veuillez indiquer son nom ou son ID dans `area`.",
+			"error-invalid-entertainment-action": "Une zone de divertissement n'accepte que `start` ou `stop` comme action."
 		}
 	}
 }
