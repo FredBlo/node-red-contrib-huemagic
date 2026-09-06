@@ -648,10 +648,9 @@ module.exports = function(RED)
 				// SET DOMINANT COLORS FROM IMAGE
 				if(typeof msg.payload != 'undefined' && typeof msg.payload.image != 'undefined' && (typeof currentState.payload.xyColor != 'undefined' || typeof currentState.payload.gradient != 'undefined'))
 				{
-					let colors = await colorUtils.getColors(msg.payload.image);
-					if(colors.length > 0)
+					let colorsHEX = await colorUtils.getColors(msg.payload.image);
+					if(colorsHEX.length > 0)
 					{
-						let colorsHEX = colors.map(color => color.hex());
 
 						// SET MULTIPLE COLORS ON SUPPORTED LIGHTS
 						if(typeof currentState.payload.gradient != 'undefined')

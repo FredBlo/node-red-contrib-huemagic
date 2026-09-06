@@ -37,7 +37,7 @@ Oltre al semplice accendere e spegnere, sono disponibili molte altre opzioni per
 : xyColor (object {x [float], y [float]}): Valore di colore nel formato XY sotto forma di oggetto
 : gradient (object {hex […]}): Un oggetto con un oggetto colore supportato (ad es. `hex`, `rgb`, …) e più colori per impostare un gradiente sulle luci compatibili
 : mixColor (object): Un colore da miscelare con il colore di luce attuale. Accetta oggetti `color`, `hex`, `rgb` o `xyColor` e facoltativamente `amount` (int) per indicare la proporzione di miscelazione in percentuale
-: image (string): Percorso di un'immagine (locale o sul web) per impostare il colore attuale della luce sul colore medio dell'immagine
+: image (string): Percorso di un'immagine (locale o sul web) per impostare il colore attuale della luce sul colore medio dell'immagine (PNG, JPEG, GIF o SVG)
 : saturation (int): Percentuale di saturazione del colore attuale (beta)
 : colorTemp (int | string): Valore compreso tra 153 e 500 per impostare la temperatura di colore della luce, oppure i valori `cold`, `normal`, `warm`, `hot` e `auto`, dove `auto` imposta la temperatura di colore in base all'ora attuale
 : incrementColorTemp (int | boolean): Valore di quanto la temperatura di colore debba diventare più calda, oppure `true` per renderla più calda a passi di 50

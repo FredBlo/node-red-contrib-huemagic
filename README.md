@@ -312,7 +312,7 @@ In addition to simply switching it on and off, there are also many other options
 | xyColor (object {x [float], y [float]}) | Color value in the XY color format in the form of an object |
 | gradient (object {hex […]}) | An object with a supported color object (e.g. `hex`, `rgb`, ...) and several colors to set a gradient to supported lights. An optional `mode` spreads the colors as `interpolated_palette`, `interpolated_palette_mirrored`, `random_pixelated` or `segmented_palette` |
 | mixColor (object) | A color to be mixed with the current light color. Can accept `color`, `hex`, `rgb` or `xyColor` objects and optionally `amount` (int) to indicate the mixing ratio in percent |
-| image (string) | Path of an image (local or on the web) to set the current color of the light to the average color of the image |
+| image (string) | Path of an image (local or on the web, PNG, JPEG, GIF or SVG) to set the current color of the light to the average color of the image |
 | saturation (int) | Percentage of the saturation of the current color (beta) |
 | colorTemp (int / string) | Value between 153 and 500 to set the color temperature of the light or the values `cold`, `normal`, `warm`, `hot` and `auto` - where `auto` is the color temperature based on the current time |
 | incrementColorTemp (int / boolean) | Value by how much the color temperature should be warmer or `true` to make the color temperature warmer in steps of 50 |
@@ -419,7 +419,7 @@ In addition to simply switching it on and off, there are also many other options
 | hex (string) | Color value in hexadecimal in the form of a string |
 | rgb (array [0,0,0]) | Color value in RGB format in the form of an array |
 | xyColor (object {x [float], y [float]}) | Color value in the XY color format in the form of an object |
-| image (string) | Path of an image (local or on the web) to set the current color of the group to the average color of the image |
+| image (string) | Path of an image (local or on the web, PNG, JPEG, GIF or SVG) to set the current color of the group to the average color of the image |
 | colorTemp (int / string) | Value between 153 and 500 to set the color temperature of the group or the values `cold`, `normal`, `warm`, `hot` and `auto` - where `auto` is the color temperature based on the current time |
 | transitionTime (float) | Transition time of the current setting in seconds. If `0` is passed, the group changes to the desired setting immediately. If you pass it to `3`, the group changes to the desired setting with a slight transition in the next 3 seconds |
 | colorloop (float) | Plays a “colorloop” animation for the selected duration in seconds and then changes back to the group's original state |
@@ -1228,6 +1228,11 @@ If the status of the node has changed via a certain command, the entire command 
 * The "Hue Bridge" node lists the entertainment areas of the bridge under `msg.payload.entertainmentAreas` and can start and stop them with `msg.payload.entertainment`
 * The "Hue Bridge" node lists the service groups of a Hue Bridge Pro under `msg.payload.serviceGroups`
 * The example flow of the "Hue Bridge" node shows the device search and the entertainment areas, in all ten languages
+
+**Under the hood**
+
+* The colors of an image are read by HueMagic itself instead of by `get-image-colors`, which dragged the abandoned `request` package and 108 other dependencies behind it. PNG, JPEG, GIF and SVG are read as before — from a path or from the web — and `npm audit` is clean again
+* HueMagic installs 48 instead of 133 packages
 
 ### v5.0.1
 

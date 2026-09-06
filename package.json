@@ -64,11 +64,8 @@
     "dayjs": "^1.11.23",
     "deep-object-diff": "^1.1.9",
     "fastq": "^1.20.3",
-    "get-image-colors": "^4.0.1"
-  },
-  "overrides": {
-    "form-data": "^4.0.4",
-    "qs": "^6.15.4",
-    "tough-cookie": "^4.1.4"
+    "jpeg-js": "^0.4.4",
+    "omggif": "^1.0.10",
+    "pngjs": "^7.0.0"
   }
 }

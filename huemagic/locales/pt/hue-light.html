@@ -37,7 +37,7 @@ Para além de simplesmente ligar e desligar, existem muitas outras opções para
 : xyColor (object {x [float], y [float]}): Valor de cor no formato de cor XY sob a forma de objeto
 : gradient (object {hex […]}): Um objeto com um objeto de cor suportado (p. ex. `hex`, `rgb`, …) e várias cores para aplicar um gradiente às luzes compatíveis
 : mixColor (object): Uma cor a misturar com a cor de luz atual. Aceita objetos `color`, `hex`, `rgb` ou `xyColor` e, opcionalmente, `amount` (int) para indicar a proporção de mistura em percentagem
-: image (string): Caminho de uma imagem (local ou na web) para definir a cor atual da luz como a cor média da imagem
+: image (string): Caminho de uma imagem (local ou na web) para definir a cor atual da luz como a cor média da imagem (PNG, JPEG, GIF ou SVG)
 : saturation (int): Percentagem da saturação da cor atual (beta)
 : colorTemp (int | string): Valor entre 153 e 500 para definir a temperatura de cor da luz, ou os valores `cold`, `normal`, `warm`, `hot` e `auto`, sendo que `auto` define a temperatura de cor com base na hora atual
 : incrementColorTemp (int | boolean): Valor que indica quanto a temperatura de cor deve ficar mais quente, ou `true` para a tornar mais quente em passos de 50

@@ -513,10 +513,9 @@ module.exports = function(RED)
 				// SET DOMINANT COLORS FROM IMAGE
 				if(typeof msg.payload != 'undefined' && typeof msg.payload.image != 'undefined')
 				{
-					var colors = await colorUtils.getColors(msg.payload.image);
-					if(colors.length > 0)
+					var colorsHEX = await colorUtils.getColors(msg.payload.image);
+					if(colorsHEX.length > 0)
 					{
-						var colorsHEX = colors.map(color => color.hex());
 						let rgbFromHex = colorUtils.hexRgb(colorsHEX[0]);
 
 						patchObject["color"] = { xy: colorUtils.rgbToXy(rgbFromHex[0], rgbFromHex[1], rgbFromHex[2]) };

@@ -14,6 +14,11 @@
 * The "Hue Bridge" node lists the service groups of a Hue Bridge Pro under `msg.payload.serviceGroups`
 * The example flow of the "Hue Bridge" node shows the device search and the entertainment areas, in all ten languages
 
+**Under the hood**
+
+* The colors of an image are read by HueMagic itself instead of by `get-image-colors`, which dragged the abandoned `request` package and 108 other dependencies behind it. PNG, JPEG, GIF and SVG are read as before — from a path or from the web — and `npm audit` is clean again
+* HueMagic installs 48 instead of 133 packages
+
 ### v5.0.1
 
 * The "Hue Buttons" node can now be given additional outputs, each one triggered by a range of buttons and a certain action — the start of a press, the end of a short press, the end of a long press once it lasted long enough, or repeatedly while a long press is still running. One switch can drive several flows without a Switch node behind it ([#455](https://github.com/Foddy/node-red-contrib-huemagic/pull/455)) (thx @FredBlo)

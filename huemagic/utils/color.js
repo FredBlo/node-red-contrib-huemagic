@@ -2,10 +2,10 @@
 const colornames = require("colornames");
 const colornamer = require('color-namer');
 
-// LOADED ON DEMAND, IT PULLS IN A LARGE DEPENDENCY TREE
+// THE DOMINANT COLORS OF AN IMAGE, LOADED ON DEMAND
 function getColors(...args)
 {
-	return require('get-image-colors')(...args);
+	return require('./image').getColors(...args);
 }
 
 // RGB -> XY
