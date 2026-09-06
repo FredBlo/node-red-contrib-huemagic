@@ -7,7 +7,7 @@ module.exports = function(RED)
 	const events = require('events');
 	const dayjs = require('dayjs');
 	const diff = require("deep-object-diff").diff;
-	const axios = require('axios');
+	const httpUtils = require('./utils/http');
 	const https = require('https');
 	const fastq = require('fastq');
 
@@ -865,7 +865,8 @@ module.exports = function(RED)
 	// DISCOVER HUE BRIDGES ON LOCAL NETWORK
 	RED.httpAdmin.get('/hue/bridges', RED.auth.needsPermission('hue-bridge.read'), async function(req, res, next)
 	{
-		axios({
+		// THE ONLY REQUEST THAT LEAVES THE LOCAL NETWORK, SO THIS ONE MAY GO THROUGH A PROXY
+		httpUtils.request({
 			"method": "GET",
 			"url": "https://discovery.meethue.com",
 			"headers": {
@@ -925,10 +926,10 @@ module.exports = function(RED)
 		else
 		{
 			// MODERN BRIDGES (AND THE BRIDGE PRO) NO LONGER ANSWER ON PLAIN HTTP
-			axios({
+			httpUtils.request({
 				"method": "POST",
 				"url": "https://"+req.query.ip+"/api",
-				"httpsAgent": new https.Agent({ rejectUnauthorized: false }),
+				"agent": new https.Agent({ rejectUnauthorized: false }),
 				"proxy": false, // THE BRIDGE IS ON THE LOCAL NETWORK, NEVER GO THROUGH A PROXY
 				"headers": {
 					"Content-Type": "application/json; charset=utf-8"

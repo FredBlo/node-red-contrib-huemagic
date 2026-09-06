@@ -35,6 +35,7 @@ HueMagic provides several input and output nodes for Node-RED and is the most in
 * Recalls scenes with their own transition time and brightness
 * Calibrates temperature sensors and the darkness threshold of light level sensors
 * Available in ten languages, including the complete node documentation
+* Lean on dependencies: nine packages, no HTTP client and no known vulnerabilities
 
 ### Installation
 HueMagic was written for **Node.js 18+** and **Node-RED v3+**. It supports the square-shaped Hue Bridge with the **firmware 1948086000+** or higher as well as the **Hue Bridge Pro**. You can install HueMagic directly via the [Node-RED Palette Manager](https://nodered.org/docs/user-guide/editor/palette/manager) or manually using [npm / yarn](https://nodered.org/docs/user-guide/runtime/adding-nodes).
@@ -1232,7 +1233,9 @@ If the status of the node has changed via a certain command, the entire command 
 **Under the hood**
 
 * The colors of an image are read by HueMagic itself instead of by `get-image-colors`, which dragged the abandoned `request` package and 108 other dependencies behind it. PNG, JPEG, GIF and SVG are read as before — from a path or from the web — and `npm audit` is clean again
-* HueMagic installs 48 instead of 133 packages
+* HueMagic speaks HTTP itself instead of through `axios`. The bridge and the sync box are still talked to directly, while the bridge discovery — and now also an image loaded from the web — go through `HTTPS_PROXY` / `HTTP_PROXY` and respect `NO_PROXY`
+* All remaining dependencies were updated to their current releases
+* HueMagic installs 21 instead of 133 packages, and `npm audit` reports no vulnerabilities
 
 ### v5.0.1
 

@@ -1,4 +1,4 @@
-const axios = require('axios');
+const httpUtils = require('./http');
 const dayjs = require('dayjs');
 const https = require('https');
 const { parseEventStream } = require('./sse');
@@ -27,11 +27,11 @@ function API()
 			}
 
 			// GET BRIDGE INFORMATION
-			axios({
+			httpUtils.request({
 				"method": "GET",
 				"url": "https://" + config.bridge + "/api/config",
 				"headers": { "Content-Type": "application/json; charset=utf-8" },
-				"httpsAgent": httpsAgent,
+				"agent": httpsAgent,
 				"proxy": false, // THE BRIDGE IS ON THE LOCAL NETWORK, NEVER GO THROUGH A PROXY
 				"timeout": 10000,
 			})
@@ -67,7 +67,7 @@ function API()
 					"Content-Type": "application/json; charset=utf-8",
 					"hue-application-key": config.key
 				},
-				"httpsAgent": httpsAgent,
+				"agent": httpsAgent,
 				"proxy": false, // THE BRIDGE IS ON THE LOCAL NETWORK, NEVER GO THROUGH A PROXY
 				"timeout": 15000,
 			};
@@ -92,7 +92,7 @@ function API()
 			}
 
 			// RUN REQUEST
-			axios(request)
+			httpUtils.request(request)
 			.then(function(response)
 			{
 				if(version === 2)

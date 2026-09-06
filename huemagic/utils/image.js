@@ -1,6 +1,5 @@
 const fs = require('fs');
-const http = require('http');
-const https = require('https');
+const httpUtils = require('./http');
 const { PNG } = require('pngjs');
 const jpeg = require('jpeg-js');
 const { GifReader } = require('omggif');
@@ -14,54 +13,14 @@ const MAX_SAMPLES = 20000;
 
 //
 // READ AN IMAGE FROM THE FILE SYSTEM OR FROM THE WEB
-function load(source, redirects = 3)
+function load(source)
 {
 	if(Buffer.isBuffer(source)) { return Promise.resolve(source); }
 	if(typeof source !== 'string') { return Promise.reject(new Error("The image has to be a path, a URL or a buffer.")); }
 	if(!/^https?:\/\//i.test(source)) { return fs.promises.readFile(source); }
 
-	return new Promise(function(resolve, reject)
-	{
-		const request = (source.toLowerCase().startsWith("https:") ? https : http).get(source, function(response)
-		{
-			// FOLLOW A REDIRECT, BUT NOT IN CIRCLES
-			if(response.statusCode >= 300 && response.statusCode < 400 && response.headers.location)
-			{
-				response.resume();
-
-				if(redirects <= 0) { return reject(new Error("The image redirects too often.")); }
-				return resolve(load(new URL(response.headers.location, source).toString(), redirects - 1));
-			}
-
-			if(response.statusCode !== 200)
-			{
-				response.resume();
-				return reject(new Error("The image could not be loaded (HTTP " + response.statusCode + ")."));
-			}
-
-			let chunks = [];
-			let size = 0;
-
-			response.on('data', function(chunk)
-			{
-				size += chunk.length;
-
-				if(size > MAX_BYTES)
-				{
-					request.destroy();
-					return reject(new Error("The image is larger than " + Math.round(MAX_BYTES/1024/1024) + " MB."));
-				}
-
-				chunks.push(chunk);
-			});
-
-			response.on('end', function() { resolve(Buffer.concat(chunks)); });
-			response.on('error', function(error) { reject(error); });
-		});
-
-		request.setTimeout(15000, function() { request.destroy(new Error("The image did not arrive in time.")); });
-		request.on('error', function(error) { reject(error); });
-	});
+	// AN IMAGE FROM THE WEB TAKES THE SAME WAY OUT AS EVERY OTHER REQUEST, PROXY INCLUDED
+	return httpUtils.buffer({ url: source, timeout: 15000, maxBytes: MAX_BYTES });
 }
 
 //

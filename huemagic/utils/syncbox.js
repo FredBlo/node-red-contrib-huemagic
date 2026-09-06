@@ -1,4 +1,4 @@
-const axios = require('axios');
+const httpUtils = require('./http');
 const https = require('https');
 
 // THE SYNC BOX SERVES A CERTIFICATE THAT NO OS TRUST STORE KNOWS
@@ -26,7 +26,7 @@ function SyncBoxAPI()
 				"method": method,
 				"url": "https://" + config.syncbox.trim() + "/api/v1" + resource,
 				"headers": { "Content-Type": "application/json" },
-				"httpsAgent": httpsAgent,
+				"agent": httpsAgent,
 				"proxy": false, // THE BOX IS ON THE LOCAL NETWORK, NEVER GO THROUGH A PROXY
 				"timeout": 10000,
 			};
@@ -34,7 +34,7 @@ function SyncBoxAPI()
 			if(accessToken) { request["headers"]["Authorization"] = "Bearer " + accessToken; }
 			if(data !== null) { request["data"] = data; }
 
-			axios(request)
+			httpUtils.request(request)
 			.then(function(response) { resolve(response.data); })
 			.catch(function(error)
 			{
