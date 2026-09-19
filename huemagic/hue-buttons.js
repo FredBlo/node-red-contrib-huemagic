@@ -75,10 +75,7 @@ module.exports = function(RED)
 		// SUBSCRIBE TO UPDATES FROM THE BRIDGE
 		this.unsubscribe = bridge.subscribe("button", config.sensorid, function(info)
 		{
-			// TELL HueButtonsMessage WHICH SERVICE ACTUALLY CHANGED, SO A LIVE PUSH DOESN'T ALSO REPORT
-			// WHATEVER IS STILL SITTING IN THE CACHE FOR THE OTHER ONE (E.G. A BUTTON PRESS ALSO SHOWING
-			// A STALE ROTATION FROM MINUTES AGO). AN ON-DEMAND STATUS QUERY (SEE 'on input' BELOW) DOES
-			// NOT PASS THIS, SO IT STILL REPORTS WHATEVER WAS LAST KNOWN, AS EXPECTED FOR THAT CASE.
+			// ONLY REPORT THE SERVICE THAT FIRED THIS EVENT, NOT THE LAST PRESS OR ROTATION STILL CACHED
 			let currentState = bridge.get("button", info.id, { updatedType: info.updatedType });
 
 			// RESOURCE FOUND?
@@ -220,23 +217,14 @@ module.exports = function(RED)
 						{
 							scope.status({fill: "grey", shape: "dot", text: "hue-buttons.node.waiting"});
 
-							// REMOVE OLD BUTTON STATES
-							const buttons = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"]["button"] : false;
-							if(buttons)
-							{
-								for (const [oneButtonID, oneButton] of Object.entries(buttons))
-								{
-									delete buttons[oneButtonID]["button"];
-								}
-							}
+							// REMOVE OLD BUTTON AND DIAL STATES
+							const services = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"] : {};
 
-							// REMOVE OLD ROTATION STATES (SAME REASONING AS ABOVE, FOR THE DIAL)
-							const rotaries = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"]["relative_rotary"] : false;
-							if(rotaries)
+							for (const oneType of ["button", "relative_rotary"])
 							{
-								for (const [oneRotaryID, oneRotary] of Object.entries(rotaries))
+								for (const oneService of Object.values(services[oneType] || {}))
 								{
-									delete rotaries[oneRotaryID]["relative_rotary"];
+									delete oneService[oneType];
 								}
 							}
 						}, 3000);

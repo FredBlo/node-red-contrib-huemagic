@@ -121,7 +121,7 @@ test('hue-buttons additional outputs: dial rotation events are not matched again
 	assert.strictEqual(node.statusHistory[node.statusHistory.length - 1].text, "hue-buttons.node.dial-clockwise");
 });
 
-test('hue-buttons: the live subscription tells bridge.get() which service actually changed', function()
+test('hue-buttons: a live event tells bridge.get() which service fired it', function()
 {
 	const resource = { payload: { button: 2, rotation: false, action: "short_release" } };
 	const node = newButtonsNode(baseConfig([]), resource);
@@ -131,7 +131,7 @@ test('hue-buttons: the live subscription tells bridge.get() which service actual
 	const call = node.getCalls[node.getCalls.length - 1];
 	assert.strictEqual(call.type, "button");
 	assert.strictEqual(call.id, "sensor-1");
-	assert.deepStrictEqual(call.options, { updatedType: "button" }, "bridge.get() must be told which service triggered this push, so HueButtonsMessage can avoid reporting stale data from the other one");
+	assert.deepStrictEqual(call.options, { updatedType: "button" });
 });
 
 test('hue-buttons additional outputs: an empty rule list still sends a single-output message', function()
