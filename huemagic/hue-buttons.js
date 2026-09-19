@@ -75,7 +75,11 @@ module.exports = function(RED)
 		// SUBSCRIBE TO UPDATES FROM THE BRIDGE
 		this.unsubscribe = bridge.subscribe("button", config.sensorid, function(info)
 		{
-			let currentState = bridge.get("button", info.id);
+			// TELL HueButtonsMessage WHICH SERVICE ACTUALLY CHANGED, SO A LIVE PUSH DOESN'T ALSO REPORT
+			// WHATEVER IS STILL SITTING IN THE CACHE FOR THE OTHER ONE (E.G. A BUTTON PRESS ALSO SHOWING
+			// A STALE ROTATION FROM MINUTES AGO). AN ON-DEMAND STATUS QUERY (SEE 'on input' BELOW) DOES
+			// NOT PASS THIS, SO IT STILL REPORTS WHATEVER WAS LAST KNOWN, AS EXPECTED FOR THAT CASE.
+			let currentState = bridge.get("button", info.id, { updatedType: info.updatedType });
 
 			// RESOURCE FOUND?
 			if(currentState !== false)
@@ -218,11 +222,22 @@ module.exports = function(RED)
 
 							// REMOVE OLD BUTTON STATES
 							const buttons = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"]["button"] : false;
-							if(!buttons) { return false; }
-
-							for (const [oneButtonID, oneButton] of Object.entries(buttons))
+							if(buttons)
 							{
-								delete buttons[oneButtonID]["button"];
+								for (const [oneButtonID, oneButton] of Object.entries(buttons))
+								{
+									delete buttons[oneButtonID]["button"];
+								}
+							}
+
+							// REMOVE OLD ROTATION STATES (SAME REASONING AS ABOVE, FOR THE DIAL)
+							const rotaries = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"]["relative_rotary"] : false;
+							if(rotaries)
+							{
+								for (const [oneRotaryID, oneRotary] of Object.entries(rotaries))
+								{
+									delete rotaries[oneRotaryID]["relative_rotary"];
+								}
 							}
 						}, 3000);
 					}

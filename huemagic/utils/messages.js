@@ -674,37 +674,50 @@ class HueButtonsMessage
 		const connection = connectivity(resource);
 		const power = battery(resource);
 
+		// options.updatedType TELLS US WHICH SERVICE ACTUALLY CHANGED IN THIS PARTICULAR PUSH (SEE hue-buttons.js),
+		// SO A LIVE BUTTON PUSH DOESN'T ALSO REPORT A STALE ROTATION STILL SITTING IN THE CACHE, AND VICE VERSA.
+		// UNDEFINED (E.G. AN ON-DEMAND STATUS QUERY) KEEPS REPORTING WHATEVER IS CURRENTLY CACHED, AS BEFORE.
+		const isButtonEvent = (options.updatedType === undefined || options.updatedType === "button" || options.updatedType === "bell_button");
+		const isRotaryEvent = (options.updatedType === undefined || options.updatedType === "relative_rotary");
+
 		// FIND PRESSED BUTTON (A DOORBELL BEHAVES EXACTLY LIKE ONE)
 		var pressedButton = false;
 		var isDoorbell = false;
 
-		for (const oneType of ["button", "bell_button"])
+		if(isButtonEvent)
 		{
-			const allButtons = resource.services[oneType] ? Object.values(resource.services[oneType]) : [];
-
-			for (var i = allButtons.length - 1; i >= 0; i--)
+			for (const oneType of ["button", "bell_button"])
 			{
-				if(allButtons[i]["button"])
-				{
-					pressedButton = allButtons[i];
-					isDoorbell = (oneType === "bell_button");
-					break;
-				}
-			}
+				const allButtons = resource.services[oneType] ? Object.values(resource.services[oneType]) : [];
 
-			if(pressedButton) { break; }
+				for (var i = allButtons.length - 1; i >= 0; i--)
+				{
+					if(allButtons[i]["button"])
+					{
+						pressedButton = allButtons[i];
+						isDoorbell = (oneType === "bell_button");
+						break;
+					}
+				}
+
+				if(pressedButton) { break; }
+			}
 		}
 
 		// FIND ROTATION (HUE TAP DIAL, LUTRON AURORA)
 		var rotaryDial = false;
-		const allRotaries = resource.services.relative_rotary ? Object.values(resource.services.relative_rotary) : [];
 
-		for (var r = allRotaries.length - 1; r >= 0; r--)
+		if(isRotaryEvent)
 		{
-			if(allRotaries[r]["relative_rotary"])
+			const allRotaries = resource.services.relative_rotary ? Object.values(resource.services.relative_rotary) : [];
+
+			for (var r = allRotaries.length - 1; r >= 0; r--)
 			{
-				rotaryDial = allRotaries[r];
-				break;
+				if(allRotaries[r]["relative_rotary"])
+				{
+					rotaryDial = allRotaries[r];
+					break;
+				}
 			}
 		}
 

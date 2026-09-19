@@ -173,6 +173,34 @@ test('messages: a device without any button event reports false', function()
 	assert.strictEqual(msg.payload.rotation, false);
 });
 
+test('messages: a live push only reports the service that actually changed, not whatever else is cached', function()
+{
+	// A DEVICE THAT HAS, AT SOME POINT, REPORTED BOTH A BUTTON PRESS AND A ROTATION - BOTH STILL SITTING
+	// IN THE CACHED RESOURCE, EXACTLY LIKE hue-bridge-config.js's STICKY PER-SERVICE MERGE LEAVES THEM.
+	let resource = device("button", { metadata: { control_id: 2 }, button: { last_event: "initial_press", button_report: { updated: "x", event: "long_release" } } });
+	resource.services["relative_rotary"] = { "r1": { id: "r1", relative_rotary: { rotary_report: { updated: "x", action: "start", rotation: { direction: "clock_wise", steps: 500, duration: 400 } } } } };
+
+	// A LIVE BUTTON PUSH MUST NOT ALSO REPORT THE STALE ROTATION STILL SITTING IN THE CACHE
+	const buttonPush = new HueButtonsMessage(resource, { updatedType: "button" }).msg;
+	assert.strictEqual(buttonPush.payload.action, "long_release");
+	assert.strictEqual(buttonPush.payload.rotation, false, "a button push must not also report the cached rotation");
+
+	// A LIVE ROTARY PUSH MUST NOT ALSO REPORT THE STALE BUTTON STILL SITTING IN THE CACHE
+	const rotaryPush = new HueButtonsMessage(resource, { updatedType: "relative_rotary" }).msg;
+	assert.strictEqual(rotaryPush.payload.button, false, "a rotary push must not also report the cached button press");
+	assert.strictEqual(rotaryPush.payload.rotation.clockwise, true);
+
+	// A METADATA-ONLY PUSH (E.G. BATTERY LEVEL) IS NEITHER A BUTTON NOR A ROTATION EVENT
+	const metadataPush = new HueButtonsMessage(resource, { updatedType: "device_power" }).msg;
+	assert.strictEqual(metadataPush.payload.button, false);
+	assert.strictEqual(metadataPush.payload.rotation, false);
+
+	// AN ON-DEMAND STATUS QUERY (NO updatedType) KEEPS TODAY'S "REPORT WHATEVER IS CACHED" BEHAVIOR
+	const statusQuery = new HueButtonsMessage(resource).msg;
+	assert.strictEqual(statusQuery.payload.action, "long_release");
+	assert.strictEqual(statusQuery.payload.rotation.clockwise, true);
+});
+
 test('messages: a group without a grouped light service throws instead of returning junk', function()
 {
 	assert.throws(function()
