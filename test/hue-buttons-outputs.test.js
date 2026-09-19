@@ -7,11 +7,12 @@ function newButtonsNode(config, buttonResource)
 {
 	let statusHistory = [];
 	let sendHistory = [];
+	let getCalls = [];
 	let subscribedCallback = null;
 
 	const bridge = {
 		subscribe: function(type, id, cb) { subscribedCallback = cb; return function() {}; },
-		get: function(type, id) { return (typeof buttonResource === "function") ? buttonResource(id) : buttonResource; },
+		get: function(type, id, options) { getCalls.push({ type: type, id: id, options: options }); return (typeof buttonResource === "function") ? buttonResource(id) : buttonResource; },
 		resources: {}
 	};
 
@@ -39,7 +40,8 @@ function newButtonsNode(config, buttonResource)
 	return {
 		fire: function(info) { subscribedCallback(info || { id: config.sensorid, suppressMessage: false }); },
 		sendHistory: sendHistory,
-		statusHistory: statusHistory
+		statusHistory: statusHistory,
+		getCalls: getCalls
 	};
 }
 
@@ -117,6 +119,19 @@ test('hue-buttons additional outputs: dial rotation events are not matched again
 
 	assert.strictEqual(node.sendHistory[0].length, 1, "dial rotation must not populate any rule output");
 	assert.strictEqual(node.statusHistory[node.statusHistory.length - 1].text, "hue-buttons.node.dial-clockwise");
+});
+
+test('hue-buttons: a live event tells bridge.get() which service fired it', function()
+{
+	const resource = { payload: { button: 2, rotation: false, action: "short_release" } };
+	const node = newButtonsNode(baseConfig([]), resource);
+
+	node.fire({ id: "sensor-1", suppressMessage: false, updatedType: "button" });
+
+	const call = node.getCalls[node.getCalls.length - 1];
+	assert.strictEqual(call.type, "button");
+	assert.strictEqual(call.id, "sensor-1");
+	assert.deepStrictEqual(call.options, { updatedType: "button" });
 });
 
 test('hue-buttons additional outputs: an empty rule list still sends a single-output message', function()

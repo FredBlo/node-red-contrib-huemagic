@@ -674,13 +674,16 @@ class HueButtonsMessage
 		const connection = connectivity(resource);
 		const power = battery(resource);
 
+		// A LIVE EVENT ONLY REPORTS THE SERVICE THAT FIRED IT, A STATUS QUERY EVERYTHING STILL CACHED
+		const fired = function(type) { return (!options.updatedType || options.updatedType === type); };
+
 		// FIND PRESSED BUTTON (A DOORBELL BEHAVES EXACTLY LIKE ONE)
 		var pressedButton = false;
 		var isDoorbell = false;
 
 		for (const oneType of ["button", "bell_button"])
 		{
-			const allButtons = resource.services[oneType] ? Object.values(resource.services[oneType]) : [];
+			const allButtons = (fired(oneType) && resource.services[oneType]) ? Object.values(resource.services[oneType]) : [];
 
 			for (var i = allButtons.length - 1; i >= 0; i--)
 			{
@@ -697,7 +700,7 @@ class HueButtonsMessage
 
 		// FIND ROTATION (HUE TAP DIAL, LUTRON AURORA)
 		var rotaryDial = false;
-		const allRotaries = resource.services.relative_rotary ? Object.values(resource.services.relative_rotary) : [];
+		const allRotaries = (fired("relative_rotary") && resource.services.relative_rotary) ? Object.values(resource.services.relative_rotary) : [];
 
 		for (var r = allRotaries.length - 1; r >= 0; r--)
 		{

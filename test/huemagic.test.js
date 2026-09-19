@@ -173,6 +173,28 @@ test('messages: a device without any button event reports false', function()
 	assert.strictEqual(msg.payload.rotation, false);
 });
 
+test('messages: a live push only reports the service that fired it, a status query everything cached', function()
+{
+	let resource = device("button", { metadata: { control_id: 2 }, button: { last_event: "initial_press", button_report: { updated: "x", event: "long_release" } } });
+	resource.services["relative_rotary"] = { "r1": { id: "r1", relative_rotary: { rotary_report: { updated: "x", action: "start", rotation: { direction: "clock_wise", steps: 500, duration: 400 } } } } };
+
+	const buttonPush = new HueButtonsMessage(resource, { updatedType: "button" }).msg;
+	assert.strictEqual(buttonPush.payload.action, "long_release");
+	assert.strictEqual(buttonPush.payload.rotation, false);
+
+	const rotaryPush = new HueButtonsMessage(resource, { updatedType: "relative_rotary" }).msg;
+	assert.strictEqual(rotaryPush.payload.button, false);
+	assert.strictEqual(rotaryPush.payload.rotation.clockwise, true);
+
+	const batteryPush = new HueButtonsMessage(resource, { updatedType: "device_power" }).msg;
+	assert.strictEqual(batteryPush.payload.button, false);
+	assert.strictEqual(batteryPush.payload.rotation, false);
+
+	const statusQuery = new HueButtonsMessage(resource).msg;
+	assert.strictEqual(statusQuery.payload.action, "long_release");
+	assert.strictEqual(statusQuery.payload.rotation.clockwise, true);
+});
+
 test('messages: a group without a grouped light service throws instead of returning junk', function()
 {
 	assert.throws(function()

@@ -2,7 +2,12 @@
 
 # Changelog
 
-### v5.1.0 (latest)
+### v5.1.1 (latest)
+
+* Pressing a button on a Hue Tap Dial Switch no longer also reports the last rotation of its dial under `msg.payload.rotation`, and turning the dial no longer reports the last pressed button ([#456](https://github.com/Foddy/node-red-contrib-huemagic/pull/456)) (thx @FredBlo)
+* A battery or connection update of a switch, dial or doorbell no longer repeats its last press or rotation as if it had just happened ([#456](https://github.com/Foddy/node-red-contrib-huemagic/pull/456)) (thx @FredBlo)
+
+### v5.1.0
 
 **New devices and features**
 

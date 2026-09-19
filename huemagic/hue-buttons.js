@@ -75,7 +75,8 @@ module.exports = function(RED)
 		// SUBSCRIBE TO UPDATES FROM THE BRIDGE
 		this.unsubscribe = bridge.subscribe("button", config.sensorid, function(info)
 		{
-			let currentState = bridge.get("button", info.id);
+			// ONLY REPORT THE SERVICE THAT FIRED THIS EVENT, NOT THE LAST PRESS OR ROTATION STILL CACHED
+			let currentState = bridge.get("button", info.id, { updatedType: info.updatedType });
 
 			// RESOURCE FOUND?
 			if(currentState !== false)
@@ -216,13 +217,15 @@ module.exports = function(RED)
 						{
 							scope.status({fill: "grey", shape: "dot", text: "hue-buttons.node.waiting"});
 
-							// REMOVE OLD BUTTON STATES
-							const buttons = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"]["button"] : false;
-							if(!buttons) { return false; }
+							// REMOVE OLD BUTTON AND DIAL STATES
+							const services = (bridge.resources[config.sensorid] && bridge.resources[config.sensorid]["services"]) ? bridge.resources[config.sensorid]["services"] : {};
 
-							for (const [oneButtonID, oneButton] of Object.entries(buttons))
+							for (const oneType of ["button", "relative_rotary"])
 							{
-								delete buttons[oneButtonID]["button"];
+								for (const oneService of Object.values(services[oneType] || {}))
+								{
+									delete oneService[oneType];
+								}
 							}
 						}, 3000);
 					}
