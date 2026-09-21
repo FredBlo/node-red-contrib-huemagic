@@ -1218,7 +1218,11 @@ If the status of the node has changed via a certain command, the entire command 
 
 # Changelog
 
-### v5.1.1 (latest)
+### v5.?.? (latest)
+
+* The "Hue Buttons" node's additional outputs can now also be triggered by a dial rotation instead of a button range: pick a turning direction (clockwise, counterclockwise, or both) and, optionally, limit it to a range of degrees turned — a single range can even combine both directions at once (e.g. up to 50° counterclockwise or up to 10° clockwise)
+
+### v5.1.1
 
 * Pressing a button on a Hue Tap Dial Switch no longer also reports the last rotation of its dial under `msg.payload.rotation`, and turning the dial no longer reports the last pressed button ([#456](https://github.com/Foddy/node-red-contrib-huemagic/pull/456)) (thx @FredBlo)
 * A battery or connection update of a switch, dial or doorbell no longer repeats its last press or rotation as if it had just happened ([#456](https://github.com/Foddy/node-red-contrib-huemagic/pull/456)) (thx @FredBlo)
