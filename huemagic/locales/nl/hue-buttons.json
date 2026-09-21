@@ -24,13 +24,22 @@
 			"add-outputs-longpress": "Lang indrukken beëindigd wanneer >",
 			"add-outputs-longpresswhile": "Lang indrukken (terwijl ingedrukt)",
 			"add-outputs-btn-addnew": "nieuw knoppenbereik toevoegen",
+			"add-outputs-rotation": "Rotatie ↻",
+			"add-outputs-clockwise": "Met de klok mee ↻",
+			"add-outputs-counterclockwise": "Tegen de klok in ↺",
+			"add-outputs-limitedrange": "Willekeurige hoek tussen",
+			"add-outputs-limitedrange-to": "en",
 			"outputlabel-btn-from": "knop #__from__",
 			"outputlabel-btn-from-to": "knoppen #__from__ t/m #__to__",
 			"outputlabel-btn-on": "bij:",
 			"outputlabel-btn-startpress": "Begin van indrukken",
 			"outputlabel-btn-shortpress": "Kort indrukken beëindigd",
 			"outputlabel-btn-longpress": "Lang indrukken (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Lang indrukken (terwijl ingedrukt)"
+			"outputlabel-btn-longpresswhile": "Lang indrukken (terwijl ingedrukt)",
+			"outputlabel-rotation": "draaiknopbeweging",
+			"outputlabel-rotation-clockwise": "Met de klok mee",
+			"outputlabel-rotation-counterclockwise": "Tegen de klok in",
+			"outputlabel-rotation-limitedrange": "tussen __from__° en __to__°"
 		},
 		"node": {
 			"not-configured": "niet geconfigureerd",

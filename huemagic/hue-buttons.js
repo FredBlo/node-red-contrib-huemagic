@@ -6,6 +6,9 @@ module.exports = function(RED)
 	// DOES A BUTTON EVENT MATCH THE RULE OF AN ADDITIONAL OUTPUT?
 	function matchesRule(buttonState, rule)
 	{
+		// A ROTATION RULE HAS NO buttonFrom/buttonTo RANGE TO CHECK
+		if(rule.buttonFrom === "rotation") { return false; }
+
 		// BUTTON OUTSIDE THE RANGE THE RULE WATCHES?
 		if(buttonState.button < parseInt(rule.buttonFrom) || buttonState.button > parseInt(rule.buttonTo)) { return false; }
 
@@ -22,6 +25,27 @@ module.exports = function(RED)
 			default:
 				return false;
 		}
+	}
+
+	//
+	// DOES A DIAL ROTATION EVENT MATCH THE RULE OF AN ADDITIONAL OUTPUT?
+	function matchesRotationRule(rotation, rule)
+	{
+		// A BUTTON-RANGE RULE HAS NO DIRECTION/ANGLE TO CHECK
+		if(rule.buttonFrom !== "rotation") { return false; }
+
+		// WRONG DIRECTION FOR THE RULE?
+		if(!(rotation.clockwise ? rule.onClockwise : rule.onCounterClockwise)) { return false; }
+
+		// OUTSIDE ANGLE RANGE ? NEGATIVE DEGREES ARE COUNTERCLOCKWISE, POSITIVE ARE CLOCKWISE
+		// (E.G. -50 TO 10 MEANS "UP TO 50° COUNTERCLOCKWISE OR UP TO 10° CLOCKWISE")
+		if(rule.onLimitedRange)
+		{
+			const signedDegrees = rotation.clockwise ? rotation.degrees : -rotation.degrees;
+			if(signedDegrees < (parseInt(rule.limitedRangeFrom) || 0) || signedDegrees > (parseInt(rule.limitedRangeTo) || 0)) { return false; }
+		}
+
+		return true;
 	}
 
 	function HueButtons(config)
@@ -142,15 +166,16 @@ module.exports = function(RED)
 
 					// COPY THE EVENT TO EVERY ADDITIONAL OUTPUT THAT ASKED FOR IT
 					let outputs = [currentState];
+					const rules = Array.isArray(config.rules) ? config.rules : [];
 
-					if(currentState.payload.button !== false)
+					for (let i = 0; i < rules.length; i++)
 					{
-						const rules = Array.isArray(config.rules) ? config.rules : [];
+						const rule = rules[i];
+						const matched = (rule.buttonFrom === "rotation")
+							? (currentState.payload.rotation !== false && matchesRotationRule(currentState.payload.rotation, rule))
+							: (currentState.payload.button !== false && matchesRule(buttonState, rule));
 
-						for (let i = 0; i < rules.length; i++)
-						{
-							outputs[i+1] = matchesRule(buttonState, rules[i]) ? RED.util.cloneMessage(currentState) : null;
-						}
+						outputs[i+1] = matched ? RED.util.cloneMessage(currentState) : null;
 					}
 
 					// SEND STATE

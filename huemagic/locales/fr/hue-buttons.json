@@ -24,13 +24,22 @@
 			"add-outputs-longpress": "Fin d'appui long quand >",
 			"add-outputs-longpresswhile": "Appui long (pendant le maintien)",
 			"add-outputs-btn-addnew": "ajouter une nouvelle plage de boutons",
+			"add-outputs-rotation": "Rotation ↻",
+			"add-outputs-clockwise": "Sens horaire ↻",
+			"add-outputs-counterclockwise": "Sens antihoraire ↺",
+			"add-outputs-limitedrange": "N'importe quel angle entre",
+			"add-outputs-limitedrange-to": "et",
 			"outputlabel-btn-from": "bouton #__from__",
 			"outputlabel-btn-from-to": "boutons #__from__ à #__to__",
 			"outputlabel-btn-on": "sur :",
 			"outputlabel-btn-startpress": "Début de l'appui",
 			"outputlabel-btn-shortpress": "Fin d'appui court",
 			"outputlabel-btn-longpress": "Appui long (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Appui long (pendant le maintien)"
+			"outputlabel-btn-longpresswhile": "Appui long (pendant le maintien)",
+			"outputlabel-rotation": "rotation de la molette",
+			"outputlabel-rotation-clockwise": "Sens horaire",
+			"outputlabel-rotation-counterclockwise": "Sens antihoraire",
+			"outputlabel-rotation-limitedrange": "entre __from__° et __to__°"
 		},
 		"node": {
 			"not-configured": "non configuré",

@@ -24,13 +24,22 @@
 			"add-outputs-longpress": "Fin de pulsación larga cuando >",
 			"add-outputs-longpresswhile": "Pulsación larga (mientras se mantiene)",
 			"add-outputs-btn-addnew": "añadir nuevo rango de botones",
+			"add-outputs-rotation": "Rotación ↻",
+			"add-outputs-clockwise": "Sentido horario ↻",
+			"add-outputs-counterclockwise": "Sentido antihorario ↺",
+			"add-outputs-limitedrange": "Cualquier ángulo entre",
+			"add-outputs-limitedrange-to": "y",
 			"outputlabel-btn-from": "botón #__from__",
 			"outputlabel-btn-from-to": "botones #__from__ a #__to__",
 			"outputlabel-btn-on": "en:",
 			"outputlabel-btn-startpress": "Inicio de la pulsación",
 			"outputlabel-btn-shortpress": "Fin de pulsación corta",
 			"outputlabel-btn-longpress": "Pulsación larga (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Pulsación larga (mientras se mantiene)"
+			"outputlabel-btn-longpresswhile": "Pulsación larga (mientras se mantiene)",
+			"outputlabel-rotation": "rotación de la rueda",
+			"outputlabel-rotation-clockwise": "Sentido horario",
+			"outputlabel-rotation-counterclockwise": "Sentido antihorario",
+			"outputlabel-rotation-limitedrange": "entre __from__° y __to__°"
 		},
 		"node": {
 			"not-configured": "sin configurar",

@@ -24,13 +24,22 @@
 			"add-outputs-longpress": "Τέλος παρατεταμένου πατήματος όταν >",
 			"add-outputs-longpresswhile": "Παρατεταμένο πάτημα (ενόσω πατημένο)",
 			"add-outputs-btn-addnew": "προσθήκη νέου εύρους κουμπιών",
+			"add-outputs-rotation": "Περιστροφή ↻",
+			"add-outputs-clockwise": "Δεξιόστροφα ↻",
+			"add-outputs-counterclockwise": "Αριστερόστροφα ↺",
+			"add-outputs-limitedrange": "Οποιαδήποτε γωνία μεταξύ",
+			"add-outputs-limitedrange-to": "και",
 			"outputlabel-btn-from": "κουμπί #__from__",
 			"outputlabel-btn-from-to": "κουμπιά #__from__ έως #__to__",
 			"outputlabel-btn-on": "σε:",
 			"outputlabel-btn-startpress": "Έναρξη πατήματος",
 			"outputlabel-btn-shortpress": "Τέλος σύντομου πατήματος",
 			"outputlabel-btn-longpress": "Παρατεταμένο πάτημα (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Παρατεταμένο πάτημα (ενόσω πατημένο)"
+			"outputlabel-btn-longpresswhile": "Παρατεταμένο πάτημα (ενόσω πατημένο)",
+			"outputlabel-rotation": "περιστροφή επιλογέα",
+			"outputlabel-rotation-clockwise": "Δεξιόστροφα",
+			"outputlabel-rotation-counterclockwise": "Αριστερόστροφα",
+			"outputlabel-rotation-limitedrange": "μεταξύ __from__° και __to__°"
 		},
 		"node": {
 			"not-configured": "μη ρυθμισμένο",

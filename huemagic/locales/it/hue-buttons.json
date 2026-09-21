@@ -24,13 +24,22 @@
 			"add-outputs-longpress": "Fine pressione prolungata quando >",
 			"add-outputs-longpresswhile": "Pressione prolungata (mentre premuto)",
 			"add-outputs-btn-addnew": "aggiungi nuovo intervallo di pulsanti",
+			"add-outputs-rotation": "Rotazione ↻",
+			"add-outputs-clockwise": "Senso orario ↻",
+			"add-outputs-counterclockwise": "Senso antiorario ↺",
+			"add-outputs-limitedrange": "Qualsiasi angolo tra",
+			"add-outputs-limitedrange-to": "e",
 			"outputlabel-btn-from": "pulsante #__from__",
 			"outputlabel-btn-from-to": "pulsanti #__from__ - #__to__",
 			"outputlabel-btn-on": "su:",
 			"outputlabel-btn-startpress": "Inizio pressione",
 			"outputlabel-btn-shortpress": "Fine pressione breve",
 			"outputlabel-btn-longpress": "Pressione prolungata (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Pressione prolungata (mentre premuto)"
+			"outputlabel-btn-longpresswhile": "Pressione prolungata (mentre premuto)",
+			"outputlabel-rotation": "rotazione della rotella",
+			"outputlabel-rotation-clockwise": "Senso orario",
+			"outputlabel-rotation-counterclockwise": "Senso antiorario",
+			"outputlabel-rotation-limitedrange": "tra __from__° e __to__°"
 		},
 		"node": {
 			"not-configured": "non configurato",
