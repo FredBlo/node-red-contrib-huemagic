@@ -34,18 +34,20 @@ module.exports = function(RED)
 		// A BUTTON-RANGE RULE HAS NO DIRECTION/ANGLE TO CHECK
 		if(rule.buttonFrom !== "rotation") { return false; }
 
-		// WRONG DIRECTION FOR THE RULE?
-		if(!(rotation.clockwise ? rule.onClockwise : rule.onCounterClockwise)) { return false; }
+		// EACH ENABLED CONDITION IS CHECKED INDEPENDENTLY (OR'ED, NOT AND'ED) - "CLOCKWISE"/
+		// "COUNTERCLOCKWISE" MEAN "ANY ROTATION IN THAT DIRECTION", REGARDLESS OF THE ANGLE RANGE
+		if(rule.onClockwise && rotation.clockwise) { return true; }
+		if(rule.onCounterClockwise && !rotation.clockwise) { return true; }
 
-		// OUTSIDE ANGLE RANGE ? NEGATIVE DEGREES ARE COUNTERCLOCKWISE, POSITIVE ARE CLOCKWISE
-		// (E.G. -50 TO 10 MEANS "UP TO 50° COUNTERCLOCKWISE OR UP TO 10° CLOCKWISE")
+		// INSIDE THE ANGLE RANGE ? NEGATIVE DEGREES ARE COUNTERCLOCKWISE, POSITIVE ARE CLOCKWISE
+		// (E.G. -50 TO 10 MEANS "FROM 50° COUNTERCLOCKWISE UP TO 10° CLOCKWISE")
 		if(rule.onLimitedRange)
 		{
 			const signedDegrees = rotation.clockwise ? rotation.degrees : -rotation.degrees;
-			if(signedDegrees < (parseInt(rule.limitedRangeFrom) || 0) || signedDegrees > (parseInt(rule.limitedRangeTo) || 0)) { return false; }
+			if(signedDegrees >= (parseInt(rule.limitedRangeFrom) || 0) && signedDegrees <= (parseInt(rule.limitedRangeTo) || 0)) { return true; }
 		}
 
-		return true;
+		return false;
 	}
 
 	function HueButtons(config)

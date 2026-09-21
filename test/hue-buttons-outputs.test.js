@@ -67,11 +67,14 @@ function universalConfig(rules)
 const RULE_1_TO_4 = { buttonFrom: 1, buttonTo: 4, onStartPress: false, onEndShortPress: true, onEndLongPress: true, onDuringLongPress: false, minLongPressDuration: 1000 };
 const RULE_5_TO_8 = { buttonFrom: 5, buttonTo: 8, onStartPress: false, onEndShortPress: true, onEndLongPress: true, onDuringLongPress: false, minLongPressDuration: 1000 };
 const RULE_CLOCKWISE_ONLY = { buttonFrom: "rotation", buttonTo: null, onClockwise: true, onCounterClockwise: false, onLimitedRange: false, limitedRangeFrom: 0, limitedRangeTo: 360 };
-const RULE_ROTATION_30_TO_90 = { buttonFrom: "rotation", buttonTo: null, onClockwise: true, onCounterClockwise: true, onLimitedRange: true, limitedRangeFrom: 30, limitedRangeTo: 90 };
+// DIRECTION AND RANGE ARE OR'ED, NOT AND'ED - BOTH DIRECTION CHECKBOXES OFF ISOLATES THE RANGE AS THE ONLY ENABLED CONDITION
+const RULE_ROTATION_30_TO_90 = { buttonFrom: "rotation", buttonTo: null, onClockwise: false, onCounterClockwise: false, onLimitedRange: true, limitedRangeFrom: 30, limitedRangeTo: 90 };
 // NEGATIVE BOUNDS ARE COUNTERCLOCKWISE, POSITIVE ARE CLOCKWISE - A RANGE ENTIRELY BELOW ZERO ONLY EVER MATCHES COUNTERCLOCKWISE
-const RULE_ROTATION_NEG30_TO_NEG10 = { buttonFrom: "rotation", buttonTo: null, onClockwise: true, onCounterClockwise: true, onLimitedRange: true, limitedRangeFrom: -30, limitedRangeTo: -10 };
+const RULE_ROTATION_NEG30_TO_NEG10 = { buttonFrom: "rotation", buttonTo: null, onClockwise: false, onCounterClockwise: false, onLimitedRange: true, limitedRangeFrom: -30, limitedRangeTo: -10 };
 // A RANGE STRADDLING ZERO MATCHES COUNTERCLOCKWISE UP TO ONE BOUND *OR* CLOCKWISE UP TO THE OTHER
-const RULE_ROTATION_NEG50_TO_10 = { buttonFrom: "rotation", buttonTo: null, onClockwise: true, onCounterClockwise: true, onLimitedRange: true, limitedRangeFrom: -50, limitedRangeTo: 10 };
+const RULE_ROTATION_NEG50_TO_10 = { buttonFrom: "rotation", buttonTo: null, onClockwise: false, onCounterClockwise: false, onLimitedRange: true, limitedRangeFrom: -50, limitedRangeTo: 10 };
+// CLOCKWISE ALONE MEANS "ANY CLOCKWISE ROTATION", OR'ED WITH AN UNRELATED RANGE THAT ONLY EVER MATCHES COUNTERCLOCKWISE
+const RULE_CLOCKWISE_OR_NEG30_TO_NEG10 = { buttonFrom: "rotation", buttonTo: null, onClockwise: true, onCounterClockwise: false, onLimitedRange: true, limitedRangeFrom: -30, limitedRangeTo: -10 };
 
 test('hue-buttons additional outputs: a short press only reaches the output whose button range matches', function()
 {
@@ -228,6 +231,30 @@ test('hue-buttons additional outputs: a range straddling zero matches counterclo
 	resource.payload.rotation.degrees = 15;
 	node.fire();
 	assert.strictEqual(node.sendHistory[3][1], null, "a 15 degree clockwise turn exceeds an output limited to -50..10");
+});
+
+test('hue-buttons additional outputs: direction and angle range are OR-ed, not AND-ed', function()
+{
+	// "Clockwise" CHECKED + A RANGE OF -30..-10 (COUNTERCLOCKWISE-ONLY) MEANS "ANY CLOCKWISE ROTATION
+	// (WHATEVER ITS DEGREES) OR A COUNTERCLOCKWISE ONE BETWEEN 10 AND 30 DEGREES" - NOT "CLOCKWISE AND
+	// WITHIN -30..-10", WHICH WOULD BE IMPOSSIBLE TO SATISFY AT ALL
+	const resource = { payload: { button: false, rotation: { clockwise: true, degrees: 200 }, action: null } };
+	const node = newButtonsNode(baseConfig([RULE_CLOCKWISE_OR_NEG30_TO_NEG10]), resource);
+
+	// A CLOCKWISE ROTATION MATCHES VIA THE DIRECTION CONDITION ALONE, REGARDLESS OF THE RANGE
+	node.fire();
+	assert.ok(node.sendHistory[0][1], "any clockwise rotation must reach the output, even far outside the configured range");
+
+	// A COUNTERCLOCKWISE ROTATION INSIDE THE RANGE MATCHES VIA THE RANGE ALONE, EVEN THOUGH
+	// onCounterClockwise ITSELF IS NOT CHECKED
+	resource.payload.rotation = { clockwise: false, degrees: 20 };
+	node.fire();
+	assert.ok(node.sendHistory[1][1], "a counterclockwise rotation inside the range must reach the output, even though counterclockwise isn't itself checked");
+
+	// A COUNTERCLOCKWISE ROTATION OUTSIDE THE RANGE MATCHES NEITHER CONDITION
+	resource.payload.rotation = { clockwise: false, degrees: 5 };
+	node.fire();
+	assert.strictEqual(node.sendHistory[2][1], null, "a counterclockwise rotation outside the range must not reach the output");
 });
 
 test('hue-buttons: a live event tells bridge.get() which service fired it', function()

@@ -25,8 +25,8 @@
 			"add-outputs-longpresswhile": "Pulsación larga (mientras se mantiene)",
 			"add-outputs-btn-addnew": "añadir nuevo rango de botones",
 			"add-outputs-rotation": "Rotación ↻",
-			"add-outputs-clockwise": "Sentido horario ↻",
-			"add-outputs-counterclockwise": "Sentido antihorario ↺",
+			"add-outputs-clockwise": "Cualquier rotación en sentido horario ↻",
+			"add-outputs-counterclockwise": "Cualquier rotación en sentido antihorario ↺",
 			"add-outputs-limitedrange": "Cualquier ángulo entre",
 			"add-outputs-limitedrange-to": "y",
 			"outputlabel-btn-from": "botón #__from__",
@@ -37,8 +37,8 @@
 			"outputlabel-btn-longpress": "Pulsación larga (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Pulsación larga (mientras se mantiene)",
 			"outputlabel-rotation": "rotación de la rueda",
-			"outputlabel-rotation-clockwise": "Sentido horario",
-			"outputlabel-rotation-counterclockwise": "Sentido antihorario",
+			"outputlabel-rotation-clockwise": "Cualquier rotación en sentido horario",
+			"outputlabel-rotation-counterclockwise": "Cualquier rotación en sentido antihorario",
 			"outputlabel-rotation-limitedrange": "entre __from__° y __to__°"
 		},
 		"node": {

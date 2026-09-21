@@ -4,7 +4,7 @@
 
 ### v5.?.? (latest)
 
-* The "Hue Buttons" node's additional outputs can now also be triggered by a dial rotation instead of a button range: pick a turning direction (clockwise, counterclockwise, or both) and, optionally, limit it to a range of degrees turned — a single range can even combine both directions at once (e.g. up to 50° counterclockwise or up to 10° clockwise)
+* The "Hue Buttons" node's additional outputs can now also be triggered by a dial rotation instead of a button range: a turning direction (clockwise / counterclockwise) or a range of degrees turned
 
 ### v5.1.1
 
