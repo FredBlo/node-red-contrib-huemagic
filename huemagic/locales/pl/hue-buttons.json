@@ -24,13 +24,19 @@
 			"add-outputs-longpress": "Koniec długiego naciśnięcia po >",
 			"add-outputs-longpresswhile": "Długie naciśnięcie (podczas trzymania)",
 			"add-outputs-btn-addnew": "dodaj nowy zakres przycisków",
+			"add-outputs-rotation": "Obrót ↻",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Kąt między",
+			"add-outputs-rotation-range-to": "a",
 			"outputlabel-btn-from": "przycisk #__from__",
 			"outputlabel-btn-from-to": "przyciski #__from__ do #__to__",
 			"outputlabel-btn-on": "przy:",
 			"outputlabel-btn-startpress": "Początek naciśnięcia",
 			"outputlabel-btn-shortpress": "Koniec krótkiego naciśnięcia",
 			"outputlabel-btn-longpress": "Długie naciśnięcie (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Długie naciśnięcie (podczas trzymania)"
+			"outputlabel-btn-longpresswhile": "Długie naciśnięcie (podczas trzymania)",
+			"outputlabel-rotation": "obrót pokrętła",
+			"outputlabel-rotation-range": "między __from__° a __to__°"
 		},
 		"node": {
 			"not-configured": "nieskonfigurowany",

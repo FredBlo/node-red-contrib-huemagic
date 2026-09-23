@@ -24,13 +24,19 @@
 			"add-outputs-longpress": "Fin d'appui long quand >",
 			"add-outputs-longpresswhile": "Appui long (pendant le maintien)",
 			"add-outputs-btn-addnew": "ajouter une nouvelle plage de boutons",
+			"add-outputs-rotation": "Rotation ↻",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Angle entre",
+			"add-outputs-rotation-range-to": "et",
 			"outputlabel-btn-from": "bouton #__from__",
 			"outputlabel-btn-from-to": "boutons #__from__ à #__to__",
 			"outputlabel-btn-on": "sur :",
 			"outputlabel-btn-startpress": "Début de l'appui",
 			"outputlabel-btn-shortpress": "Fin d'appui court",
 			"outputlabel-btn-longpress": "Appui long (>__duration__s)",
-			"outputlabel-btn-longpresswhile": "Appui long (pendant le maintien)"
+			"outputlabel-btn-longpresswhile": "Appui long (pendant le maintien)",
+			"outputlabel-rotation": "rotation de la molette",
+			"outputlabel-rotation-range": "entre __from__° et __to__°"
 		},
 		"node": {
 			"not-configured": "non configuré",

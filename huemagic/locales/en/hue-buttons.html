@@ -9,6 +9,8 @@ If you do not select a switch/button and use the node configuration in this way,
 
 Under "Additional outputs" you can add one output per range of buttons, each triggered by a specific action (start of press, end of a short press, end of a long press once it lasted at least the configured duration, or repeatedly while a long press is ongoing). The first output of the node always receives every event, exactly as before; the additional outputs only receive a copy of the message when both the button range and the action match.
 
+For the dial of a Hue Tap Dial Switch, choose "Rotation ↻" under "From" and enter an angle range instead. Counterclockwise turns count as negative degrees, clockwise turns as positive ones: `0` to `360` catches every clockwise turn, `-360` to `0` every counterclockwise turn, and `-50` to `10` a counterclockwise turn of up to 50° or a clockwise turn of up to 10°. The angle is the one the dial reports with each rotation event, not the sum of a longer turn.
+
 ### Get status
 
 Outputs the current status of the switch/button as soon as a `msg.payload` object with the following content has been passed to the node. Alternatively, you can also press the button in the Node-RED interface without having to pass a message to the node beforehand.

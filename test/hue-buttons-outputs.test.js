@@ -66,6 +66,9 @@ function universalConfig(rules)
 
 const RULE_1_TO_4 = { buttonFrom: 1, buttonTo: 4, onStartPress: false, onEndShortPress: true, onEndLongPress: true, onDuringLongPress: false, minLongPressDuration: 1000 };
 const RULE_5_TO_8 = { buttonFrom: 5, buttonTo: 8, onStartPress: false, onEndShortPress: true, onEndLongPress: true, onDuringLongPress: false, minLongPressDuration: 1000 };
+const RULE_CLOCKWISE = { buttonFrom: "rotation", buttonTo: null, rotationFrom: 0, rotationTo: 360 };
+const RULE_NEG30_TO_NEG10 = { buttonFrom: "rotation", buttonTo: null, rotationFrom: -30, rotationTo: -10 };
+const RULE_NEG50_TO_10 = { buttonFrom: "rotation", buttonTo: null, rotationFrom: -50, rotationTo: 10 };
 
 test('hue-buttons additional outputs: a short press only reaches the output whose button range matches', function()
 {
@@ -117,8 +120,72 @@ test('hue-buttons additional outputs: dial rotation events are not matched again
 
 	node.fire();
 
-	assert.strictEqual(node.sendHistory[0].length, 1, "dial rotation must not populate any rule output");
+	const multiOutput = node.sendHistory[0];
+	assert.strictEqual(multiOutput.length, 2, "a rotation event now also gets one slot per configured rule");
+	assert.strictEqual(multiOutput[1], null, "dial rotation must not match a button-range rule");
 	assert.strictEqual(node.statusHistory[node.statusHistory.length - 1].text, "hue-buttons.node.dial-clockwise");
+});
+
+test('hue-buttons additional outputs: a button press does not match a rotation rule', function()
+{
+	const resource = { payload: { button: 2, rotation: false, action: "short_release" } };
+	const node = newButtonsNode(baseConfig([RULE_CLOCKWISE]), resource);
+
+	node.fire();
+
+	assert.ok(node.sendHistory[0][0], "output 1 (main) must always get the message");
+	assert.strictEqual(node.sendHistory[0][1], null, "a button press must not match a rotation rule");
+});
+
+test('hue-buttons additional outputs: a range from 0 to 360 takes every clockwise turn and no counterclockwise one', function()
+{
+	const resource = { payload: { button: false, rotation: { clockwise: true, degrees: 30 }, action: null } };
+	const node = newButtonsNode(baseConfig([RULE_CLOCKWISE]), resource);
+
+	node.fire();
+	assert.ok(node.sendHistory[0][1], "a clockwise turn must reach the output");
+
+	resource.payload.rotation = { clockwise: false, degrees: 30 };
+	node.fire();
+	assert.strictEqual(node.sendHistory[1][1], null, "a counterclockwise turn must not reach the output");
+});
+
+test('hue-buttons additional outputs: a range below zero only takes counterclockwise turns of that size', function()
+{
+	const resource = { payload: { button: false, rotation: { clockwise: false, degrees: 20 }, action: null } };
+	const node = newButtonsNode(baseConfig([RULE_NEG30_TO_NEG10]), resource);
+
+	node.fire();
+	assert.ok(node.sendHistory[0][1], "a 20 degree counterclockwise turn must reach an output limited to -30..-10");
+
+	resource.payload.rotation.degrees = 5;
+	node.fire();
+	assert.strictEqual(node.sendHistory[1][1], null, "a 5 degree counterclockwise turn must not reach an output limited to -30..-10");
+
+	resource.payload.rotation = { clockwise: true, degrees: 20 };
+	node.fire();
+	assert.strictEqual(node.sendHistory[2][1], null, "a clockwise turn must not reach an output limited to -30..-10");
+});
+
+test('hue-buttons additional outputs: a range across zero takes both directions up to their own bound', function()
+{
+	const resource = { payload: { button: false, rotation: { clockwise: false, degrees: 50 }, action: null } };
+	const node = newButtonsNode(baseConfig([RULE_NEG50_TO_10]), resource);
+
+	node.fire();
+	assert.ok(node.sendHistory[0][1], "a 50 degree counterclockwise turn must reach an output limited to -50..10");
+
+	resource.payload.rotation.degrees = 60;
+	node.fire();
+	assert.strictEqual(node.sendHistory[1][1], null, "a 60 degree counterclockwise turn must not reach an output limited to -50..10");
+
+	resource.payload.rotation = { clockwise: true, degrees: 10 };
+	node.fire();
+	assert.ok(node.sendHistory[2][1], "a 10 degree clockwise turn must reach an output limited to -50..10");
+
+	resource.payload.rotation.degrees = 15;
+	node.fire();
+	assert.strictEqual(node.sendHistory[3][1], null, "a 15 degree clockwise turn must not reach an output limited to -50..10");
 });
 
 test('hue-buttons: a live event tells bridge.get() which service fired it', function()

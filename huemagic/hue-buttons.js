@@ -24,6 +24,15 @@ module.exports = function(RED)
 		}
 	}
 
+	//
+	// DOES A DIAL ROTATION EVENT MATCH THE RULE OF AN ADDITIONAL OUTPUT?
+	function matchesRotationRule(rotation, rule)
+	{
+		// COUNTERCLOCKWISE IS NEGATIVE, CLOCKWISE POSITIVE
+		const degrees = rotation.clockwise ? rotation.degrees : -rotation.degrees;
+		return (degrees >= (parseInt(rule.rotationFrom) || 0) && degrees <= (parseInt(rule.rotationTo) || 0));
+	}
+
 	function HueButtons(config)
 	{
 		RED.nodes.createNode(this, config);
@@ -142,15 +151,16 @@ module.exports = function(RED)
 
 					// COPY THE EVENT TO EVERY ADDITIONAL OUTPUT THAT ASKED FOR IT
 					let outputs = [currentState];
+					const rules = Array.isArray(config.rules) ? config.rules : [];
 
-					if(currentState.payload.button !== false)
+					for (let i = 0; i < rules.length; i++)
 					{
-						const rules = Array.isArray(config.rules) ? config.rules : [];
+						const rule = rules[i];
+						const matched = (rule.buttonFrom === "rotation")
+							? (currentState.payload.rotation !== false && matchesRotationRule(currentState.payload.rotation, rule))
+							: (currentState.payload.button !== false && matchesRule(buttonState, rule));
 
-						for (let i = 0; i < rules.length; i++)
-						{
-							outputs[i+1] = matchesRule(buttonState, rules[i]) ? RED.util.cloneMessage(currentState) : null;
-						}
+						outputs[i+1] = matched ? RED.util.cloneMessage(currentState) : null;
 					}
 
 					// SEND STATE

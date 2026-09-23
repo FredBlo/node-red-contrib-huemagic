@@ -9,6 +9,8 @@ Jeśli nie wybierzesz przełącznika ani przycisku i użyjesz konfiguracji węz�
 
 W sekcji „Dodatkowe wyjścia” możesz dodać jedno wyjście na każdy zakres przycisków, z których każde jest wyzwalane przez określone działanie (początek naciśnięcia, koniec krótkiego naciśnięcia, koniec długiego naciśnięcia po osiągnięciu skonfigurowanego czasu trwania, lub cyklicznie podczas trwania długiego naciśnięcia). Pierwsze wyjście węzła nadal zawsze otrzymuje każde zdarzenie, tak jak dotychczas; dodatkowe wyjścia otrzymują kopię komunikatu tylko wtedy, gdy pasują zarówno zakres przycisków, jak i działanie.
 
+Dla pokrętła Hue Tap Dial Switch wybierz w polu „Od” opcję „Obrót ↻” i podaj zakres kąta. Obroty przeciwnie do ruchu wskazówek zegara liczą się jako stopnie ujemne, a zgodnie z ruchem wskazówek jako dodatnie: od `0` do `360` obejmuje każdy obrót zgodny z ruchem wskazówek, od `-360` do `0` każdy obrót przeciwny, a od `-50` do `10` obrót przeciwny o maksymalnie 50° lub zgodny o maksymalnie 10°. Liczy się kąt, który pokrętło zgłasza w każdym pojedynczym zdarzeniu obrotu, a nie suma dłuższego obrotu.
+
 ### Odczyt stanu
 
 Zwraca bieżący stan przełącznika lub przycisku, gdy tylko do węzła zostanie przekazany obiekt `msg.payload` o następującej zawartości. Możesz też nacisnąć przycisk w interfejsie Node-RED, bez wcześniejszego wysyłania komunikatu do węzła.
