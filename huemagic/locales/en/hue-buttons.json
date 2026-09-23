@@ -25,10 +25,9 @@
 			"add-outputs-longpresswhile": "Long press (while pressed)",
 			"add-outputs-btn-addnew": "add new buttons range",
 			"add-outputs-rotation": "Rotation ↻",
-			"add-outputs-clockwise": "Any clockwise rotation ↻",
-			"add-outputs-counterclockwise": "Any counter-clockwise rotation ↺",
-			"add-outputs-limitedrange": "Any angle between",
-			"add-outputs-limitedrange-to": "and",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Angle between",
+			"add-outputs-rotation-range-to": "and",
 			"outputlabel-btn-from": "button #__from__",
 			"outputlabel-btn-from-to": "buttons #__from__ to #__to__",
 			"outputlabel-btn-on": "on :",
@@ -37,9 +36,7 @@
 			"outputlabel-btn-longpress": "Long press (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Long press (while pressed)",
 			"outputlabel-rotation": "dial rotation",
-			"outputlabel-rotation-clockwise": "Any clockwise rotation",
-			"outputlabel-rotation-counterclockwise": "Any counter-clockwise rotation",
-			"outputlabel-rotation-limitedrange": "between __from__° and __to__°"
+			"outputlabel-rotation-range": "between __from__° and __to__°"
 		},
 		"node": {
 			"title": "Hue Buttons",

@@ -9,6 +9,8 @@ Als u geen schakelaar of knop selecteert en de nodeconfiguratie zo gebruikt, wer
 
 Onder "Extra uitgangen" kunt u per knoppenbereik een uitgang toevoegen, elk geactiveerd door een specifieke actie (begin van indrukken, einde van kort indrukken, einde van lang indrukken zodra dit minstens de ingestelde duur heeft geduurd, of herhaaldelijk terwijl lang indrukken bezig is). De eerste uitgang van de node ontvangt zoals voorheen altijd elke gebeurtenis; de extra uitgangen ontvangen alleen een kopie van het bericht wanneer zowel het knoppenbereik als de actie overeenkomen.
 
+Voor de draaiknop van een Hue Tap Dial Switch kiest u onder "Van" in plaats daarvan "Rotatie ↻" en vult u een hoekbereik in. Draaiingen tegen de klok in tellen als negatieve graden, draaiingen met de klok mee als positieve: `0` tot `360` vangt elke draaiing met de klok mee, `-360` tot `0` elke draaiing tegen de klok in, en `-50` tot `10` een draaiing van maximaal 50° tegen de klok in of maximaal 10° met de klok mee. Het gaat om de hoek die de draaiknop bij elke afzonderlijke draaigebeurtenis meldt, niet om de som van een langere draaiing.
+
 ### Status opvragen
 
 Geeft de huidige status van de schakelaar of knop uit zodra een `msg.payload`-object met de volgende inhoud aan de node is doorgegeven. U kunt ook op de knop in de Node-RED-interface drukken zonder eerst een bericht naar de node te sturen.

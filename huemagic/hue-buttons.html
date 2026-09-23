@@ -76,20 +76,7 @@
           let rule = (this.rules || [])[index-1];
           let label = '';
           if (rule && rule.buttonFrom === 'rotation') {
-            label = this._('hue-buttons.config.outputlabel-rotation');
-            let onEvents = [];
-            if (rule.onClockwise) {
-              onEvents.push (' - ' + this._('hue-buttons.config.outputlabel-rotation-clockwise'));
-            }
-            if (rule.onCounterClockwise) {
-              onEvents.push (' - ' + this._('hue-buttons.config.outputlabel-rotation-counterclockwise'));
-            }
-            if (rule.onLimitedRange) {
-              onEvents.push (' - ' + this._('hue-buttons.config.outputlabel-rotation-limitedrange' , {'from' : rule.limitedRangeFrom, 'to' : rule.limitedRangeTo}) );
-            }
-            if (onEvents.length) {
-              label += ' ' + this._('hue-buttons.config.outputlabel-btn-on') + '\n' + onEvents.join ('\n');
-            }
+            label = this._('hue-buttons.config.outputlabel-rotation') + ' ' + this._('hue-buttons.config.outputlabel-rotation-range' , {'from' : rule.rotationFrom, 'to' : rule.rotationTo});
           } else if (rule) {
             if (rule.buttonFrom == rule.buttonTo) {
               label = this._('hue-buttons.config.outputlabel-btn-from' , {'from' : rule.buttonFrom});
@@ -313,45 +300,38 @@
                 if (!rule.hasOwnProperty('minLongPressDuration')) {
                   rule.minLongPressDuration = 1000;
                 }
-                if (!rule.hasOwnProperty('onClockwise')) {
-                  rule.onClockwise = true;
+                if (!rule.hasOwnProperty('rotationFrom')) {
+                  rule.rotationFrom = -360;
                 }
-                if (!rule.hasOwnProperty('limitedRangeFrom')) {
-                  rule.limitedRangeFrom = -360;
+                if (!rule.hasOwnProperty('rotationTo')) {
+                  rule.rotationTo = 360;
                 }
-                if (!rule.hasOwnProperty('limitedRangeTo')) {
-                  rule.limitedRangeTo = 360;
-                }
-                // ROW 1 : 'From label' & checkbox 'Start press' / 'Clockwise'
+                // ROW 1 : 'From label' & checkbox 'Start press'
                 let row1 = $('<div/>',{class:"buttonrule-row"}).appendTo(container);
                 row1.append('<span class="buttonrule-fromtolabel">' + scope._('hue-buttons.config.add-outputs-btn-from') + '</span>');
                 let field_onStartPress = $('<input/>',{id:"node-input-onStartPress_" + uniqueRowID,type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row1);
                 let label_onStartPress = $('<label class="buttonrule-checkbox-label" for="node-input-onStartPress_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-startpress') + '</label>').appendTo(row1);
-                let field_onClockwise = $('<input/>',{id:"node-input-onClockwise_" + uniqueRowID,type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row1);
-                let label_onClockwise = $('<label class="buttonrule-checkbox-label" for="node-input-onClockwise_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-clockwise') + '</label>').appendTo(row1);
                 // ROW1 : output info (rightest part)
                 let finalspan = $('<span/>',{style:"float: right;margin-top: 6px;"}).appendTo(row1);
                 finalspan.append('<i class="fa fa-sign-out"></i><span class="node-input-rule-index">'+(i+2)+'</span>');
-                // ROW 2 : 'From list' & checkbox 'End short press' / 'Counter-clockwise'
+                // ROW 2 : 'From list' & checkbox 'End short press' / rotation direction hint
                 let row2 = $('<div/>',{class:"buttonrule-row"}).appendTo(container);
                 let field_buttonFrom = $('<select/>',{id:"node-input-buttonFrom_" + uniqueRowID, class:"buttonrule-select"}).appendTo(row2);
                 let field_onEndShortPress = $('<input/>',{id:"node-input-onEndShortPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row2);
                 let label_onEndShortPress = $('<label class="buttonrule-checkbox-label" for="node-input-onEndShortPress_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-shortpress') + '</label>').appendTo(row2);
-                let field_onCounterClockwise = $('<input/>',{id:"node-input-onCounterClockwise_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row2);
-                let label_onCounterClockwise = $('<label class="buttonrule-checkbox-label" for="node-input-onCounterClockwise_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-counterclockwise') + '</label>').appendTo(row2);
-                // ROW 3 : 'To label' & checkbox 'End long press after [xx] ms' / 'Limit rotation angle between [xx] and [xx]°'
+                let label_rotationHint = $('<label class="buttonrule-checkbox-label">' + scope._('hue-buttons.config.add-outputs-rotation-hint') + '</label>').appendTo(row2);
+                // ROW 3 : 'To label' & checkbox 'End long press after [xx] ms' / 'Angle between [xx] and [xx]°'
                 let row3 = $('<div/>',{class:"buttonrule-row"}).appendTo(container);
                 row3.append('<span class="buttonrule-fromtolabel">' + scope._('hue-buttons.config.add-outputs-btn-to') + '</span>');
                 let field_onEndLongPress = $('<input/>',{id:"node-input-onEndLongPress_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row3);
                 let label_onEndLongPress = $('<label class="buttonrule-checkbox-label" for="node-input-onEndLongPress_' + uniqueRowID + '" style="width:unset";>' + scope._('hue-buttons.config.add-outputs-longpress') + '&nbsp</label>').appendTo(row3);
                 let field_minLongPressDuration = $('<input/>',{id:"node-input-minLongPressDuration_" + uniqueRowID, type:"text",style:"height:23px; width:55px; padding: 2px 2px;"}).appendTo(row3);
                 let label_minLongPressDuration = $('<label class="buttonrule-checkbox-label" for="node-input-minLongPressDuration_' + uniqueRowID + '">&nbsp ms</label>').appendTo(row3);
-                let field_onLimitedRange = $('<input/>',{id:"node-input-onLimitedRange_" + uniqueRowID, type:"checkbox", class:"buttonrule-checkbox"}).appendTo(row3);
-                let label_onLimitedRange = $('<label class="buttonrule-checkbox-label" for="node-input-onLimitedRange_' + uniqueRowID + '" style="width:unset";>' + scope._('hue-buttons.config.add-outputs-limitedrange') + '&nbsp</label>').appendTo(row3);
-                let field_limitedRangeFrom = $('<input/>',{id:"node-input-limitedRangeFrom_" + uniqueRowID, type:"text",style:"height:23px; width:35px; padding: 2px 2px;"}).appendTo(row3);
-                let label_limitedRangeAnd = $('<label class="buttonrule-checkbox-label" for="node-input-limitedRangeTo_' + uniqueRowID + '">&nbsp' + scope._('hue-buttons.config.add-outputs-limitedrange-to') + '&nbsp</label>').appendTo(row3);
-                let field_limitedRangeTo = $('<input/>',{id:"node-input-limitedRangeTo_" + uniqueRowID, type:"text",style:"height:23px; width:35px; padding: 2px 2px;"}).appendTo(row3);
-                let label_limitedRangeDegrees = $('<label class="buttonrule-checkbox-label">&nbsp°</label>').appendTo(row3);
+                let label_rotationFrom = $('<label class="buttonrule-checkbox-label" for="node-input-rotationFrom_' + uniqueRowID + '">' + scope._('hue-buttons.config.add-outputs-rotation-range') + '&nbsp</label>').appendTo(row3);
+                let field_rotationFrom = $('<input/>',{id:"node-input-rotationFrom_" + uniqueRowID, type:"text",style:"height:23px; width:40px; padding: 2px 2px;"}).appendTo(row3);
+                let label_rotationTo = $('<label class="buttonrule-checkbox-label" for="node-input-rotationTo_' + uniqueRowID + '">&nbsp' + scope._('hue-buttons.config.add-outputs-rotation-range-to') + '&nbsp</label>').appendTo(row3);
+                let field_rotationTo = $('<input/>',{id:"node-input-rotationTo_" + uniqueRowID, type:"text",style:"height:23px; width:40px; padding: 2px 2px;"}).appendTo(row3);
+                let label_rotationDegrees = $('<label class="buttonrule-checkbox-label">&nbsp°</label>').appendTo(row3);
                 // ROW 4 : 'To list' & checkbox 'During long press' (no rotation-mode equivalent - buttonTo just shows disabled)
                 let row4 = $('<div/>',{class:"buttonrule-row"}).appendTo(container);
                 let field_buttonTo = $('<select/>',{id:"node-input-buttonTo_" + uniqueRowID, class:"buttonrule-select"}).appendTo(row4);
@@ -378,21 +358,16 @@
                   label_onEndLongPress.toggle(!isRotation);
                   field_minLongPressDuration.toggle(!isRotation);
                   label_minLongPressDuration.toggle(!isRotation);
-                  // Row 4 has no rotation-mode equivalent for this checkbox - use visibility (not display) so
-                  // it stays part of the row's own line box, to ensure row height remains consistent even if hidden
+                  // Visibility instead of display keeps row 4 at its height
                   field_onDuringLongPress.toggleClass('buttonrule-hidden', isRotation);
                   label_onDuringLongPress.toggleClass('buttonrule-hidden', isRotation);
 
-                  field_onClockwise.toggle(isRotation);
-                  label_onClockwise.toggle(isRotation);
-                  field_onCounterClockwise.toggle(isRotation);
-                  label_onCounterClockwise.toggle(isRotation);
-                  field_onLimitedRange.toggle(isRotation);
-                  label_onLimitedRange.toggle(isRotation);
-                  field_limitedRangeFrom.toggle(isRotation);
-                  label_limitedRangeAnd.toggle(isRotation);
-                  field_limitedRangeTo.toggle(isRotation);
-                  label_limitedRangeDegrees.toggle(isRotation);
+                  label_rotationHint.toggle(isRotation);
+                  label_rotationFrom.toggle(isRotation);
+                  field_rotationFrom.toggle(isRotation);
+                  label_rotationTo.toggle(isRotation);
+                  field_rotationTo.toggle(isRotation);
+                  label_rotationDegrees.toggle(isRotation);
 
                   if (isRotation) {
                     field_buttonTo.val("").prop('disabled', true);
@@ -418,16 +393,13 @@
                 field_buttonFrom.val (rule.buttonFrom.toString());
                 field_buttonTo.val (rule.buttonTo !== null ? rule.buttonTo.toString() : "");
                 field_minLongPressDuration.val (rule.minLongPressDuration.toString());
-                field_limitedRangeFrom.val (rule.limitedRangeFrom.toString());
-                field_limitedRangeTo.val (rule.limitedRangeTo.toString());
+                field_rotationFrom.val (rule.rotationFrom.toString());
+                field_rotationTo.val (rule.rotationTo.toString());
                 // Checkboxes
                 field_onStartPress.prop ('checked', rule.onStartPress);
                 field_onEndShortPress.prop ('checked', rule.onEndShortPress);
                 field_onEndLongPress.prop ('checked', rule.onEndLongPress);
                 field_onDuringLongPress.prop ('checked', rule.onDuringLongPress);
-                field_onClockwise.prop ('checked', rule.onClockwise);
-                field_onCounterClockwise.prop ('checked', rule.onCounterClockwise);
-                field_onLimitedRange.prop ('checked', rule.onLimitedRange);
                 // Show the button-range or rotation controls, matching this rule's own mode
                 applyRangeMode();
                 // Update outputs (number of outputs and how the changed since onLoad)
@@ -474,20 +446,20 @@
           rules.each (function (i) {
             let rule = $(this);
             let savedRule = {};
-            let buttonFromVal = rule.find("[id^=node-input-buttonFrom_]").val();
-            let isRotation = (buttonFromVal === "rotation");
-            savedRule.buttonFrom = isRotation ? "rotation" : parseInt(buttonFromVal);
-            savedRule.buttonTo = isRotation ? null : parseInt(rule.find("[id^=node-input-buttonTo_]").val());
+            if (rule.find("[id^=node-input-buttonFrom_]").val() === "rotation") {
+              // A rotation rule only keeps its angle range, ordered low to high
+              let from = parseInt(rule.find("[id^=node-input-rotationFrom_]").val()) || 0;
+              let to = parseInt(rule.find("[id^=node-input-rotationTo_]").val()) || 0;
+              node.rules.push ({buttonFrom: "rotation", buttonTo: null, rotationFrom: Math.min(from, to), rotationTo: Math.max(from, to)});
+              return;
+            }
+            savedRule.buttonFrom = parseInt(rule.find("[id^=node-input-buttonFrom_]").val());
+            savedRule.buttonTo = parseInt(rule.find("[id^=node-input-buttonTo_]").val());
             savedRule.onStartPress = rule.find("[id^=node-input-onStartPress_]").prop("checked");
             savedRule.onEndShortPress = rule.find("[id^=node-input-onEndShortPress_]").prop("checked");
             savedRule.onEndLongPress = rule.find("[id^=node-input-onEndLongPress_]").prop("checked");
             savedRule.onDuringLongPress = rule.find("[id^=node-input-onDuringLongPress_]").prop("checked");
             savedRule.minLongPressDuration = parseInt(rule.find("[id^=node-input-minLongPressDuration_]").val()) || 0;
-            savedRule.onClockwise = rule.find("[id^=node-input-onClockwise_]").prop("checked");
-            savedRule.onCounterClockwise = rule.find("[id^=node-input-onCounterClockwise_]").prop("checked");
-            savedRule.onLimitedRange = rule.find("[id^=node-input-onLimitedRange_]").prop("checked");
-            savedRule.limitedRangeFrom = parseInt(rule.find("[id^=node-input-limitedRangeFrom_]").val()) || 0;
-            savedRule.limitedRangeTo = parseInt(rule.find("[id^=node-input-limitedRangeTo_]").val()) || 0;
             node.rules.push (savedRule);
           });
         },

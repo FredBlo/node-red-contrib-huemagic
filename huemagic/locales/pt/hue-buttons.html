@@ -9,6 +9,8 @@ Se não selecionar nenhum interruptor ou botão e utilizar assim a configuraçã
 
 Em «Saídas adicionais» pode adicionar uma saída por cada intervalo de botões, cada uma acionada por uma ação específica (início da pressão, fim de uma pressão curta, fim de uma pressão longa assim que esta tenha durado pelo menos a duração configurada, ou repetidamente enquanto uma pressão longa está em curso). A primeira saída do nó continua a receber sempre todos os eventos, tal como antes; as saídas adicionais só recebem uma cópia da mensagem quando o intervalo de botões e a ação correspondem.
 
+Para a roda de um Hue Tap Dial Switch, escolha «Rotação ↻» em «De» e introduza um intervalo de ângulos. As rotações no sentido anti-horário contam como graus negativos e as rotações no sentido horário como positivos: de `0` a `360` apanha qualquer rotação horária, de `-360` a `0` qualquer rotação anti-horária, e de `-50` a `10` uma rotação anti-horária até 50° ou uma rotação horária até 10°. Conta o ângulo que a roda comunica em cada evento de rotação, não a soma de uma rotação mais longa.
+
 ### Consultar o estado
 
 Emite o estado atual do interruptor ou botão assim que for transmitido ao nó um objeto `msg.payload` com o seguinte conteúdo. Em alternativa, também pode premir o botão na interface do Node-RED sem ter de enviar previamente uma mensagem ao nó.

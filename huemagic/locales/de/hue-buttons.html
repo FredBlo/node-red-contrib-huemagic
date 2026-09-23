@@ -9,6 +9,8 @@ Wenn Sie keinen Schalter auswählen und die Node-Konfiguration so anwenden, arbe
 
 Unter „Zusätzliche Ausgänge“ können Sie pro Tastenbereich einen Ausgang hinzufügen, der jeweils durch eine bestimmte Aktion ausgelöst wird (Beginn eines Drucks, Ende eines kurzen Drucks, Ende eines langen Drucks, sobald dieser mindestens die eingestellte Dauer erreicht hat, oder wiederholt, während ein langer Druck andauert). Der erste Ausgang des Nodes erhält wie bisher immer jedes Ereignis; die zusätzlichen Ausgänge erhalten nur dann eine Kopie der Nachricht, wenn sowohl der Tastenbereich als auch die Aktion übereinstimmen.
 
+Für das Drehrad eines Hue Tap Dial Switch wählen Sie unter „Von“ stattdessen „Drehung ↻“ und geben einen Winkelbereich an. Drehungen gegen den Uhrzeigersinn zählen als negative Grad, Drehungen im Uhrzeigersinn als positive: `0` bis `360` erfasst jede Drehung im Uhrzeigersinn, `-360` bis `0` jede Drehung gegen den Uhrzeigersinn und `-50` bis `10` eine Drehung um bis zu 50° gegen oder bis zu 10° im Uhrzeigersinn. Maßgeblich ist der Winkel, den das Drehrad mit jedem einzelnen Dreh-Ereignis meldet, nicht die Summe einer längeren Drehung.
+
 ### Status abrufen
 
 Gibt den aktuellen Status des Schalters aus, sobald ein `msg.payload`-Objekt mit folgendem Inhalt an den Node übergeben wurde. Sie können alternativ auch den Button in der Node-RED-Oberfläche betätigen, ohne vorher eine Nachricht an den Node übergeben zu müssen.

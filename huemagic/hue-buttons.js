@@ -6,9 +6,6 @@ module.exports = function(RED)
 	// DOES A BUTTON EVENT MATCH THE RULE OF AN ADDITIONAL OUTPUT?
 	function matchesRule(buttonState, rule)
 	{
-		// A ROTATION RULE HAS NO buttonFrom/buttonTo RANGE TO CHECK
-		if(rule.buttonFrom === "rotation") { return false; }
-
 		// BUTTON OUTSIDE THE RANGE THE RULE WATCHES?
 		if(buttonState.button < parseInt(rule.buttonFrom) || buttonState.button > parseInt(rule.buttonTo)) { return false; }
 
@@ -31,23 +28,9 @@ module.exports = function(RED)
 	// DOES A DIAL ROTATION EVENT MATCH THE RULE OF AN ADDITIONAL OUTPUT?
 	function matchesRotationRule(rotation, rule)
 	{
-		// A BUTTON-RANGE RULE HAS NO DIRECTION/ANGLE TO CHECK
-		if(rule.buttonFrom !== "rotation") { return false; }
-
-		// EACH ENABLED CONDITION IS CHECKED INDEPENDENTLY (OR'ED, NOT AND'ED) - "CLOCKWISE"/
-		// "COUNTERCLOCKWISE" MEAN "ANY ROTATION IN THAT DIRECTION", REGARDLESS OF THE ANGLE RANGE
-		if(rule.onClockwise && rotation.clockwise) { return true; }
-		if(rule.onCounterClockwise && !rotation.clockwise) { return true; }
-
-		// INSIDE THE ANGLE RANGE ? NEGATIVE DEGREES ARE COUNTERCLOCKWISE, POSITIVE ARE CLOCKWISE
-		// (E.G. -50 TO 10 MEANS "FROM 50° COUNTERCLOCKWISE UP TO 10° CLOCKWISE")
-		if(rule.onLimitedRange)
-		{
-			const signedDegrees = rotation.clockwise ? rotation.degrees : -rotation.degrees;
-			if(signedDegrees >= (parseInt(rule.limitedRangeFrom) || 0) && signedDegrees <= (parseInt(rule.limitedRangeTo) || 0)) { return true; }
-		}
-
-		return false;
+		// COUNTERCLOCKWISE IS NEGATIVE, CLOCKWISE POSITIVE
+		const degrees = rotation.clockwise ? rotation.degrees : -rotation.degrees;
+		return (degrees >= (parseInt(rule.rotationFrom) || 0) && degrees <= (parseInt(rule.rotationTo) || 0));
 	}
 
 	function HueButtons(config)

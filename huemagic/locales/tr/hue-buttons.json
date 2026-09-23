@@ -25,10 +25,9 @@
 			"add-outputs-longpresswhile": "Uzun basma (basılı tutulurken)",
 			"add-outputs-btn-addnew": "yeni düğme aralığı ekle",
 			"add-outputs-rotation": "Döndürme ↻",
-			"add-outputs-clockwise": "Saat yönünde herhangi bir döndürme ↻",
-			"add-outputs-counterclockwise": "Saat yönünün tersine herhangi bir döndürme ↺",
-			"add-outputs-limitedrange": "Herhangi bir açı şu aralıkta",
-			"add-outputs-limitedrange-to": "ve",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Açı",
+			"add-outputs-rotation-range-to": "ile",
 			"outputlabel-btn-from": "düğme #__from__",
 			"outputlabel-btn-from-to": "düğmeler #__from__ - #__to__",
 			"outputlabel-btn-on": "şurada:",
@@ -37,9 +36,7 @@
 			"outputlabel-btn-longpress": "Uzun basma (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Uzun basma (basılı tutulurken)",
 			"outputlabel-rotation": "çevirme hareketi",
-			"outputlabel-rotation-clockwise": "Saat yönünde herhangi bir döndürme",
-			"outputlabel-rotation-counterclockwise": "Saat yönünün tersine herhangi bir döndürme",
-			"outputlabel-rotation-limitedrange": "__from__° ile __to__° arasında"
+			"outputlabel-rotation-range": "__from__° ile __to__° arasında"
 		},
 		"node": {
 			"not-configured": "yapılandırılmadı",

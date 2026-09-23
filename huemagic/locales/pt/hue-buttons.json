@@ -25,10 +25,9 @@
 			"add-outputs-longpresswhile": "Pressão longa (enquanto premido)",
 			"add-outputs-btn-addnew": "adicionar novo intervalo de botões",
 			"add-outputs-rotation": "Rotação ↻",
-			"add-outputs-clockwise": "Qualquer rotação no sentido horário ↻",
-			"add-outputs-counterclockwise": "Qualquer rotação no sentido anti-horário ↺",
-			"add-outputs-limitedrange": "Qualquer ângulo entre",
-			"add-outputs-limitedrange-to": "e",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Ângulo entre",
+			"add-outputs-rotation-range-to": "e",
 			"outputlabel-btn-from": "botão #__from__",
 			"outputlabel-btn-from-to": "botões #__from__ a #__to__",
 			"outputlabel-btn-on": "em:",
@@ -37,9 +36,7 @@
 			"outputlabel-btn-longpress": "Pressão longa (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Pressão longa (enquanto premido)",
 			"outputlabel-rotation": "rotação da roda",
-			"outputlabel-rotation-clockwise": "Qualquer rotação no sentido horário",
-			"outputlabel-rotation-counterclockwise": "Qualquer rotação no sentido anti-horário",
-			"outputlabel-rotation-limitedrange": "entre __from__° e __to__°"
+			"outputlabel-rotation-range": "entre __from__° e __to__°"
 		},
 		"node": {
 			"not-configured": "não configurado",

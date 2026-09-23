@@ -25,10 +25,9 @@
 			"add-outputs-longpresswhile": "Długie naciśnięcie (podczas trzymania)",
 			"add-outputs-btn-addnew": "dodaj nowy zakres przycisków",
 			"add-outputs-rotation": "Obrót ↻",
-			"add-outputs-clockwise": "Każdy obrót zgodnie z ruchem wskazówek zegara ↻",
-			"add-outputs-counterclockwise": "Każdy obrót przeciwnie do ruchu wskazówek zegara ↺",
-			"add-outputs-limitedrange": "Dowolny kąt między",
-			"add-outputs-limitedrange-to": "a",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Kąt między",
+			"add-outputs-rotation-range-to": "a",
 			"outputlabel-btn-from": "przycisk #__from__",
 			"outputlabel-btn-from-to": "przyciski #__from__ do #__to__",
 			"outputlabel-btn-on": "przy:",
@@ -37,9 +36,7 @@
 			"outputlabel-btn-longpress": "Długie naciśnięcie (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Długie naciśnięcie (podczas trzymania)",
 			"outputlabel-rotation": "obrót pokrętła",
-			"outputlabel-rotation-clockwise": "Każdy obrót zgodnie z ruchem wskazówek zegara",
-			"outputlabel-rotation-counterclockwise": "Każdy obrót przeciwnie do ruchu wskazówek zegara",
-			"outputlabel-rotation-limitedrange": "między __from__° a __to__°"
+			"outputlabel-rotation-range": "między __from__° a __to__°"
 		},
 		"node": {
 			"not-configured": "nieskonfigurowany",

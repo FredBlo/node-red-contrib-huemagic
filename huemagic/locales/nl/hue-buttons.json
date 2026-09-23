@@ -25,10 +25,9 @@
 			"add-outputs-longpresswhile": "Lang indrukken (terwijl ingedrukt)",
 			"add-outputs-btn-addnew": "nieuw knoppenbereik toevoegen",
 			"add-outputs-rotation": "Rotatie ↻",
-			"add-outputs-clockwise": "Elke rotatie met de klok mee ↻",
-			"add-outputs-counterclockwise": "Elke rotatie tegen de klok in ↺",
-			"add-outputs-limitedrange": "Willekeurige hoek tussen",
-			"add-outputs-limitedrange-to": "en",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Hoek tussen",
+			"add-outputs-rotation-range-to": "en",
 			"outputlabel-btn-from": "knop #__from__",
 			"outputlabel-btn-from-to": "knoppen #__from__ t/m #__to__",
 			"outputlabel-btn-on": "bij:",
@@ -37,9 +36,7 @@
 			"outputlabel-btn-longpress": "Lang indrukken (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Lang indrukken (terwijl ingedrukt)",
 			"outputlabel-rotation": "draaiknopbeweging",
-			"outputlabel-rotation-clockwise": "Elke rotatie met de klok mee",
-			"outputlabel-rotation-counterclockwise": "Elke rotatie tegen de klok in",
-			"outputlabel-rotation-limitedrange": "tussen __from__° en __to__°"
+			"outputlabel-rotation-range": "tussen __from__° en __to__°"
 		},
 		"node": {
 			"not-configured": "niet geconfigureerd",

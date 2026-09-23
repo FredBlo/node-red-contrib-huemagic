@@ -9,6 +9,8 @@ Bir anahtar veya düğme seçmez ve düğüm yapılandırmasını bu şekilde ku
 
 «Ek çıkışlar» altında her düğme aralığı için, belirli bir eylemle (basmanın başlangıcı, kısa basmanın sona ermesi, yapılandırılan süre kadar sürdükten sonra uzun basmanın sona ermesi veya uzun basma devam ederken tekrar tekrar) tetiklenen bir çıkış ekleyebilirsiniz. Düğümün ilk çıkışı öncekiyle aynı şekilde her zaman tüm olayları alır; ek çıkışlar yalnızca hem düğme aralığı hem de eylem eşleştiğinde mesajın bir kopyasını alır.
 
+Bir Hue Tap Dial Switch'in çevirme düğmesi için «Başlangıç» altında «Döndürme ↻» seçeneğini seçin ve bir açı aralığı girin. Saat yönünün tersine döndürmeler negatif, saat yönündeki döndürmeler pozitif derece olarak sayılır: `0` ile `360` arası saat yönündeki her döndürmeyi, `-360` ile `0` arası saat yönünün tersine her döndürmeyi, `-50` ile `10` arası ise saat yönünün tersine en fazla 50° veya saat yönünde en fazla 10° döndürmeyi yakalar. Geçerli olan, düğmenin her bir döndürme olayında bildirdiği açıdır; daha uzun bir döndürmenin toplamı değildir.
+
 ### Durumu sorgulama
 
 Düğüme aşağıdaki içeriğe sahip bir `msg.payload` nesnesi iletildiğinde anahtarın veya düğmenin güncel durumunu verir. Alternatif olarak, önce düğüme bir mesaj göndermeden Node-RED arayüzündeki düğmeye de basabilirsiniz.

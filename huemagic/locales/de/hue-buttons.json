@@ -25,10 +25,9 @@
 			"add-outputs-longpresswhile": "Langer Druck (während gedrückt)",
 			"add-outputs-btn-addnew": "neuen Tastenbereich hinzufügen",
 			"add-outputs-rotation": "Drehung ↻",
-			"add-outputs-clockwise": "Jede Drehung im Uhrzeigersinn ↻",
-			"add-outputs-counterclockwise": "Jede Drehung gegen den Uhrzeigersinn ↺",
-			"add-outputs-limitedrange": "Beliebiger Winkel zwischen",
-			"add-outputs-limitedrange-to": "und",
+			"add-outputs-rotation-hint": "↺ −360 … 0 … 360 ↻",
+			"add-outputs-rotation-range": "Winkel zwischen",
+			"add-outputs-rotation-range-to": "und",
 			"outputlabel-btn-from": "Taste #__from__",
 			"outputlabel-btn-from-to": "Tasten #__from__ bis #__to__",
 			"outputlabel-btn-on": "bei:",
@@ -37,9 +36,7 @@
 			"outputlabel-btn-longpress": "Langer Druck (>__duration__s)",
 			"outputlabel-btn-longpresswhile": "Langer Druck (während gedrückt)",
 			"outputlabel-rotation": "Drehung",
-			"outputlabel-rotation-clockwise": "Jede Drehung im Uhrzeigersinn",
-			"outputlabel-rotation-counterclockwise": "Jede Drehung gegen den Uhrzeigersinn",
-			"outputlabel-rotation-limitedrange": "zwischen __from__° und __to__°"
+			"outputlabel-rotation-range": "zwischen __from__° und __to__°"
 		},
 		"node": {
 			"title": "Hue Buttons",

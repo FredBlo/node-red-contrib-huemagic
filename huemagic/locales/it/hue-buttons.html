@@ -9,6 +9,8 @@ Se non seleziona alcun interruttore o pulsante e utilizza così la configurazion
 
 In «Uscite aggiuntive» può aggiungere un'uscita per ogni intervallo di pulsanti, ciascuna attivata da un'azione specifica (inizio della pressione, fine di una pressione breve, fine di una pressione prolungata una volta raggiunta la durata configurata, oppure ripetutamente mentre una pressione prolungata è in corso). La prima uscita del nodo continua a ricevere sempre ogni evento, come prima; le uscite aggiuntive ricevono una copia del messaggio solo quando corrispondono sia l'intervallo di pulsanti sia l'azione.
 
+Per la rotella di un Hue Tap Dial Switch, scelga «Rotazione ↻» in «Da» e inserisca un intervallo di angoli. Le rotazioni in senso antiorario contano come gradi negativi, quelle in senso orario come positivi: da `0` a `360` coglie ogni rotazione oraria, da `-360` a `0` ogni rotazione antioraria, e da `-50` a `10` una rotazione antioraria fino a 50° o una rotazione oraria fino a 10°. Conta l'angolo che la rotella comunica con ogni singolo evento di rotazione, non la somma di una rotazione più lunga.
+
 ### Richiedere lo stato
 
 Emette lo stato attuale dell'interruttore o del pulsante non appena al nodo viene trasmesso un oggetto `msg.payload` con il seguente contenuto. In alternativa può anche premere il pulsante nell'interfaccia di Node-RED senza dover inviare prima un messaggio al nodo.
