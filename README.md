@@ -522,7 +522,7 @@ If you do not select a switch/button and use the node configuration in this way,
 
 ### Additional outputs
 
-Under "Additional outputs" you can give the node one further output per range of buttons. Each of these outputs is triggered by the actions you tick for it:
+Under "Additional outputs" you can give the node one further output per range of buttons, or per angle range of a dial. Each of these outputs is triggered by the actions you tick for it:
 
 |Setting|Description|
 |--|--|
@@ -531,8 +531,9 @@ Under "Additional outputs" you can give the node one further output per range of
 | Short press ended | Fires when a key was released within half a second |
 | Long press ended when > | Fires when a key was released after having been held down for at least the given number of milliseconds |
 | Long press (while pressed) | Fires repeatedly, roughly every half second, for as long as the key is still held down |
+| Rotation ↻ | Choose it under From instead of a button to listen to the dial of a Hue Tap Dial Switch. The output then fires for every turn whose angle lies between the two values you enter. Counterclockwise turns count as negative degrees, clockwise turns as positive ones: `0` to `360` catches every clockwise turn, `-360` to `0` every counterclockwise turn, and `-50` to `10` a counterclockwise turn of up to 50° or a clockwise turn of up to 10°. The angle is the one the dial reports with each rotation event, not the sum of a longer turn |
 
-The first output of the node always receives every event, exactly as it did before, so existing flows keep working unchanged. The additional outputs only receive a copy of the message when the button range **and** the action match, which saves the Switch node that used to sit behind the node.
+The first output of the node always receives every event, exactly as it did before, so existing flows keep working unchanged. The additional outputs only receive a copy of the message when the button range **and** the action match, or when a turn of the dial falls into the angle range, which saves the Switch node that used to sit behind the node.
 
 ### Get status
 
@@ -1218,9 +1219,9 @@ If the status of the node has changed via a certain command, the entire command 
 
 # Changelog
 
-### v5.?.? (latest)
+### v5.2.0 (latest)
 
-* The "Hue Buttons" node's additional outputs can now also be triggered by a dial rotation instead of a button range: a turning direction (clockwise / counterclockwise) or a range of degrees turned
+* The "Hue Buttons" node's additional outputs can now also listen to the dial of a Hue Tap Dial Switch: choose "Rotation" instead of a button and set the range of degrees a turn has to fall into, with counterclockwise turns counting as negative ([#457](https://github.com/Foddy/node-red-contrib-huemagic/pull/457)) (thx @FredBlo)
 
 ### v5.1.1
 

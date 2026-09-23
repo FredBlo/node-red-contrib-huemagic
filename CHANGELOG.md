@@ -2,9 +2,9 @@
 
 # Changelog
 
-### v5.?.? (latest)
+### v5.2.0 (latest)
 
-* The "Hue Buttons" node's additional outputs can now also be triggered by a dial rotation instead of a button range: a turning direction (clockwise / counterclockwise) or a range of degrees turned
+* The "Hue Buttons" node's additional outputs can now also listen to the dial of a Hue Tap Dial Switch: choose "Rotation" instead of a button and set the range of degrees a turn has to fall into, with counterclockwise turns counting as negative ([#457](https://github.com/Foddy/node-red-contrib-huemagic/pull/457)) (thx @FredBlo)
 
 ### v5.1.1
 
