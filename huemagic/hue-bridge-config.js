@@ -42,7 +42,23 @@ module.exports = function(RED)
 		this.timerWatchDog = null;
 		this.watchdogFailures = 0;
 		this.starting = false;
+		this.startAttempt = 0;
+		this.startGuard = null;
 		this.refetchTimeout = null;
+		this.refetchDue = 0;
+		this.refetchAttempt = 0;
+
+		// EVERY FULL LOAD GETS A NUMBER, SO AN OLDER ONE THAT FINISHES LATE CANNOT OVERWRITE A NEWER ONE
+		this.loadGeneration = 0;
+		this.appliedGeneration = 0;
+
+		// RESOURCES THE BRIDGE REPORTED AS DELETED / HOW OFTEN A RESOURCE WAS MISSING FROM A FULL LOAD
+		this.deletedIds = new Set();
+		this.missingCount = {};
+
+		// REPAIRS REQUESTED BY THE EVENT STREAM (UNKNOWN RESOURCES, CHANGED SERVICES)
+		this.repairs = {};
+		this.lastRepair = 0;
 
 		// RESOURCE ID PATTERN (NEVER GLOBAL, "test" WOULD BECOME STATEFUL)
 		this.validResourceID = /^[a-zA-Z0-9-]+$/i;
@@ -52,6 +68,20 @@ module.exports = function(RED)
 
 		// CREATE NODE
 		RED.nodes.createNode(scope, config);
+
+		// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+		const TRACE = "[reconnect-trace] ";
+		this.trace = function(text) { scope.log(TRACE + text); };
+		// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+
+		// ROOT RESOURCES A NODE CAN BE CONFIGURED WITH - THEY MUST NOT SILENTLY VANISH FROM THE CACHE
+		const TRACKED_ROOT_TYPES = ["device", "room", "zone", "bridge_home", "scene", "smart_scene", "behavior_instance", "rule"];
+
+		// DOES THE CACHE STILL HOLD ANY DEVICE? (THE BRIDGE ITSELF IS ONE, SO A HEALTHY CACHE ALWAYS DOES)
+		this.hasDevices = function()
+		{
+			return Object.values(scope.resources).some(function(resource) { return !!resource && resource.type === "device"; });
+		}
 
 		// PERIODICALLY CHECK WETHER BRIDGE IS CONNECTED
 		this.startWatchdog = function()
@@ -65,7 +95,20 @@ module.exports = function(RED)
 				API.request({ config: config, resource: "bridge" })
 				.then(function(bridgeInformation)
 				{
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					if(scope.watchdogFailures > 0) { scope.trace("Watchdog: the bridge answers again after " + scope.watchdogFailures + " failure(s)"); }
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 					scope.watchdogFailures = 0;
+
+					// THE BRIDGE ANSWERS, BUT THE CACHE MAY STILL HAVE LOST EVERYTHING
+					if(!scope.hasDevices())
+					{
+						// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+						scope.trace("Watchdog: the bridge answers but the cache holds no device");
+						// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+						scope.refetchResources("watchdog: empty cache");
+					}
+
 					scope.startWatchdog();
 				})
 				.catch(function(error)
@@ -73,30 +116,69 @@ module.exports = function(RED)
 					// BRIDGE IS OVERLOADED (429) OR BUSY (503) BUT STILL ALIVE
 					if(error.status === 429 || error.status === 503)
 					{
+						// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+						scope.trace("Watchdog: the bridge is busy (" + error.status + ")");
+						// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 						return scope.startWatchdog();
 					}
 
 					scope.watchdogFailures += 1;
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					scope.trace("Watchdog: failure " + scope.watchdogFailures + "/3 (" + error.status + ")");
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 					scope.log(RED._("hue-bridge-config.node.request-error", { error: JSON.stringify(error.errors ? error.errors : error) }));
 
-					// ONLY RECONNECT AFTER THREE FAILED ATTEMPTS IN A ROW
-					if(scope.watchdogFailures >= 3) { scope.start(); }
-					else { scope.startWatchdog(); }
+					// ONLY RECONNECT AFTER THREE FAILED ATTEMPTS IN A ROW (AND KEEP WATCHING IF NO START HAPPENS)
+					if(scope.watchdogFailures < 3 || scope.start("watchdog") === false) { scope.startWatchdog(); }
 				});
 			}, API.connected(config) ? 60000 : 15000);
 		}
 
 		// INITIALIZE
-		this.start = function()
+		this.start = function(origin = "startup")
 		{
-			if(scope.starting === true || scope.nodeActive === false) { return false; }
+			if(scope.starting === true || scope.nodeActive === false)
+			{
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Start (" + origin + ") skipped: " + (scope.starting === true ? "already starting" : "node closed"));
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				return false;
+			}
+
 			scope.starting = true;
 			scope.watchdogFailures = 0;
+
+			const attempt = ++scope.startAttempt;
+			const isCurrent = function() { return attempt === scope.startAttempt && scope.nodeActive === true; };
+			let generation = 0;
+
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.trace("Start #" + attempt + " (" + origin + ")");
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+
+			// A START THAT NEVER SETTLES WOULD BLOCK EVERY FUTURE ONE
+			if(scope.startGuard !== null) { clearTimeout(scope.startGuard); }
+			scope.startGuard = setTimeout(function()
+			{
+				scope.startGuard = null;
+				if(!isCurrent() || scope.starting !== true) { return false; }
+
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Start #" + attempt + " did not finish within 120 seconds, starting over in 30 seconds");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.starting = false;
+				scope.startAttempt += 1;
+				setTimeout(function(){ scope.start("start timeout"); }, 30000);
+			}, 120000);
+
+			// NEVER KEEP THE PROCESS ALIVE ON ITS OWN
+			scope.startGuard.unref();
 
 			scope.log(RED._("hue-bridge-config.node.initializing", { bridge: config.bridge }));
 			API.init({ config: config })
 			.then(function(bridge) {
 				scope.log(RED._("hue-bridge-config.node.connected"));
+				generation = scope.beginLoad("start #" + attempt + " (" + origin + ")");
 				return scope.getAllResources();
 			})
 			.then(function(allResources)
@@ -106,8 +188,11 @@ module.exports = function(RED)
 			})
 			.then(function(allResources)
 			{
+				if(!isCurrent()) { throw "stale"; }
+
 				// SAVE CURRENT RESOURCES
-				scope.resources = allResources;
+				const result = scope.applyResources(allResources, generation, "start #" + attempt);
+				if(result.missing > 0) { scope.retryRefetch("incomplete load at start #" + attempt); }
 
 				// EMIT INITIAL STATES -> NODES
 				scope.log(RED._("hue-bridge-config.node.initial-emit"));
@@ -115,7 +200,13 @@ module.exports = function(RED)
 			})
 			.then(function(emitted)
 			{
+				if(!isCurrent()) { throw "stale"; }
+
 				scope.starting = false;
+				if(scope.startGuard !== null) { clearTimeout(scope.startGuard); scope.startGuard = null; }
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Start #" + attempt + " finished");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 
 				// START REFRESHING STATES
 				scope.keepUpdated();
@@ -129,11 +220,122 @@ module.exports = function(RED)
 			})
 			.catch(function(error)
 			{
+				// A START THAT TIMED OUT AND WAS REPLACED HAS NOTHING TO SAY ANYMORE
+				if(!isCurrent())
+				{
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					scope.trace("Start #" + attempt + " settled after it was replaced, ignored");
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					return false;
+				}
+
 				// RETRY AFTER 30 SECONDS
 				scope.starting = false;
+				if(scope.startGuard !== null) { clearTimeout(scope.startGuard); scope.startGuard = null; }
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Start #" + attempt + " failed, retrying in 30 seconds");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 				scope.log(error);
-				if(scope.nodeActive == true) { setTimeout(function(){ scope.start(); }, 30000); }
+				if(scope.nodeActive == true) { setTimeout(function(){ scope.start("retry after failed start"); }, 30000); }
 			});
+		}
+
+		// A FULL LOAD BEGINS
+		this.beginLoad = function(origin)
+		{
+			const generation = ++scope.loadGeneration;
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.trace("Full load #" + generation + " started (" + origin + ")");
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			return generation;
+		}
+
+		// REPLACE THE CACHE WITH A FULL LOAD, BUT NEVER LOSE A RESOURCE THE BRIDGE DID NOT DELETE
+		this.applyResources = function(newResources, generation, origin)
+		{
+			if(generation < scope.appliedGeneration)
+			{
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Full load #" + generation + " (" + origin + ") ignored, the newer #" + scope.appliedGeneration + " was already applied");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				return { applied: false, missing: 0 };
+			}
+
+			scope.appliedGeneration = generation;
+
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			// WHAT DID THE BRIDGE SEND?
+			let counts = { resources: 0, devices: 0, lights: 0, temperature: 0, motion: 0, rooms: 0 };
+			for (const [id, resource] of Object.entries(newResources))
+			{
+				if(id === "_groupsOf" || !resource) { continue; }
+				counts.resources += 1;
+				if(resource.type === "device") { counts.devices += 1; }
+				if(resource.type === "room" || resource.type === "zone") { counts.rooms += 1; }
+				if(resource.services && resource.services.light) { counts.lights += 1; }
+				if(resource.services && resource.services.temperature) { counts.temperature += 1; }
+				if(resource.services && resource.services.motion) { counts.motion += 1; }
+			}
+
+			scope.trace("Full load #" + generation + " (" + origin + ") received: " + JSON.stringify(counts));
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+
+			let kept = [];
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			let dropped = [];
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+
+			for (const [id, resource] of Object.entries(scope.resources))
+			{
+				if(id === "_groupsOf" || !resource || TRACKED_ROOT_TYPES.indexOf(resource.type) === -1) { continue; }
+
+				if(newResources[id]) { delete scope.missingCount[id]; continue; }
+				if(scope.deletedIds.has(id)) { scope.deletedIds.delete(id); delete scope.missingCount[id]; continue; }
+
+				const name = (resource.metadata && resource.metadata.name) ? resource.metadata.name : (resource.name ? resource.name : "?");
+				scope.missingCount[id] = (scope.missingCount[id] || 0) + 1;
+
+				// GONE FOR TOO LONG -> THE BRIDGE REALLY DOES NOT KNOW IT ANYMORE
+				if(scope.missingCount[id] > scope.refetchRetryDelays.length)
+				{
+					delete scope.missingCount[id];
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					dropped.push(resource.type + " " + id + " (" + name + ")");
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					continue;
+				}
+
+				// KEEP THE LAST KNOWN STATE (AND ITS GROUP MEMBERSHIPS) UNTIL THE BRIDGE CONFIRMS
+				newResources[id] = resource;
+				kept.push(resource.type + " " + id + " (" + name + ", missing " + scope.missingCount[id] + "x)");
+
+				if(resource["services"] && newResources["_groupsOf"])
+				{
+					for (const serviceType in resource["services"])
+					{
+						for (const serviceID in resource["services"][serviceType])
+						{
+							if(!newResources["_groupsOf"][serviceID]) { newResources["_groupsOf"][serviceID] = []; }
+							if(newResources["_groupsOf"][serviceID].indexOf(id) === -1) { newResources["_groupsOf"][serviceID].push(id); }
+						}
+					}
+				}
+			}
+
+			// A DELETE THAT ARRIVED DURING AN OLDER LOAD STAYS VALID ONLY FOR RESOURCES THAT ARE STILL THERE
+			for (const id of Array.from(scope.deletedIds)) { if(!newResources[id]) { scope.deletedIds.delete(id); } }
+
+			scope.resources = newResources;
+
+			// A COMPLETE LOAD ENDS ANY ROUND OF RETRIES
+			if(kept.length === 0) { scope.refetchAttempt = 0; }
+
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			if(kept.length > 0) { scope.trace("Full load #" + generation + ": " + kept.length + " resource(s) missing without a delete event, kept for now: " + kept.join(", ")); }
+			if(dropped.length > 0) { scope.trace("Full load #" + generation + ": " + dropped.length + " resource(s) still missing after every retry, dropped: " + dropped.join(", ")); }
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+
+			return { applied: true, missing: kept.length };
 		}
 
 		// FETCH BRIDGE INFORMATION
@@ -185,10 +387,26 @@ module.exports = function(RED)
 					allResources.push(bridgeInformation);
 
 					// CONTINUE WITH ALL RESOURCES
-					return API.request({ config: config, resource: "all" });
+					return API.request({ config: config, resource: "all", raw: true });
 				})
-				.then(function(v2Resources)
+				.then(function(answer)
 				{
+					const v2Resources = (answer && Array.isArray(answer.data)) ? answer.data : null;
+					const errors = (answer && Array.isArray(answer.errors)) ? answer.errors : [];
+
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					if(errors.length > 0) { scope.trace("GET /resource answered with errors: " + JSON.stringify(errors)); }
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+
+					// THE BRIDGE ALWAYS KNOWS AT LEAST ITSELF, AN EMPTY LIST IS A BRIDGE THAT IS NOT READY YET
+					if(!v2Resources || v2Resources.length === 0)
+					{
+						// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+						scope.trace("GET /resource answered without any resource, rejected");
+						// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+						throw { status: "EEMPTY", errors: (errors.length > 0) ? errors : "The bridge answered without any resource." };
+					}
+
 					// MERGE RESOURCES
 					allResources = allResources.concat(v2Resources);
 
@@ -266,7 +484,14 @@ module.exports = function(RED)
 				// DEVICE ADDED/REMOVED OR EVENTS MISSED? -> RE-READ ALL RESOURCES
 				if(eventType === "add" || eventType === "delete" || eventType === "reconnect")
 				{
-					return scope.refetchResources();
+					// A DELETED RESOURCE MAY LEAVE THE CACHE, EVERY OTHER ONE IS KEPT UNTIL THE BRIDGE CONFIRMS
+					if(eventType === "delete") { for(let resource of updates) { if(resource && resource.id) { scope.deletedIds.add(resource.id); } } }
+
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					const listed = updates.slice(0, 10).map(function(resource) { return resource.type + " " + resource.id; }).join(", ");
+					scope.trace("Event stream: '" + eventType + "' event" + (listed.length > 0 ? " for " + listed + (updates.length > 10 ? " …" : "") : ""));
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					return scope.refetchResources(eventType);
 				}
 
 				for(let resource of updates)
@@ -301,10 +526,27 @@ module.exports = function(RED)
 					{
 						// GET PREVIOUS STATE
 						previousState = scope.resources[id];
+
+						// THE CACHE HOLDS THE RESOLVED SERVICES, A LIST OF REFERENCES MUST NEVER REPLACE THEM
+						if(Array.isArray(resource["services"]))
+						{
+							const known = Object.values(previousState["services"] ? previousState["services"] : {}).flatMap(function(one) { return Object.keys(one); }).sort().join(",");
+							const announced = resource["services"].map(function(one) { return one.rid; }).sort().join(",");
+
+							resource = Object.assign({}, resource);
+							delete resource["services"];
+
+							if(known !== announced) { scope.repair("services:" + id, "the services of " + type + " " + id + " changed"); }
+						}
 					}
 
-					// NO PREVIOUS STATE? -> UNKNOWN RESOURCE, CONTINUE WITH THE NEXT ONE
-					if(!previousState) { continue; }
+					// NO PREVIOUS STATE? -> THE CACHE DOES NOT KNOW IT (ANYMORE), CONTINUE WITH THE NEXT ONE
+					if(!previousState)
+					{
+						const target = resource["owner"] ? resource["owner"]["rid"] : id;
+						scope.repair(type + ":" + target, "update for unknown " + type + " " + id + (resource["owner"] ? " of " + resource["owner"]["rtype"] + " " + target : ""));
+						continue;
+					}
 
 					// CHECK DIFFERENCES
 					const mergedState = merge.deep(previousState, resource);
@@ -336,17 +578,70 @@ module.exports = function(RED)
 			function(reason, seconds)
 			{
 				scope.log(RED._("hue-bridge-config.node.connection-lost", { reason: reason, seconds: seconds }));
-			});
+			},
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.trace,
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			);
 		}
 
-		// RE-READ ALL RESOURCES (DEVICE ADDED / REMOVED ON THE BRIDGE)
-		this.refetchResources = function()
+		// THE EVENT STREAM SAW SOMETHING THE CACHE CANNOT EXPLAIN -> RE-READ, BUT NOT ENDLESSLY FOR THE SAME THING
+		this.repair = function(key, reason)
 		{
-			if(scope.refetchTimeout !== null) { clearTimeout(scope.refetchTimeout); }
+			const now = Date.now();
+			let repair = scope.repairs[key];
+
+			if(repair && repair.ignored === true) { return false; }
+
+			// ALREADY ASKED FOR AND NO FULL LOAD APPLIED SINCE -> STILL WAITING FOR IT
+			if(repair && repair.generation === scope.appliedGeneration && (now - repair.at) < 300000) { return false; }
+
+			// AT MOST ONE REPAIR PER MINUTE
+			if((now - scope.lastRepair) < 60000) { return false; }
+
+			if(!repair) { repair = scope.repairs[key] = { count: 0 }; }
+			repair.count += 1;
+
+			// STILL UNEXPLAINED AFTER SEVERAL FULL LOADS -> THE CACHE IS RIGHT, THE EVENT IS JUST UNUSUAL
+			if(repair.count > 3)
+			{
+				repair.ignored = true;
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Event stream: " + reason + ", still unexplained after 3 full loads, ignored from now on");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				return false;
+			}
+
+			repair.generation = scope.appliedGeneration;
+			repair.at = now;
+			scope.lastRepair = now;
+
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.trace("Event stream: " + reason + " (" + repair.count + "/3)");
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.refetchResources("repair " + key);
+		}
+
+		// RE-READ ALL RESOURCES (DEVICE ADDED / REMOVED ON THE BRIDGE, EVENTS MISSED, CACHE INCOMPLETE)
+		this.refetchResources = function(origin = "unknown", delay = 5000, isRetry = false)
+		{
+			if(scope.nodeActive === false) { return false; }
+
+			// A RETRY NEVER POSTPONES A FULL LOAD THAT IS ALREADY DUE EARLIER
+			const due = Date.now() + delay;
+			if(scope.refetchTimeout !== null)
+			{
+				if(isRetry && scope.refetchDue <= due) { return false; }
+				clearTimeout(scope.refetchTimeout);
+			}
+
+			scope.refetchDue = due;
 			scope.refetchTimeout = setTimeout(function()
 			{
 				scope.refetchTimeout = null;
 				scope.log(RED._("hue-bridge-config.node.resources-changed"));
+
+				const generation = scope.beginLoad(origin);
 
 				scope.getAllResources()
 				.then(function(allResources)
@@ -355,11 +650,41 @@ module.exports = function(RED)
 				})
 				.then(function(allResources)
 				{
-					scope.resources = allResources;
+					const result = scope.applyResources(allResources, generation, origin);
+					if(result.applied !== true) { return false; }
+
+					if(result.missing > 0) { scope.retryRefetch("incomplete load #" + generation); }
+
 					return scope.emitInitialStates();
 				})
-				.catch(function(error) { scope.log(error); });
-			}, 5000);
+				.catch(function(error)
+				{
+					scope.log(error);
+					scope.retryRefetch("failed load #" + generation);
+				});
+			}, delay);
+		}
+
+		// TRY AGAIN, A BIT LATER EACH TIME
+		this.refetchRetryDelays = [15000, 30000, 60000, 60000, 60000];
+		this.retryRefetch = function(reason)
+		{
+			if(scope.refetchAttempt >= scope.refetchRetryDelays.length)
+			{
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.trace("Full load: giving up after " + scope.refetchAttempt + " retries (" + reason + ")");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				scope.refetchAttempt = 0;
+				return false;
+			}
+
+			const delay = scope.refetchRetryDelays[scope.refetchAttempt];
+			scope.refetchAttempt += 1;
+
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.trace("Full load: retry " + scope.refetchAttempt + "/" + scope.refetchRetryDelays.length + " in " + (delay/1000) + " seconds (" + reason + ")");
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			scope.refetchResources("retry " + scope.refetchAttempt + " (" + reason + ")", delay, true);
 		}
 
 		// PUSH UPDATED STATE
@@ -853,6 +1178,7 @@ module.exports = function(RED)
 			if(scope.firmwareUpdateTimeout !== null) { clearTimeout(scope.firmwareUpdateTimeout); }
 			if(scope.timerWatchDog !== null) { clearTimeout(scope.timerWatchDog); }
 			if(scope.refetchTimeout !== null) { clearTimeout(scope.refetchTimeout); }
+			if(scope.startGuard !== null) { clearTimeout(scope.startGuard); }
 
 			// KILL QUEUE
 			scope.patchQueue.kill();

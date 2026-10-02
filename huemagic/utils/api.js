@@ -48,7 +48,7 @@ function API()
 
 	//
 	// MAKE A REQUEST
-	this.request = function({ config = null, method = 'GET', resource = null, data = null, version = 2 })
+	this.request = function({ config = null, method = 'GET', resource = null, data = null, version = 2, raw = false })
 	{
 		const scope = this;
 		return new Promise(function(resolve, reject)
@@ -97,8 +97,8 @@ function API()
 			{
 				if(version === 2)
 				{
-					// THE BRIDGE ALSO PUTS NON-FATAL HINTS INTO "errors", SO ONLY THE STATUS COUNTS
-					resolve(response.data.data);
+					// THE BRIDGE ALSO PUTS NON-FATAL HINTS INTO "errors", SO ONLY THE STATUS COUNTS ("raw" HANDS THEM BACK TOO)
+					resolve(raw ? response.data : response.data.data);
 				}
 				else if(version === 1)
 				{
@@ -127,7 +127,11 @@ function API()
 
 	//
 	// SUBSCRIBE TO BRIDGE EVENTS
-	this.subscribe = function(config, callback, log = null)
+	this.subscribe = function(config, callback, log = null,
+		// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+		trace = null,
+		// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+		)
 	{
 		const scope = this;
 		return new Promise(function(resolve, reject)
@@ -137,6 +141,10 @@ function API()
 
 			const stream = { active: true, request: null, retry: null, attempt: 0, lastEventId: null, connected: false };
 			scope.events[config.id] = stream;
+
+			// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+			const say = function(text) { if(trace) { trace(text); } };
+			// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 
 			// (RE)CONNECT TO THE EVENT STREAM
 			const connect = function()
@@ -153,7 +161,7 @@ function API()
 				// CONTINUE WHERE WE LEFT OFF
 				if(stream.lastEventId) { headers["Last-Event-ID"] = stream.lastEventId; }
 
-				stream.request = https.request({
+				const request = https.request({
 					host: host,
 					port: port ? parseInt(port) : 443,
 					path: "/eventstream/clip/v2",
@@ -162,12 +170,22 @@ function API()
 					agent: false,
 					rejectUnauthorized: false
 				});
+				stream.request = request;
+
+				// EVENTS OF A REPLACED REQUEST MUST NEVER TOUCH THE CURRENT ONE
+				const current = function() { return stream.request === request; };
+
+				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+				say("Event stream: connecting to " + host + ":" + (port ? port : 443) + " (attempt " + stream.attempt + ", Last-Event-ID " + (stream.lastEventId ? stream.lastEventId : "none") + ")");
+				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 
 				// ONLY GUARD THE HANDSHAKE, AN IDLE EVENT STREAM IS PERFECTLY NORMAL
-				stream.request.setTimeout(15000, function() { stream.request.destroy(new Error("the bridge did not answer")); });
+				request.setTimeout(15000, function() { request.destroy(new Error("the bridge did not answer")); });
 
-				stream.request.on('response', function(response)
+				request.on('response', function(response)
 				{
+					if(!current()) { response.resume(); return false; }
+
 					if(response.statusCode !== 200)
 					{
 						response.resume();
@@ -178,7 +196,10 @@ function API()
 					// CONNECTED -> LET THE OS DETECT DEAD PEERS
 					const isReconnect = (stream.attempt > 0);
 
-					stream.request.setTimeout(0);
+					request.setTimeout(0);
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					say("Event stream: connected" + (isReconnect ? " again after " + stream.attempt + " attempt(s)" : ""));
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 					stream.attempt = 0;
 					stream.connected = true;
 					response.setEncoding('utf8');
@@ -191,6 +212,8 @@ function API()
 
 					response.on('data', function(chunk)
 					{
+						if(!current()) { return false; }
+
 						const parsed = parseEventStream(buffer + chunk);
 						buffer = (parsed.rest.length > 1048576) ? "" : parsed.rest;
 
@@ -210,14 +233,17 @@ function API()
 						}
 					});
 
-					response.on('end', function() { reconnect("The bridge closed the event stream"); });
-					response.on('error', function(error) { reconnect(error.message); });
+					response.on('end', function() { if(current()) { reconnect("The bridge closed the event stream"); } });
+					response.on('error', function(error) { if(current()) { reconnect(error.message); } });
+
+					// A SOCKET CAN ALSO GO AWAY WITHOUT "end" OR "error"
+					response.on('close', function() { if(current()) { reconnect("The event stream was closed"); } });
 
 					resolve(true);
 				});
 
-				stream.request.on('error', function(error) { reconnect(error.message); });
-				stream.request.end();
+				request.on('error', function(error) { if(current()) { reconnect(error.message); } });
+				request.end();
 			}
 
 			// RECONNECT WITH A BACKOFF, BUT NEVER MORE THAN ONCE AT A TIME
@@ -225,8 +251,11 @@ function API()
 			{
 				if(stream.active === false || stream.retry !== null) { return false; }
 
+				// DETACH FIRST, SO THE EVENTS OF THE DESTROYED REQUEST ARE IGNORED
+				const previous = stream.request;
 				stream.connected = false;
-				if(stream.request) { stream.request.destroy(); stream.request = null; }
+				stream.request = null;
+				if(previous) { previous.destroy(); }
 
 				const delay = Math.min(30000, 1000 * Math.pow(2, stream.attempt));
 				const seconds = Math.round(delay/1000);

@@ -2,7 +2,13 @@
 
 # Changelog
 
-### v5.2.0 (latest)
+### v5.2.1 (latest)
+
+* Nodes could stay on "not yet available" until Node-RED was restarted after the bridge had been unreachable for a while (e.g. while the router restarts) or had restarted itself. When the bridge answers with an empty or incomplete list of devices, HueMagic now keeps the devices it already knows and reloads on its own until everything is back
+* A device whose services changed on the bridge (e.g. after a firmware update) no longer becomes unavailable until Node-RED is restarted
+* The connection to the event stream of the bridge now also recovers when the network drops without the bridge closing it properly
+
+### v5.2.0
 
 * The "Hue Buttons" node's additional outputs can now also listen to the dial of a Hue Tap Dial Switch: choose "Rotation" instead of a button and set the range of degrees a turn has to fall into, with counterclockwise turns counting as negative ([#457](https://github.com/Foddy/node-red-contrib-huemagic/pull/457)) (thx @FredBlo)
 

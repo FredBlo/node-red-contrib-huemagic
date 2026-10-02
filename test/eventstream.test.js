@@ -103,6 +103,33 @@ test('eventstream: reconnects after the bridge drops the connection', async func
 	assert.ok(events.includes("reconnect"), "a reconnect has to be announced so state can be re-read");
 });
 
+test('eventstream: the destroyed request of a lost stream does not tear down the new one', async function(t)
+{
+	let connections = 0;
+	let traces = [];
+
+	const server = await fakeBridge(function(req, res)
+	{
+		connections += 1;
+		if(connections === 1) { setTimeout(function() { res.destroy(); }, 20); }
+	});
+
+	const config = { id: "stream-4", bridge: "127.0.0.1:" + server.address().port, key: "secret" };
+	let events = [];
+
+	t.after(function() { API.unsubscribe(config); server.close(); });
+
+	await API.subscribe(config, function(data, type) { events.push(type); }, function() {}, function(text) { traces.push(text); });
+	await waitFor(function() { return events.includes("reconnect"); }, 8000);
+
+	// GIVE LATE EVENTS OF THE FIRST REQUEST THE CHANCE TO DO HARM
+	await new Promise(function(resolve) { setTimeout(resolve, 1500); });
+
+	assert.strictEqual(connections, 2, "exactly one reconnect");
+	assert.strictEqual(API.connected(config), true);
+	assert.ok(traces.some(function(text) { return text.indexOf("connected again") !== -1; }), "the reconnect has to be traced");
+});
+
 test('eventstream: unsubscribing stops the reconnect loop', async function(t)
 {
 	let connections = 0;
