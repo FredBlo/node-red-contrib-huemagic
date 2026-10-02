@@ -106,7 +106,9 @@ test('eventstream: reconnects after the bridge drops the connection', async func
 test('eventstream: the destroyed request of a lost stream does not tear down the new one', async function(t)
 {
 	let connections = 0;
+	// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
 	let traces = [];
+	// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 
 	const server = await fakeBridge(function(req, res)
 	{
@@ -119,7 +121,11 @@ test('eventstream: the destroyed request of a lost stream does not tear down the
 
 	t.after(function() { API.unsubscribe(config); server.close(); });
 
-	await API.subscribe(config, function(data, type) { events.push(type); }, function() {}, function(text) { traces.push(text); });
+	await API.subscribe(config, function(data, type) { events.push(type); }, function() {},
+		// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+		function(text) { traces.push(text); },
+		// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
+		);
 	await waitFor(function() { return events.includes("reconnect"); }, 8000);
 
 	// GIVE LATE EVENTS OF THE FIRST REQUEST THE CHANCE TO DO HARM
@@ -127,7 +133,9 @@ test('eventstream: the destroyed request of a lost stream does not tear down the
 
 	assert.strictEqual(connections, 2, "exactly one reconnect");
 	assert.strictEqual(API.connected(config), true);
+	// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
 	assert.ok(traces.some(function(text) { return text.indexOf("connected again") !== -1; }), "the reconnect has to be traced");
+	// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 });
 
 test('eventstream: unsubscribing stops the reconnect loop', async function(t)
