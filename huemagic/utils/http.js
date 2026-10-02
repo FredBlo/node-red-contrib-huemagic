@@ -119,7 +119,9 @@ async function send({ url, method = 'GET', headers = {}, data = null, timeout = 
 		path: target.pathname + target.search,
 		method: method,
 		headers: requestHeaders,
-		agent: agent
+		agent: agent,
+		// ALSO GUARDS THE CONNECT ITSELF - request.setTimeout() ONLY STARTS ONCE CONNECTED (AN UNREACHABLE HOST WOULD HANG ~2 MINUTES)
+		timeout: timeout
 	};
 
 	// THE LOCAL NETWORK IS NEVER BEHIND A PROXY, THE INTERNET MAY BE

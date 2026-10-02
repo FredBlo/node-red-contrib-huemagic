@@ -72,6 +72,11 @@ module.exports = function(RED)
 		// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
 		const TRACE = "[reconnect-trace] ";
 		this.trace = function(text) { scope.log(TRACE + text); };
+		this.describeError = function(error)
+		{
+			if(error instanceof Error) { return error.message + (error.code ? " (" + error.code + ")" : ""); }
+			try { return JSON.stringify(error); } catch(e) { return String(error); }
+		};
 		// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 
 		// ROOT RESOURCES A NODE CAN BE CONFIGURED WITH - THEY MUST NOT SILENTLY VANISH FROM THE CACHE
@@ -233,7 +238,7 @@ module.exports = function(RED)
 				scope.starting = false;
 				if(scope.startGuard !== null) { clearTimeout(scope.startGuard); scope.startGuard = null; }
 				// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
-				scope.trace("Start #" + attempt + " failed, retrying in 30 seconds");
+				scope.trace("Start #" + attempt + " failed, retrying in 30 seconds: " + scope.describeError(error));
 				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 				scope.log(error);
 				if(scope.nodeActive == true) { setTimeout(function(){ scope.start("retry after failed start"); }, 30000); }
@@ -660,6 +665,9 @@ module.exports = function(RED)
 				.catch(function(error)
 				{
 					scope.log(error);
+					// START FBLO : TEMP DEBUG LOG - TO BE REMOVED
+					scope.trace("Full load #" + generation + " (" + origin + ") failed: " + scope.describeError(error));
+					// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 					scope.retryRefetch("failed load #" + generation);
 				});
 			}, delay);

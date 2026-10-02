@@ -7,6 +7,7 @@
 * Nodes could stay on "not yet available" until Node-RED was restarted after the bridge had been unreachable for a while (e.g. while the router restarts) or had restarted itself. When the bridge answers with an empty or incomplete list of devices, HueMagic now keeps the devices it already knows and reloads on its own until everything is back
 * A device whose services changed on the bridge (e.g. after a firmware update) no longer becomes unavailable until Node-RED is restarted
 * The connection to the event stream of the bridge now also recovers when the network drops without the bridge closing it properly
+* When the bridge suddenly disappears from the network, HueMagic notices it within about 15 seconds instead of about 2 minutes, and commands sent in the meantime fail right away instead of hanging and blocking the ones that follow
 
 ### v5.2.0
 

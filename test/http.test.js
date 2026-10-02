@@ -198,6 +198,15 @@ test('http: a bridge that is not there rejects with the code of the system', asy
 	);
 });
 
+test('http: a host that never answers the connect gives up after the timeout, not after the one of the system', async function()
+{
+	// A NON-ROUTABLE ADDRESS: THE CONNECT NEITHER SUCCEEDS NOR FAILS ON ITS OWN
+	const started = Date.now();
+
+	await assert.rejects(httpUtils.request({ url: "https://10.255.255.1/api/config", agent: insecure, proxy: false, timeout: 500 }));
+	assert.ok(Date.now() - started < 2500, "took " + (Date.now() - started) + " ms");
+});
+
 test('http: follows a redirect', async function()
 {
 	const final = await server(function(request, response)

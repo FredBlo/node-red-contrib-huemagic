@@ -61,6 +61,13 @@ A simulation script runs a fake HTTPS bridge that goes away for 70 s, then comes
   - `reconnect()` detaches the request *before* destroying it, so its late events are ignored;
   - a response `close` now also triggers a reconnect.
 - `subscribe()` takes an optional 4th `trace` callback, used for temporary diagnostics (see below).
+- **Connect timeout**: the 15 s handshake guard is now the `timeout` option of `https.request`, plus a `timeout` listener. `request.setTimeout()` only starts counting once the socket is connected, so an unreachable bridge (cable pulled, power off) used to hang for the OS connect timeout instead: 2 min 07 s, seen twice in production logs. The guard is still cleared with `request.setTimeout(0)` once the stream is up, so an idle stream is never cut (checked with a stream left silent for 20 s).
+
+### `huemagic/utils/http.js`
+- The same fix for every bridge request (watchdog, full loads, commands): `send()` passes its `timeout` as the `timeout` option of `http(s).request`. A request to an unreachable host now fails after the requested timeout. Before, `master` ignored a 1.5 s timeout and waited for the OS (5 s on Windows, ~127 s on Linux). This matters because:
+  - the watchdog noticed the outage about 2 minutes late;
+  - commands sent during an outage stayed stuck for 2 minutes;
+  - the command queue only runs 10 commands at a time, so 10 stuck commands were enough to hold back every command behind them.
 
 ### `huemagic/hue-bridge-config.js`
 - **Validated full loads**: `getAllResources()` uses `raw: true` and rejects an empty or missing `data` list. The bridge always lists at least itself, so an empty list means it is not ready yet. A `200` that carries `errors` is traced.
@@ -83,6 +90,7 @@ These are English-only `[reconnect-trace] …` log lines, deliberately without l
 - what triggers each full load, with its number;
 - what the bridge sent (counts per type), and the `errors` of a `200` response;
 - devices kept or dropped;
+- failed full loads and failed starts, with the actual error (the regular log only printed `[object Object]` for them);
 - retries;
 - watchdog failures;
 - event-stream connects and reconnects;
@@ -102,7 +110,8 @@ To find them: grep `reconnect-trace`, `scope.trace(` (config node) and `say(` (`
   - a failed load is retried until the bridge answers completely;
   - the watchdog reloads an empty cache.
 - `test/eventstream.test.js`: one new case. After a lost stream, exactly one reconnect happens, and the old request does not tear down the new stream.
-- Full suite: 98/98 passing.
+- `test/http.test.js`: one new case. A non-routable host gives up after the requested timeout, not after the OS one.
+- Full suite: 99/99 passing.
 
 ### Docs
 - `CHANGELOG.md`: new v5.2.1 entry, written from the user's point of view.

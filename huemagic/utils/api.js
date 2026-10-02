@@ -168,7 +168,9 @@ function API()
 					method: "GET",
 					headers: headers,
 					agent: false,
-					rejectUnauthorized: false
+					rejectUnauthorized: false,
+					// ONLY GUARD THE HANDSHAKE (CONNECT INCLUDED), AN IDLE EVENT STREAM IS PERFECTLY NORMAL
+					timeout: 15000
 				});
 				stream.request = request;
 
@@ -179,8 +181,7 @@ function API()
 				say("Event stream: connecting to " + host + ":" + (port ? port : 443) + " (attempt " + stream.attempt + ", Last-Event-ID " + (stream.lastEventId ? stream.lastEventId : "none") + ")");
 				// END FBLO : TEMP DEBUG LOG - TO BE REMOVED
 
-				// ONLY GUARD THE HANDSHAKE, AN IDLE EVENT STREAM IS PERFECTLY NORMAL
-				request.setTimeout(15000, function() { request.destroy(new Error("the bridge did not answer")); });
+				request.on('timeout', function() { request.destroy(new Error("the bridge did not answer")); });
 
 				request.on('response', function(response)
 				{
